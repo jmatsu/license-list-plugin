@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+while read key; do
+  curl -X GET -Lf -o "license-files/$key.txt" "https://api.github.com/licenses/$key"
+done < <(curl -X GET -Lf 'https://api.github.com/licenses' | jq -r '.[] | .key')

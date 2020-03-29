@@ -3,23 +3,21 @@
  */
 package io.github.jmatsu.spthanks
 
-import java.io.File
 import org.gradle.testkit.runner.GradleRunner
+import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-/**
- * A simple functional test for the 'io.github.jmatsu.spthanks.greeting' plugin.
- */
 class SpecialThanksPluginFunctionalTest {
-    @Test fun `can run task`() {
+    @Test
+    fun `can run task`() {
         // Setup the test build
         val projectDir = File("build/functionalTest")
         projectDir.mkdirs()
         projectDir.resolve("settings.gradle").writeText("")
         projectDir.resolve("build.gradle").writeText("""
             plugins {
-                id('io.github.jmatsu.spthanks.greeting')
+                id('special-thanks')
             }
         """)
 
