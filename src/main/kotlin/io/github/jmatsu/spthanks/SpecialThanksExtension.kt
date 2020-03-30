@@ -87,4 +87,17 @@ open class SpecialThanksExtension
      */
     @get:Input
     var targetConfigurations: MutableSet<String> = ArtifactManagement.CommonConfigurationNames.toMutableSet()
+
+    /**
+     * Group names to exclude.
+     */
+    @get:Input
+    var excludeGroups: MutableSet<String> = hashSetOf()
+
+    /**
+     * Artifact names to exclude.
+     * The format is "<group>:<name>". e.g. "io.github.jmatsu:example" is it
+     */
+    @get:Input
+    var excludeArtifacts: MutableSet<String> = hashSetOf()
 }

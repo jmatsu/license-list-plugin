@@ -20,18 +20,43 @@ class Assembler(
         private val resolvedArtifactMap: SortedMap<ResolveScope, List<ResolvedArtifact>>
 ) {
     companion object {
-        val Yaml = Kaml(
-                context = License.Serialization.module,
-                configuration = YamlConfiguration(
-                        strictMode = false
-                )
-        )
-        val Json = KJson(
-                context = License.Serialization.module,
-                configuration = JsonConfiguration.Stable.copy(
-                        ignoreUnknownKeys = true
-                )
-        )
+        fun assemble(artifact: ResolvedArtifact): ArtifactDefinition {
+            return ArtifactDefinition(
+                    key = "${artifact.id.group}:${artifact.id.name}",
+                    licenses = artifact.pomFile.licenses(),
+                    copyrightHolders = artifact.pomFile.copyrightHolders,
+                    url = artifact.pomFile.associatedUrl,
+                    displayName = artifact.pomFile.displayName
+            )
+        }
+
+        fun assembleFlatten(format: StringFormat, definitions: List<ArtifactDefinition>): String {
+            return format.stringify(ArtifactDefinition.serializer().list, definitions)
+        }
+
+        fun assembleStructuredWithoutScope(format: StringFormat, definitionMap: Map<String, List<ArtifactDefinition>>): String {
+            val serializer = MapSerializer(String.serializer(), ArtifactDefinition.serializer().list)
+            return format.stringify(serializer, definitionMap)
+        }
+
+        fun assembleStructuredWithScope(format: StringFormat, scopedDefinitionMap: Map<Scope, Map<String, List<ArtifactDefinition>>>): String {
+            val serializer = MapSerializer(Scope.serializer(), MapSerializer(String.serializer(), ArtifactDefinition.serializer().list))
+            return format.stringify(serializer, scopedDefinitionMap)
+        }
+
+        private fun ResolvedPomFile.licenses(): List<License> {
+            return licenses.map {
+                when (val guessedLicense = LicenseClassifier(it.name).guess()) {
+                    is LicenseClassifier.GuessedLicense.Undetermined -> {
+                        PlainLicense(
+                                name = it.name ?: guessedLicense.name,
+                                url = it.url ?: guessedLicense.url
+                        )
+                    }
+                    else -> LicenseKey(value = guessedLicense.key)
+                }
+            }
+        }
     }
 
     sealed class Style {
@@ -43,72 +68,38 @@ class Assembler(
     fun assemble(style: Style, format: StringFormat): String {
         return when (style) {
             Style.Flatten -> {
-                format.stringify(ArtifactDefinition.serializer().list, assembleFlatten())
+                assembleFlatten(format = format, definitions = transformForFlatten())
             }
             Style.StructuredWithoutScope -> {
-                val serializer = MapSerializer(String.serializer(), ArtifactDefinition.serializer().list)
-                format.stringify(serializer, assembleStructuredWithoutScope())
+                assembleStructuredWithoutScope(format = format, definitionMap = tranformForStructuredWithoutScope())
             }
             Style.StructuredWithScope -> {
-                val serializer = MapSerializer(Scope.serializer(), MapSerializer(String.serializer(), ArtifactDefinition.serializer().list))
-                format.stringify(serializer, assembleStructuredWithScope())
+                assembleStructuredWithScope(format = format, scopedDefinitionMap = transformForStructuredWithScope())
             }
         }
     }
 
-    fun assembleFlatten(): List<ArtifactDefinition> {
+    fun transformForFlatten(): List<ArtifactDefinition> {
         return resolvedArtifactMap.flatMap { (_, artifacts) ->
             artifacts.map { artifact ->
-                ArtifactDefinition(
-                        key = "${artifact.id.group}:${artifact.id.name}",
-                        licenses = artifact.pomFile.licenses(),
-                        copyrightHolders = artifact.pomFile.copyrightHolders,
-                        url = artifact.pomFile.associatedUrl,
-                        displayName = artifact.pomFile.displayName
-                )
+                assemble(artifact)
             }
         }.sorted()
     }
 
-    fun assembleStructuredWithoutScope(): Map<String, List<ArtifactDefinition>> {
-        return resolvedArtifactMap.flatMap { (_, artifacts) ->
+    fun tranformForStructuredWithoutScope(): Map<String, List<ArtifactDefinition>> {
+        return resolvedArtifactMap.map { (_, artifacts) ->
             artifacts.map { artifact ->
-                artifact.id.group to ArtifactDefinition(
-                        key = artifact.id.name,
-                        licenses = artifact.pomFile.licenses(),
-                        copyrightHolders = artifact.pomFile.copyrightHolders,
-                        url = artifact.pomFile.associatedUrl,
-                        displayName = artifact.pomFile.displayName
-                )
-            }.sortedBy { it.second }.sortedBy { it.first }
-        }.collectToMap().toSortedMap()
+                artifact.id.group to assemble(artifact).copy(key = artifact.id.name)
+            }.sortedBy { it.second }.sortedBy { it.first }.collectToMap()
+        }.reduce { acc, map -> acc + map }.toSortedMap()
     }
 
-    fun assembleStructuredWithScope(): Map<Scope, Map<String, List<ArtifactDefinition>>> {
+    fun transformForStructuredWithScope(): Map<Scope, Map<String, List<ArtifactDefinition>>> {
         return resolvedArtifactMap.map { (scope, artifacts) ->
             Scope(name = scope.name) to (artifacts.map { artifact ->
-                artifact.id.group to ArtifactDefinition(
-                        key = artifact.id.name,
-                        licenses = artifact.pomFile.licenses(),
-                        copyrightHolders = artifact.pomFile.copyrightHolders,
-                        url = artifact.pomFile.associatedUrl,
-                        displayName = artifact.pomFile.displayName
-                )
+                artifact.id.group to assemble(artifact).copy(key = artifact.id.name)
             }.sortedBy { it.second }.sortedBy { it.first }.collectToMap())
         }.toMap()
-    }
-
-    private fun ResolvedPomFile.licenses(): List<License> {
-        return licenses.map {
-            when (val guessedLicense = LicenseClassifier(it.name).guess()) {
-                is LicenseClassifier.GuessedLicense.Undetermined -> {
-                    PlainLicense(
-                            name = it.name ?: guessedLicense.name,
-                            url = it.url ?: guessedLicense.url
-                    )
-                }
-                else -> LicenseKey(value = guessedLicense.key)
-            }
-        }
     }
 }

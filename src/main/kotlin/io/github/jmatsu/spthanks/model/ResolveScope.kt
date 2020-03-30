@@ -28,9 +28,9 @@ sealed class ResolveScope {
     ) : ResolveScope()
 
     /**
-     * Only for sort uses
+     * Only for internal uses
      */
-    internal data class OnlyForSort(
+    internal data class InternalUse(
             override val name: String
     ) : ResolveScope()
 

@@ -4,8 +4,8 @@ import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
 import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import shared.Definition
-import java.time.Instant
 import shared.Version
+import java.time.Instant
 
 plugins {
     `java-gradle-plugin`

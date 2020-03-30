@@ -20,7 +20,6 @@ import kotlin.collections.ArrayList
 class ArtifactManagement(
         private val project: Project,
         private val configurationNames: Set<String>,
-        private val excludeProjects: Set<String> = emptySet(),
         private val excludeGroups: Set<String> = emptySet(),
         private val excludeArtifacts: Set<String> = emptySet()
 ) {
@@ -35,11 +34,6 @@ class ArtifactManagement(
                 "api",
                 "compile"
         )
-    }
-
-    private val candidateDependencyKeys: List<Project> by lazy {
-        project.rootProject.subprojects
-                .filter { it.name in excludeProjects }
     }
 
     /**

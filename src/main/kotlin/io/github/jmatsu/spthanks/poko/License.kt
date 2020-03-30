@@ -3,7 +3,10 @@ package io.github.jmatsu.spthanks.poko
 import kotlinx.serialization.*
 import kotlinx.serialization.modules.SerializersModule
 
+@Serializable
 sealed class License {
+
+
     object Serialization {
         val module = SerializersModule {
             polymorphic(License::class) {
