@@ -107,7 +107,6 @@ class ArtifactManagement(
                         }
 
                         val id = ResolvedModuleIdentifier(
-                                declaredDirectly = false,
                                 group = group,
                                 name = name,
                                 version = VersionString(version),
@@ -186,7 +185,6 @@ class ArtifactManagement(
         }.mapValues {
             it.value.reduce { acc, id ->
                 acc.copy(
-                        declaredDirectly = acc.declaredDirectly || id.declaredDirectly,
                         version = arrayOf(acc.version, id.version).max()!!
                 )
             }
@@ -207,14 +205,8 @@ class ArtifactManagement(
             artifacts.filter { it.type == "aar" || it.type == "jar" }
                     .filterNot { it.moduleVersion.id.group in excludeGroups }
                     .filterNot { "${it.moduleVersion.id.group}:${it.moduleVersion.id.name}" in excludeArtifacts }
-                    }.map { artifact ->
-                        val dep = firstLevelModuleDependencies.firstOrNull { dep ->
-                            // Don't need to take care about the version
-                            (dep.module.id.group to dep.module.id.name) == (artifact.moduleVersion.id.group to artifact.moduleVersion.id.name)
-                        }
-
+                    .map { artifact ->
                         ResolvedModuleIdentifier(
-                                declaredDirectly = dep != null,
                                 name = artifact.moduleVersion.id.name,
                                 group = artifact.moduleVersion.id.group,
                                 version = VersionString(artifact.moduleVersion.id.version),

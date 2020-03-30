@@ -6,7 +6,6 @@ data class ResolvedModuleIdentifier(
         val group: String,
         val name: String,
         val version: VersionString = VersionString("+"),
-        val declaredDirectly: Boolean,
         val id: ComponentArtifactIdentifier? = null
 ) : Comparable<ResolvedModuleIdentifier> {
     override fun compareTo(other: ResolvedModuleIdentifier): Int {
