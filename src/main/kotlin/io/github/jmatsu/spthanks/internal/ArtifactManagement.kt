@@ -19,7 +19,10 @@ import kotlin.collections.ArrayList
 
 class ArtifactManagement(
         private val project: Project,
-        private val configurationNames: Set<String>
+        private val configurationNames: Set<String>,
+        private val excludeProjects: Set<String> = emptySet(),
+        private val excludeGroups: Set<String> = emptySet(),
+        private val excludeArtifacts: Set<String> = emptySet()
 ) {
     companion object {
         /**
@@ -32,6 +35,11 @@ class ArtifactManagement(
                 "api",
                 "compile"
         )
+    }
+
+    private val candidateDependencyKeys: List<Project> by lazy {
+        project.rootProject.subprojects
+                .filter { it.name in excludeProjects }
     }
 
     /**
@@ -195,21 +203,24 @@ class ArtifactManagement(
      * Transform artifacts that the given Gradle's dependency configuration provides to the Model class of this plugin
      */
     internal fun Configuration.toResolvedModuleIdentifiers(): List<ResolvedModuleIdentifier> {
-        return lenientConfiguration().run {
-            artifacts.map { artifact ->
-                val dep = firstLevelModuleDependencies.firstOrNull { dep ->
-                    // Don't need to take care about the version
-                    (dep.module.id.group to dep.module.id.name) == (artifact.moduleVersion.id.group to artifact.moduleVersion.id.name)
-                }
+        return lenientConfiguration()?.run {
+            artifacts.filter { it.type == "aar" || it.type == "jar" }
+                    .filterNot { it.moduleVersion.id.group in excludeGroups }
+                    .filterNot { "${it.moduleVersion.id.group}:${it.moduleVersion.id.name}" in excludeArtifacts }
+                    }.map { artifact ->
+                        val dep = firstLevelModuleDependencies.firstOrNull { dep ->
+                            // Don't need to take care about the version
+                            (dep.module.id.group to dep.module.id.name) == (artifact.moduleVersion.id.group to artifact.moduleVersion.id.name)
+                        }
 
-                ResolvedModuleIdentifier(
-                        declaredDirectly = dep != null,
-                        name = artifact.moduleVersion.id.name,
-                        group = artifact.moduleVersion.id.group,
-                        version = VersionString(artifact.moduleVersion.id.version),
-                        id = artifact.id
-                )
-            }
-        }
+                        ResolvedModuleIdentifier(
+                                declaredDirectly = dep != null,
+                                name = artifact.moduleVersion.id.name,
+                                group = artifact.moduleVersion.id.group,
+                                version = VersionString(artifact.moduleVersion.id.version),
+                                id = artifact.id
+                        )
+                    }
+        }.orEmpty()
     }
 }

@@ -26,7 +26,7 @@ class SpecialThanksPlugin : Plugin<Project> {
             androidExtension.applicationVariants.whenObjectAdded {
                 val variantName = name
 
-                project.tasks.register("createLicenseList${variantName}", CreateLicenseListTask::class.java, extension, this).configure {
+                project.tasks.register("createLicenseList${variantName.capitalize()}", CreateLicenseListTask::class.java, extension, this).configure {
                     description = """
                         |Create a license list based on the configuration for $variantName
                     """.trimMargin()

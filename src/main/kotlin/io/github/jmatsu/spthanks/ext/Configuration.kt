@@ -1,14 +1,21 @@
 package io.github.jmatsu.spthanks.ext
 
+import io.github.jmatsu.spthanks.globalLogger
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.LenientConfiguration
+import org.gradle.api.artifacts.UnknownConfigurationException
 
-fun Configuration.lenientConfiguration(): LenientConfiguration {
+fun Configuration.lenientConfiguration(): LenientConfiguration? {
     // to avoid unexpected resolve
     return copyRecursive().run {
         // copied configuration is UNRESOLVED
         isCanBeResolved = true
 
-        resolvedConfiguration.lenientConfiguration
+        try {
+            resolvedConfiguration.lenientConfiguration
+        } catch (e: UnknownConfigurationException) {
+            globalLogger.debug("failed to make a lenient configuration due to unknown configuration", e)
+            null
+        }
     }
 }

@@ -1,3 +1,5 @@
+@file:Suppress("RemoveRedundantQualifierName")
+
 import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
 import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
@@ -83,9 +85,9 @@ bintray {
     key = System.getenv("BINTRAY_KEY")
     pkg(closureOf<PackageConfig> {
         repo = "maven"
-        name = "special-thanks"
+        name = Definition.name
         userOrg = "jmatsu"
-        setLicenses("Apache-2.0") // FIXME use proper licenses based on dependencies that this plugin uses
+        setLicenses("MIT")
         websiteUrl = "https://github.com/jmatsu/special-thanks-plugin"
         issueTrackerUrl = "https://github.com/jmatsu/special-thanks-plugin/issues"
         vcsUrl = "https://github.com/jmatsu/special-thanks-plugin/issues.git"
