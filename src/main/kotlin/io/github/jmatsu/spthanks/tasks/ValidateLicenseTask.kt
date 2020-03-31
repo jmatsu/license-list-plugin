@@ -10,6 +10,7 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
 import org.gradle.util.ChangeListener
 import org.gradle.util.DiffUtil
+import java.io.FileNotFoundException
 import javax.inject.Inject
 
 abstract class ValidateLicenseTask
@@ -17,11 +18,19 @@ abstract class ValidateLicenseTask
         extension: SpecialThanksExtension,
         variant: ApplicationVariant?
 ) : VariantAwareTask(extension, variant) {
-    class InvalidLicenseFoundException(message: String) : TaskException(message)
+    class InvalidLicenseException(message: String) : TaskException(message)
 
     @TaskAction
     fun execute() {
         val args = Args(project, extension, variant)
+
+        if (!args.artifactsFile.exists()) {
+            throw FileNotFoundException("${args.artifactsFile.absolutePath} is not found")
+        }
+
+        if (!args.catalogFile.exists()) {
+            throw FileNotFoundException("${args.catalogFile.absolutePath} is not found")
+        }
 
         val artifactManagement = ArtifactManagement(
                 project = project,
@@ -39,18 +48,18 @@ abstract class ValidateLicenseTask
                 format = args.format
         )
 
-        val text = args.licenseFile.readText()
+        val text = args.artifactsFile.readText()
 
         val recordedArtifacts = disassembler.disassemble(text).map { it.key }.toSet()
         val currentArtifacts = scopedResolvedArtifacts.flatMap { (_, artifacts) -> artifacts.map { "${it.id.group}:${it.id.name}" } }.toSet()
 
-        var newCount = 0
-        var removedCount = 0
+        val addedKeys = ArrayList<String>()
+        val removedKeys = ArrayList<String>()
 
         DiffUtil.diff(currentArtifacts, recordedArtifacts, object : ChangeListener<String> {
             override fun added(element: String) {
-                // TODO skip logic
-                newCount++
+                // TODO implement skip logic?
+                addedKeys += element
             }
 
             override fun changed(element: String) {
@@ -58,13 +67,29 @@ abstract class ValidateLicenseTask
             }
 
             override fun removed(element: String) {
-                removedCount++
+                removedKeys += element
             }
         })
 
-        if (newCount > 0) {
-            throw InvalidLicenseFoundException(
-                    "$newCount artifacts needs to be mentioned and $removedCount artifacts have gone"
+        if (removedKeys.isNotEmpty()) {
+            logger.warn("You can remove the following artifacts.\n")
+
+            removedKeys.forEach { key ->
+                logger.warn(key)
+            }
+
+            logger.warn("\n")
+        }
+
+        if (addedKeys.isNotEmpty()) {
+            logger.warn("You need to handle the following artifacts that the current license file does not contain.\n")
+
+            addedKeys.forEach { key ->
+                logger.warn(key)
+            }
+
+            throw InvalidLicenseException(
+                    "${addedKeys.size} artifacts needs to be added"
             )
         }
     }

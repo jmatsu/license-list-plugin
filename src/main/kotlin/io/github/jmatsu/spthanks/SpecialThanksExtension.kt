@@ -26,7 +26,7 @@ open class SpecialThanksExtension
     @get:PathSensitive(PathSensitivity.RELATIVE)
     @get:InputFile
     @Optional
-    var licenseFile: File? = null
+    var outputFile: File? = null
 
     /**
      * a format of the output.

@@ -94,7 +94,7 @@ class LicenseClassifier(
 
         object GPL20 : GitHubAPICompatibleLicense() {
             override val key: String = PredefinedKey.GPL_2_0
-            override val name: String = "NU General Public License v2.0"
+            override val name: String = "GNU General Public License v2.0"
         }
 
         object GPL30 : GitHubAPICompatibleLicense() {
@@ -104,7 +104,7 @@ class LicenseClassifier(
 
         object LGPL21 : GitHubAPICompatibleLicense() {
             override val key: String = PredefinedKey.LGPL_2_1
-            override val name: String = "NU Lesser General Public License v2.1"
+            override val name: String = "GNU Lesser General Public License v2.1"
         }
 
         object LGPL30 : GitHubAPICompatibleLicense() {
@@ -181,31 +181,31 @@ class LicenseClassifier(
             GuessedLicense::class.sealedSubclasses.filter { it.isFinal }.map { it.objectInstance }.filterIsInstance(GuessedLicense::class.java)
         }
 
-        val versionRegexp = wordMatch("(\\d|\\d\\.\\d)")
+        val versionRegexp = Regex("(\\d\\.\\d|\\d)")
         val isApache = wordMatch("apache")
-        val isBSD = wordMatch("bsd")
+        val isBSD = wordMatch("bsd[\\d]?")
         val isBSD2 = wordMatch("simplified")
         val isBSD3 = wordMatch("(new|revised)")
         val isBSD4 = wordMatch("(original|old)")
-        val isEPL = wordMatch("eclipse\b.*public")
-        val isEPL_2nd = wordMatch("epl")
-        val isMPL = wordMatch("mozilla\b.*public")
-        val isMPL_2nd = wordMatch("mpl")
-        val isLGPL = wordMatch("lesser\b.*general\b.*public")
-        val isLGPL_2nd = wordMatch("lgpl")
-        val isAGPL = wordMatch("affero\b.*general\b.*public")
-        val isAGPL_2nd = wordMatch("agpl")
-        val isGPL = wordMatch("general\b.*public")
-        val isGPL_2nd = wordMatch("gpl")
-        val isCC = wordMatch("creative\b.*commons")
-        val isCC_2nd = wordMatch("cc")
+        val isEPL = wordMatch("eclipse\\b.*public")
+        val isEPL_2nd = wordMatch("epl[\\d]?")
+        val isMPL = wordMatch("mozilla\\b.*public")
+        val isMPL_2nd = wordMatch("mpl[\\d]?")
+        val isLGPL = wordMatch("lesser\\b.*general\\b.*public")
+        val isLGPL_2nd = wordMatch("lgpl[\\d]?")
+        val isAGPL = wordMatch("affero\\b.*general\\b.*public")
+        val isAGPL_2nd = wordMatch("agpl[\\d]?")
+        val isGPL = wordMatch("general\\b.*public")
+        val isGPL_2nd = wordMatch("gpl[\\d]?")
+        val isCC = wordMatch("creative\\b.*commons")
+        val isCC_2nd = wordMatch("cc[\\d]?")
         val isMIT = wordMatch("mit")
         val isFacebookSDK = wordMatch("facebook")
         val isMoPubSDK = wordMatch("mopub")
-        val isAndroidSDK = wordMatch("Android")
+        val isAndroidSDK = wordMatch("android")
 
         private fun wordMatch(word: String): Regex {
-            return "\b$word\b".toRegex()
+            return "\\b$word\\b".toRegex()
         }
     }
 
@@ -215,7 +215,7 @@ class LicenseClassifier(
         }
 
         fun String.normalize(): String = toLowerCase(Locale.US).replace("[,\"]|licen[sc]e".toRegex(), " ").trim()
-        operator fun Regex.contains(text: String): Boolean = matches(text)
+        operator fun Regex.contains(text: String): Boolean = containsMatchIn(text)
 
         val fallbackLicense = GuessedLicense.Undetermined(
                 name = name,
@@ -224,6 +224,12 @@ class LicenseClassifier(
         val version = versionRegexp.find(name)?.groupValues?.drop(1)?.firstOrNull()?.takeIf { it.isNotBlank() }
 
         return when (val text = name.normalize()) {
+            in isAGPL, in isAGPL_2nd -> {
+                when (version) {
+                    "3", "3.0" -> GuessedLicense.AGPL30
+                    else -> fallbackLicense
+                }
+            }
             in isApache -> {
                 when (version) {
                     "2", "2.0" -> GuessedLicense.Apache20
@@ -231,7 +237,7 @@ class LicenseClassifier(
                 }
             }
             in isBSD -> {
-                if (text in isBSD2) {
+                if (version == "2" || text in isBSD2) {
                     GuessedLicense.BSD2C
                 } else if (version == "3" || text in isBSD3) {
                     GuessedLicense.BSD3C
@@ -248,24 +254,23 @@ class LicenseClassifier(
                     else -> fallbackLicense
                 }
             }
-            in isMPL, in isMPL_2nd -> GuessedLicense.MPL20
-            in isAGPL, in isAGPL_2nd -> {
+            in isMPL, in isMPL_2nd -> {
                 when (version) {
-                    "3.0" -> GuessedLicense.AGPL30
+                    "2", "2.0" -> GuessedLicense.MPL20
                     else -> fallbackLicense
                 }
             }
             in isLGPL, in isLGPL_2nd -> {
                 when (version) {
                     "2.1" -> GuessedLicense.LGPL21
-                    "3.0" -> GuessedLicense.LGPL30
+                    "3", "3.0" -> GuessedLicense.LGPL30
                     else -> fallbackLicense
                 }
             }
             in isGPL, in isGPL_2nd -> {
                 when (version) {
-                    "2.0" -> GuessedLicense.GPL20
-                    "3.0" -> GuessedLicense.GPL30
+                    "2", "2.0" -> GuessedLicense.GPL20
+                    "3", "3.0" -> GuessedLicense.GPL30
                     else -> fallbackLicense
                 }
             }

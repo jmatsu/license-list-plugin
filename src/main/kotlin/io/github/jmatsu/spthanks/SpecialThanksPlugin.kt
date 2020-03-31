@@ -2,25 +2,30 @@ package io.github.jmatsu.spthanks
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
-import io.github.jmatsu.spthanks.tasks.CreateLicenseListTask
+import io.github.jmatsu.spthanks.tasks.InitLicenseListTask
 import io.github.jmatsu.spthanks.tasks.MergeLicenseTask
 import io.github.jmatsu.spthanks.tasks.ValidateLicenseTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 
-val globalLogger = Logging.getLogger("SpecialThanksPlugin")
-
 class SpecialThanksPlugin : Plugin<Project> {
+    companion object {
+        var logger: Logger? = null
+    }
+
     override fun apply(project: Project) {
+        logger = project.logger
+
         project.extensions.add("spthanks", SpecialThanksExtension::class.java)
 
         project.plugins.withType(AppPlugin::class.java) {
             val extension = requireNotNull(project.extensions.getByType(SpecialThanksExtension::class.java))
 
-            project.tasks.register("createLicenseList", CreateLicenseListTask::class.java, extension, null).configure {
+            project.tasks.register("initLicenseList", InitLicenseListTask::class.java, extension, null).configure {
                 description = """
-                    |Create a license list based on the configuration
+                    |Initialize a license list based on the configuration
                 """.trimMargin()
             }
 
@@ -40,9 +45,9 @@ class SpecialThanksPlugin : Plugin<Project> {
             androidExtension.applicationVariants.whenObjectAdded {
                 val variantName = name
 
-                project.tasks.register("createLicenseList${variantName.capitalize()}", CreateLicenseListTask::class.java, extension, this).configure {
+                project.tasks.register("initLicenseList${variantName.capitalize()}", InitLicenseListTask::class.java, extension, this).configure {
                     description = """
-                        |Create a license list based on the configuration for $variantName
+                        |Initialize a license list based on the configuration for $variantName
                     """.trimMargin()
                 }
 

@@ -4,21 +4,31 @@ import com.android.build.gradle.api.ApplicationVariant
 import io.github.jmatsu.spthanks.SpecialThanksExtension
 import io.github.jmatsu.spthanks.internal.ArtifactManagement
 import io.github.jmatsu.spthanks.presentation.Assembler
+import io.github.jmatsu.spthanks.presentation.Convention
 import io.github.jmatsu.spthanks.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.spthanks.tasks.internal.VariantAwareTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
 import javax.inject.Inject
 
-abstract class CreateLicenseListTask
+abstract class InitLicenseListTask
 @Inject constructor(
         extension: SpecialThanksExtension,
         variant: ApplicationVariant?
 ) : VariantAwareTask(extension, variant) {
+    class FileAlreadyExistException(message: String) : TaskException(message)
 
     @TaskAction
     fun execute() {
         val args = Args(project, extension, variant)
+
+        if (args.artifactsFile.exists()) {
+            throw FileAlreadyExistException("Overwriting ${args.artifactsFile.absolutePath} is forbidden.")
+        }
+
+        if (args.catalogFile.exists()) {
+            throw FileAlreadyExistException("Overwriting ${args.catalogFile.absolutePath} is forbidden.")
+        }
 
         val artifactManagement = ArtifactManagement(
                 project = project,
@@ -34,9 +44,12 @@ abstract class CreateLicenseListTask
                 resolvedArtifactMap = scopedResolvedArtifacts
         )
 
-        val text = assembler.assemble(args.style, args.format)
+        val artifactsText = assembler.assembleArtifacts(args.style, args.format)
+        val licenseCatalog = assembler.assemblePlainLicenses(Convention.Yaml) // the format is fixed
 
-        args.licenseFile.writeText(text)
+        args.outputDir.mkdirs()
+        args.artifactsFile.writeText(artifactsText)
+        args.catalogFile.writeText(licenseCatalog)
     }
 
     class Args(

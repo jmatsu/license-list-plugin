@@ -44,6 +44,11 @@ dependencies {
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.6.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.6.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.1")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.6.1")
 }
 
 gradlePlugin {
@@ -70,6 +75,8 @@ val check by tasks.getting(Task::class) {
 }
 
 tasks.withType(Test::class) {
+    useJUnitPlatform()
+
     testLogging {
         events("passed", "skipped", "failed")
         exceptionFormat = TestExceptionFormat.FULL

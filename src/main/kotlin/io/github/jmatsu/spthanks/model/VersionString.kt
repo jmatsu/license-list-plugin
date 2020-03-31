@@ -1,6 +1,6 @@
 package io.github.jmatsu.spthanks.model
 
-import io.github.jmatsu.spthanks.globalLogger
+import io.github.jmatsu.spthanks.SpecialThanksPlugin
 
 data class VersionString(
         val value: String
@@ -10,7 +10,7 @@ data class VersionString(
             Int.MAX_VALUE
         } else {
             it.toIntOrNull() ?: run {
-                globalLogger.debug("$it might not be handled properly")
+                SpecialThanksPlugin.logger?.debug("$it might not be handled properly")
                 0
             }
         }

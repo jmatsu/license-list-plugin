@@ -60,7 +60,9 @@ abstract class ReadWriteLicenseTaskArgs(
 
     val additionalScopes: Set<ResolveScope.Addition> = extension.additionalScopes.map { ResolveScope.Addition(it) }.toSet()
 
-    val licenseFile: File = extension.licenseFile ?: File(project.projectDir, "license.$ext")
+    val artifactsFile: File = extension.outputFile ?: File(project.projectDir, "license.$ext")
+    val outputDir: File = artifactsFile.parentFile
+    val catalogFile: File = File(artifactsFile.parentFile, "license-catalog.yml")
 
     val excludeGroups: Set<String> = HashSet(extension.excludeGroups)
     val excludeArtifacts: Set<String> = HashSet(extension.excludeArtifacts)

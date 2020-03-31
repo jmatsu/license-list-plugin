@@ -1,29 +1,30 @@
 package io.github.jmatsu.spthanks.presentation
 
-import com.charleskorn.kaml.YamlConfiguration
 import io.github.jmatsu.spthanks.ext.collectToMap
 import io.github.jmatsu.spthanks.internal.LicenseClassifier
 import io.github.jmatsu.spthanks.model.ResolveScope
 import io.github.jmatsu.spthanks.model.ResolvedArtifact
 import io.github.jmatsu.spthanks.model.ResolvedPomFile
-import io.github.jmatsu.spthanks.poko.*
+import io.github.jmatsu.spthanks.poko.ArtifactDefinition
+import io.github.jmatsu.spthanks.poko.LicenseKey
+import io.github.jmatsu.spthanks.poko.PlainLicense
+import io.github.jmatsu.spthanks.poko.Scope
 import kotlinx.serialization.StringFormat
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.JsonConfiguration
 import java.util.*
-import com.charleskorn.kaml.Yaml as Kaml
-import kotlinx.serialization.json.Json as KJson
+import kotlin.collections.ArrayList
 
 class Assembler(
-        private val resolvedArtifactMap: SortedMap<ResolveScope, List<ResolvedArtifact>>
+        private val resolvedArtifactMap: SortedMap<ResolveScope, List<ResolvedArtifact>>,
+        private val licenseCapture: MutableList<PlainLicense> = ArrayList()
 ) {
     companion object {
-        fun assemble(artifact: ResolvedArtifact): ArtifactDefinition {
+        fun assembleArtifacts(artifact: ResolvedArtifact, licenseCapture: MutableList<PlainLicense>): ArtifactDefinition {
             return ArtifactDefinition(
                     key = "${artifact.id.group}:${artifact.id.name}",
-                    licenses = artifact.pomFile.licenses(),
+                    licenses = artifact.pomFile.licenses(licenseCapture),
                     copyrightHolders = artifact.pomFile.copyrightHolders,
                     url = artifact.pomFile.associatedUrl,
                     displayName = artifact.pomFile.displayName
@@ -44,16 +45,29 @@ class Assembler(
             return format.stringify(serializer, scopedDefinitionMap)
         }
 
-        private fun ResolvedPomFile.licenses(): List<License> {
+        private fun ResolvedPomFile.licenses(licenseCapture: MutableList<PlainLicense>): List<LicenseKey> {
             return licenses.map {
                 when (val guessedLicense = LicenseClassifier(it.name).guess()) {
                     is LicenseClassifier.GuessedLicense.Undetermined -> {
-                        PlainLicense(
-                                name = it.name ?: guessedLicense.name,
+                        val name = it.name ?: guessedLicense.name
+
+                        licenseCapture + PlainLicense(
+                                name = name,
                                 url = it.url ?: guessedLicense.url
                         )
+
+                        LicenseKey(
+                                value = name
+                        )
                     }
-                    else -> LicenseKey(value = guessedLicense.key)
+                    else -> {
+                        licenseCapture + PlainLicense(
+                                name = guessedLicense.name,
+                                url = guessedLicense.url
+                        )
+
+                        LicenseKey(value = guessedLicense.key)
+                    }
                 }
             }
         }
@@ -65,7 +79,7 @@ class Assembler(
         object StructuredWithScope : Style()
     }
 
-    fun assemble(style: Style, format: StringFormat): String {
+    fun assembleArtifacts(style: Style, format: StringFormat): String {
         return when (style) {
             Style.Flatten -> {
                 assembleFlatten(format = format, definitions = transformForFlatten())
@@ -79,10 +93,15 @@ class Assembler(
         }
     }
 
+    fun assemblePlainLicenses(format: StringFormat): String {
+        // assemble must be called in advance
+        return format.stringify(PlainLicense.serializer().list, licenseCapture)
+    }
+
     fun transformForFlatten(): List<ArtifactDefinition> {
         return resolvedArtifactMap.flatMap { (_, artifacts) ->
             artifacts.map { artifact ->
-                assemble(artifact)
+                assembleArtifacts(artifact, licenseCapture)
             }
         }.sorted()
     }
@@ -90,7 +109,7 @@ class Assembler(
     fun tranformForStructuredWithoutScope(): Map<String, List<ArtifactDefinition>> {
         return resolvedArtifactMap.map { (_, artifacts) ->
             artifacts.map { artifact ->
-                artifact.id.group to assemble(artifact).copy(key = artifact.id.name)
+                artifact.id.group to assembleArtifacts(artifact, licenseCapture).copy(key = artifact.id.name)
             }.sortedBy { it.second }.sortedBy { it.first }.collectToMap()
         }.reduce { acc, map -> acc + map }.toSortedMap()
     }
@@ -98,7 +117,7 @@ class Assembler(
     fun transformForStructuredWithScope(): Map<Scope, Map<String, List<ArtifactDefinition>>> {
         return resolvedArtifactMap.map { (scope, artifacts) ->
             Scope(name = scope.name) to (artifacts.map { artifact ->
-                artifact.id.group to assemble(artifact).copy(key = artifact.id.name)
+                artifact.id.group to assembleArtifacts(artifact, licenseCapture).copy(key = artifact.id.name)
             }.sortedBy { it.second }.sortedBy { it.first }.collectToMap())
         }.toMap()
     }

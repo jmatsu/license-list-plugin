@@ -5,6 +5,7 @@ import io.github.jmatsu.spthanks.SpecialThanksExtension
 import io.github.jmatsu.spthanks.ext.collectToMap
 import io.github.jmatsu.spthanks.internal.ArtifactManagement
 import io.github.jmatsu.spthanks.poko.ArtifactDefinition
+import io.github.jmatsu.spthanks.poko.PlainLicense
 import io.github.jmatsu.spthanks.poko.Scope
 import io.github.jmatsu.spthanks.presentation.Assembler
 import io.github.jmatsu.spthanks.presentation.Disassembler
@@ -35,8 +36,9 @@ abstract class MergeLicenseTask
                 variantScopes = args.variantScopes,
                 additionalScopes = args.additionalScopes
         )
+        val licenseCapture = ArrayList<PlainLicense>()
         val scopedArtifactDefinitions = scopedResolvedArtifacts.mapValues { (_, artifacts) ->
-            artifacts.map { Assembler.assemble(it) }
+            artifacts.map { Assembler.assembleArtifacts(it, licenseCapture) }
         }
 
         val disassembler = Disassembler(
@@ -44,7 +46,7 @@ abstract class MergeLicenseTask
                 format = args.format
         )
 
-        val text = args.licenseFile.readText()
+        val text = args.artifactsFile.readText()
 
         val recordedArtifacts = disassembler.disassemble(text).toSet()
         val currentArtifacts = scopedArtifactDefinitions.values.flatten().toSet()
@@ -60,8 +62,8 @@ abstract class MergeLicenseTask
             }
 
             override fun changed(element: Map.Entry<String, List<ArtifactDefinition>>) {
-                val new = element.value.first()
-                val recorded = recordedArtifacts.first { it.key == element.key }
+//                val new = element.value.first()
+//                val recorded = recordedArtifacts.first { it.key == element.key }
 
                 // FIXME determine how this plugin should treat this case
             }
@@ -109,7 +111,7 @@ abstract class MergeLicenseTask
             }
         }
 
-        args.licenseFile.writeText(newText)
+        args.artifactsFile.writeText(newText)
     }
 
     fun List<ArtifactDefinition>.mergeAndSort(newKeys: List<String>, strongerDefinitions: Set<ArtifactDefinition>): Map<String, List<ArtifactDefinition>> {
