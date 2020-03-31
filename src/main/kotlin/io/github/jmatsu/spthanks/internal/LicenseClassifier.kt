@@ -43,10 +43,10 @@ class LicenseClassifier(
         const val NCSA = "ncsa"
         const val ZLIB = "zlib"
 
-        // Original
         const val MOPUB_SDK = "mopub-sdk"
         const val ANDROID_SDK = "android-sdk"
         const val FACEBOOK_SDK = "facebook-sdk"
+        const val BCL = "bcl"
 
         const val UNDETERMINED = "undetermined"
     }
@@ -165,6 +165,12 @@ class LicenseClassifier(
             override val key: String = PredefinedKey.FACEBOOK_SDK
             override val name: String = "the Facebook Platform License"
             override val url: String = "https://github.com/facebook/facebook-android-sdk/blob/master/LICENSE.txt"
+        }
+
+        object Bcl : GuessedLicense() {
+            override val key: String = PredefinedKey.BCL
+            override val name: String = "Bouncy Castle Licence"
+            override val url: String = "http://www.bouncycastle.org/licence.html"
         }
 
         // ---

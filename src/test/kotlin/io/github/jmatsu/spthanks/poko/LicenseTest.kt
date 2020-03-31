@@ -40,10 +40,11 @@ class LicenseTest {
     fun `serialize PlainLicense`() {
         val license = PlainLicense(
                 name = "name",
-                url = "url"
+                url = "url",
+                key = "key"
         )
 
-        expect("""{"name":"name","url":"url"}""") {
+        expect("""{"name":"name","url":"url","key":"key"}""") {
             json.stringify(PlainLicense.serializer(), license)
         }
     }
@@ -52,11 +53,12 @@ class LicenseTest {
     fun `deserialize PlainLicense`() {
         val expected = PlainLicense(
                 name = "name",
-                url = "url"
+                url = "url",
+                key = "key"
         )
 
         expect(expected) {
-            json.parse(PlainLicense.serializer(), """{ "name": "name", "url": "url" }""")
+            json.parse(PlainLicense.serializer(), """{ "name": "name", "url": "url", "key": "key" }""")
         }
     }
 }

@@ -22,12 +22,12 @@ abstract class InitLicenseListTask
     fun execute() {
         val args = Args(project, extension, variant)
 
-        if (args.artifactsFile.exists()) {
-            throw FileAlreadyExistException("Overwriting ${args.artifactsFile.absolutePath} is forbidden.")
+        if (args.artifactsFile.exists() && !args.forceOverwrite) {
+            throw FileAlreadyExistException("Overwriting ${args.artifactsFile.absolutePath} is forbidden. Please remove the file or provide a property (overwrite=true) when running this task to overwrite.")
         }
 
-        if (args.catalogFile.exists()) {
-            throw FileAlreadyExistException("Overwriting ${args.catalogFile.absolutePath} is forbidden.")
+        if (args.catalogFile.exists() && !args.forceOverwrite) {
+            throw FileAlreadyExistException("Overwriting ${args.catalogFile.absolutePath} is forbidden. Please remove the file or provide a property (overwrite=true) when running this task to overwrite.")
         }
 
         val artifactManagement = ArtifactManagement(
@@ -60,5 +60,7 @@ abstract class InitLicenseListTask
             project = project,
             extension = extension,
             variant = variant
-    )
+    ) {
+        val forceOverwrite: Boolean = project.properties["overwrite"]?.toString() == "true"
+    }
 }

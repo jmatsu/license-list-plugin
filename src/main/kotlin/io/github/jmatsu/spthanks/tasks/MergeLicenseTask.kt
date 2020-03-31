@@ -36,9 +36,9 @@ abstract class MergeLicenseTask
                 variantScopes = args.variantScopes,
                 additionalScopes = args.additionalScopes
         )
-        val licenseCapture = ArrayList<PlainLicense>()
+        val licenseCapture = HashSet<PlainLicense>()
         val scopedArtifactDefinitions = scopedResolvedArtifacts.mapValues { (_, artifacts) ->
-            artifacts.map { Assembler.assembleArtifacts(it, licenseCapture) }
+            artifacts.map { Assembler.assembleArtifact(it, licenseCapture) }
         }
 
         val disassembler = Disassembler(
@@ -111,6 +111,7 @@ abstract class MergeLicenseTask
             }
         }
 
+        // TODO license-catalog
         args.artifactsFile.writeText(newText)
     }
 

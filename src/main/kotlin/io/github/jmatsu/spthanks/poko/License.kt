@@ -25,6 +25,7 @@ data class LicenseKey(
 
 @Serializable
 data class PlainLicense(
+        val key: String,
         val name: String,
         val url: String
 ) : License()

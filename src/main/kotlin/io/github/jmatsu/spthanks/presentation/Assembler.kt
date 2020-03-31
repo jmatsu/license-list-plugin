@@ -14,14 +14,14 @@ import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
 import java.util.*
-import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 class Assembler(
         private val resolvedArtifactMap: SortedMap<ResolveScope, List<ResolvedArtifact>>,
-        private val licenseCapture: MutableList<PlainLicense> = ArrayList()
+        private val licenseCapture: MutableSet<PlainLicense> = HashSet()
 ) {
     companion object {
-        fun assembleArtifacts(artifact: ResolvedArtifact, licenseCapture: MutableList<PlainLicense>): ArtifactDefinition {
+        fun assembleArtifact(artifact: ResolvedArtifact, licenseCapture: MutableSet<PlainLicense>): ArtifactDefinition {
             return ArtifactDefinition(
                     key = "${artifact.id.group}:${artifact.id.name}",
                     licenses = artifact.pomFile.licenses(licenseCapture),
@@ -45,25 +45,29 @@ class Assembler(
             return format.stringify(serializer, scopedDefinitionMap)
         }
 
-        private fun ResolvedPomFile.licenses(licenseCapture: MutableList<PlainLicense>): List<LicenseKey> {
+        private fun ResolvedPomFile.licenses(licenseCapture: MutableSet<PlainLicense>): List<LicenseKey> {
             return licenses.map {
                 when (val guessedLicense = LicenseClassifier(it.name).guess()) {
                     is LicenseClassifier.GuessedLicense.Undetermined -> {
                         val name = it.name ?: guessedLicense.name
+                        val url = it.url ?: guessedLicense.url
+                        val key = "$name@${url.length}" // a salt
 
-                        licenseCapture + PlainLicense(
+                        licenseCapture += PlainLicense(
                                 name = name,
-                                url = it.url ?: guessedLicense.url
+                                url = url,
+                                key = key
                         )
 
                         LicenseKey(
-                                value = name
+                                value = key
                         )
                     }
                     else -> {
-                        licenseCapture + PlainLicense(
+                        licenseCapture += PlainLicense(
                                 name = guessedLicense.name,
-                                url = guessedLicense.url
+                                url = guessedLicense.url,
+                                key = guessedLicense.key
                         )
 
                         LicenseKey(value = guessedLicense.key)
@@ -95,13 +99,13 @@ class Assembler(
 
     fun assemblePlainLicenses(format: StringFormat): String {
         // assemble must be called in advance
-        return format.stringify(PlainLicense.serializer().list, licenseCapture)
+        return format.stringify(PlainLicense.serializer().list, licenseCapture.sortedBy { it.name })
     }
 
     fun transformForFlatten(): List<ArtifactDefinition> {
         return resolvedArtifactMap.flatMap { (_, artifacts) ->
             artifacts.map { artifact ->
-                assembleArtifacts(artifact, licenseCapture)
+                assembleArtifact(artifact, licenseCapture)
             }
         }.sorted()
     }
@@ -109,7 +113,7 @@ class Assembler(
     fun tranformForStructuredWithoutScope(): Map<String, List<ArtifactDefinition>> {
         return resolvedArtifactMap.map { (_, artifacts) ->
             artifacts.map { artifact ->
-                artifact.id.group to assembleArtifacts(artifact, licenseCapture).copy(key = artifact.id.name)
+                artifact.id.group to assembleArtifact(artifact, licenseCapture).copy(key = artifact.id.name)
             }.sortedBy { it.second }.sortedBy { it.first }.collectToMap()
         }.reduce { acc, map -> acc + map }.toSortedMap()
     }
@@ -117,7 +121,7 @@ class Assembler(
     fun transformForStructuredWithScope(): Map<Scope, Map<String, List<ArtifactDefinition>>> {
         return resolvedArtifactMap.map { (scope, artifacts) ->
             Scope(name = scope.name) to (artifacts.map { artifact ->
-                artifact.id.group to assembleArtifacts(artifact, licenseCapture).copy(key = artifact.id.name)
+                artifact.id.group to assembleArtifact(artifact, licenseCapture).copy(key = artifact.id.name)
             }.sortedBy { it.second }.sortedBy { it.first }.collectToMap())
         }.toMap()
     }
