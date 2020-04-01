@@ -14,15 +14,15 @@ jobs:
           java-version: '8.0.x'
           java-package: jdk
       - uses: actions/cache@v1
-          with:
-            path: ~/.gradle/caches
-            key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('buildSrc/src/main/**/*.kt') }}
-            restore-keys: |
-              ${{ runner.os }}-gradle-
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('buildSrc/src/main/**/*.kt') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
       - uses: actions/cache@v1
-          with:
-            path: ~/.gradle/wrapper
-            key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
       - name: Create a jar
         run: ./gradlew jar
       - uses: actions/upload-artifact@v1
@@ -40,15 +40,15 @@ jobs:
           java-version: '8.0.x'
           java-package: jdk
       - uses: actions/cache@v1
-          with:
-            path: ~/.gradle/caches
-            key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('buildSrc/src/main/**/*.kt') }}
-            restore-keys: |
-              ${{ runner.os }}-gradle-
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('buildSrc/src/main/**/*.kt') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
       - uses: actions/cache@v1
-          with:
-            path: ~/.gradle/wrapper
-            key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
       - name: Run unit tests
         run: ./gradlew test
       - uses: actions/upload-artifact@v1
@@ -66,15 +66,15 @@ jobs:
           java-version: '8.0.x'
           java-package: jdk
       - uses: actions/cache@v1
-          with:
-            path: ~/.gradle/caches
-            key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('buildSrc/src/main/**/*.kt') }}
-            restore-keys: |
-              ${{ runner.os }}-gradle-
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('buildSrc/src/main/**/*.kt') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
       - uses: actions/cache@v1
-          with:
-            path: ~/.gradle/wrapper
-            key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
       - name: Run ktlint
         run: ./gradlew lintKotlin
       - uses: actions/upload-artifact@v1
