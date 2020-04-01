@@ -22,9 +22,6 @@ repositories {
     jcenter()
 }
 
-group = Definition.group
-version = "0.0.1"
-
 configurations.configureEach {
     resolutionStrategy {
         eachDependency {

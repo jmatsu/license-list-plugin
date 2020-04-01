@@ -1,4 +1,7 @@
 subprojects {
+    group = shared.Definition.group
+    version = "0.0.1"
+
     tasks.withType(Test::class) {
         useJUnitPlatform()
 

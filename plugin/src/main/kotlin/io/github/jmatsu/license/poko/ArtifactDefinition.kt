@@ -9,7 +9,7 @@ data class ArtifactDefinition(
     override val url: String?,
     override val copyrightHolders: List<String>,
     override val licenses: List<LicenseKey>
-) : Comparable<ArtifactDefinition>, io.github.jmatsu.license.schema.ArtifactDefinition {
+) : Comparable<ArtifactDefinition>, io.github.jmatsu.license.schema.ArtifactDefinition<LicenseKey> {
 
     override fun compareTo(other: ArtifactDefinition): Int {
         // : is a separator and use secondary order

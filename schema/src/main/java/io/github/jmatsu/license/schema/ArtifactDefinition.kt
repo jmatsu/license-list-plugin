@@ -1,9 +1,9 @@
 package io.github.jmatsu.license.schema
 
-interface ArtifactDefinition {
+interface ArtifactDefinition<T : License> {
     val key: String
     val displayName: String
     val url: String?
     val copyrightHolders: List<String>
-    val licenses: List<LicenseKey>
+    val licenses: List<T>
 }

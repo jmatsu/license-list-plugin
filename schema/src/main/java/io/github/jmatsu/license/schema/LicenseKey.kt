@@ -1,5 +1,5 @@
 package io.github.jmatsu.license.schema
 
-interface LicenseKey {
+interface LicenseKey : License {
     val value: String
 }

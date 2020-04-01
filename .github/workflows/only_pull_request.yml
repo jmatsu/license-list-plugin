@@ -23,13 +23,13 @@ jobs:
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-      - name: Create a jar
-        run: ./gradlew jar
+      - name: Build
+        run: ./gradlew :plugin:jar
       - uses: actions/upload-artifact@v1
         if: success()
         with:
-          name: jar
-          path: build/libs
+          name: plugin-jar
+          path: plugin/build/libs
   test:
     runs-on: ubuntu-latest
 
@@ -54,8 +54,8 @@ jobs:
       - uses: actions/upload-artifact@v1
         if: always()
         with:
-          name: test-results
-          path: build/reports/tests/test
+          name: plugin-test-results
+          path: plugin/build/reports/tests/test
   lint:
     runs-on: ubuntu-latest
 
@@ -80,5 +80,10 @@ jobs:
       - uses: actions/upload-artifact@v1
         if: always()
         with:
-          name: lint-results
-          path: build/reports/ktlint
+          name: plugin-lint-results
+          path: plugin/build/reports/ktlint
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: schema-lint-results
+          path: schema/build/reports/ktlint
