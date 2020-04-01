@@ -2,7 +2,6 @@
 
 import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
 import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import shared.Definition
 import shared.Version
 import java.time.Instant
@@ -39,6 +38,8 @@ configurations.configureEach {
 }
 
 dependencies {
+    implementation(project(":schema"))
+
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
@@ -85,19 +86,6 @@ val functionalTest by tasks.creating(Test::class) {
 
 val check by tasks.getting(Task::class) {
     dependsOn(functionalTest)
-}
-
-tasks.withType(Test::class) {
-    useJUnitPlatform()
-
-    testLogging {
-        events("passed", "skipped", "failed")
-        exceptionFormat = TestExceptionFormat.FULL
-    }
-}
-
-tasks.getByName("clean") {
-    delete(project.buildDir, project.file("buildSrc/build"))
 }
 
 kotlinter {

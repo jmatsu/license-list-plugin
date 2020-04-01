@@ -12,8 +12,8 @@ sealed class License
 
 @Serializable
 data class LicenseKey(
-    val value: String
-) : License() {
+    override val value: String
+) : License(), io.github.jmatsu.spthanks.schema.LicenseKey {
     // TODO Make LicenseKey inline class if Serialization supports it, then I can remove this
     @Serializer(forClass = LicenseKey::class)
     companion object : KSerializer<LicenseKey> {
@@ -32,7 +32,7 @@ data class LicenseKey(
 
 @Serializable
 data class PlainLicense(
-    val key: String,
-    val name: String,
-    val url: String
-) : License()
+    override val key: String,
+    override val name: String,
+    override val url: String
+) : License(), io.github.jmatsu.spthanks.schema.PlainLicense

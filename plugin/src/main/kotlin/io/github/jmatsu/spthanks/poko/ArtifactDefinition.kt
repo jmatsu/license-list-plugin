@@ -4,12 +4,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ArtifactDefinition(
-    val key: String,
-    val displayName: String,
-    val url: String?,
-    val copyrightHolders: List<String>,
-    val licenses: List<LicenseKey>
-) : Comparable<ArtifactDefinition> {
+    override val key: String,
+    override val displayName: String,
+    override val url: String?,
+    override val copyrightHolders: List<String>,
+    override val licenses: List<LicenseKey>
+) : Comparable<ArtifactDefinition>, io.github.jmatsu.spthanks.schema.ArtifactDefinition {
 
     override fun compareTo(other: ArtifactDefinition): Int {
         // : is a separator and use secondary order

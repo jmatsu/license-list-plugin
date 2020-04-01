@@ -10,3 +10,4 @@ pluginManagement {
 rootProject.name = "special-thanks"
 
 include("plugin")
+include("schema")

@@ -10,8 +10,8 @@ import kotlinx.serialization.Serializer
 
 @Serializable
 data class Scope(
-    val name: String
-) {
+    override val name: String
+) : io.github.jmatsu.spthanks.schema.Scope {
 
     // TODO Make Scope inline class if Serialization supports it, then I can remove this
     @Serializer(forClass = Scope::class)
