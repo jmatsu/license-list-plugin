@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.github.jmatsu</groupId>
+    <artifactId>example2</artifactId>
+    <version>1.0.0</version>
+    <packaging>aar</packaging>
+    <licenses>
+        <license>
+            <name>license1</name>
+            <url>url1</url>
+        </license>
+        <license>
+            <name>license2</name>
+            <url>url2</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>jmatsu1</name>
+        </developer>
+        <developer>
+            <name>jmatsu2</name>
+        </developer>
+        <developer>
+            <name>jmatsu3</name>
+        </developer>
+    </developers>
+    <scm>
+        <url>https://github.com/jmatsu/special-thanks-plugin.git</url>
+    </scm>
+</project>

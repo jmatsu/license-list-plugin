@@ -6,12 +6,17 @@ import io.github.jmatsu.spthanks.dsl.StructuredStyle
 import io.github.jmatsu.spthanks.dsl.YamlFormat
 import io.github.jmatsu.spthanks.internal.ArtifactManagement
 import io.github.jmatsu.spthanks.model.ResolveScope
-import org.gradle.api.tasks.*
 import java.io.File
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 
 open class SpecialThanksExtension
 @JvmOverloads constructor(
-        @get:Internal val name: String = "default"
+    @get:Internal val name: String = "default"
 ) {
     /**
      * true means this plugin is enabled, otherwise this plugin is disabled.
@@ -26,7 +31,7 @@ open class SpecialThanksExtension
     @get:PathSensitive(PathSensitivity.RELATIVE)
     @get:InputFile
     @Optional
-    var licenseFile: File? = null
+    var outputFile: File? = null
 
     /**
      * a format of the output.
@@ -73,8 +78,8 @@ open class SpecialThanksExtension
      */
     @get:Input
     var additionalScopes: MutableSet<String> = setOf(
-            ResolveScope.Test,
-            ResolveScope.AndroidTest
+        ResolveScope.Test,
+        ResolveScope.AndroidTest
     ).map {
         it.name
     }.toMutableSet()
@@ -87,4 +92,17 @@ open class SpecialThanksExtension
      */
     @get:Input
     var targetConfigurations: MutableSet<String> = ArtifactManagement.CommonConfigurationNames.toMutableSet()
+
+    /**
+     * Group names to exclude.
+     */
+    @get:Input
+    var excludeGroups: MutableSet<String> = hashSetOf()
+
+    /**
+     * Artifact names to exclude.
+     * The format is "<group>:<name>". e.g. "io.github.jmatsu:example" is it
+     */
+    @get:Input
+    var excludeArtifacts: MutableSet<String> = hashSetOf()
 }

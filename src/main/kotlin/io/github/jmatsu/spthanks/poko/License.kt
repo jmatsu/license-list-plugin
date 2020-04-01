@@ -1,27 +1,24 @@
 package io.github.jmatsu.spthanks.poko
 
-import kotlinx.serialization.*
-import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.Decoder
+import kotlinx.serialization.Encoder
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.PrimitiveKind
+import kotlinx.serialization.SerialDescriptor
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializer
 
-sealed class License {
-    object Serialization {
-        val module = SerializersModule {
-            polymorphic(License::class) {
-                LicenseKey::class with LicenseKey.serializer()
-                PlainLicense::class with PlainLicense.serializer()
-            }
-        }
-    }
-}
+sealed class License
 
 @Serializable
 data class LicenseKey(
-        val value: String
+    val value: String
 ) : License() {
+    // TODO Make LicenseKey inline class if Serialization supports it, then I can remove this
     @Serializer(forClass = LicenseKey::class)
     companion object : KSerializer<LicenseKey> {
         override val descriptor: SerialDescriptor =
-                SerialDescriptor("LicenseKey", PrimitiveKind.STRING)
+            SerialDescriptor("LicenseKey", PrimitiveKind.STRING)
 
         override fun deserialize(decoder: Decoder): LicenseKey {
             return LicenseKey(decoder.decodeString())
@@ -35,6 +32,7 @@ data class LicenseKey(
 
 @Serializable
 data class PlainLicense(
-        val name: String,
-        val url: String
+    val key: String,
+    val name: String,
+    val url: String
 ) : License()

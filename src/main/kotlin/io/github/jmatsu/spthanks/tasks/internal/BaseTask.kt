@@ -5,5 +5,5 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Nested
 
 abstract class BaseTask(
-        @get:Nested val extension: SpecialThanksExtension
+    @get:Nested val extension: SpecialThanksExtension
 ) : DefaultTask()

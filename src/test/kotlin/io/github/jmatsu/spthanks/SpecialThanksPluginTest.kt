@@ -3,20 +3,34 @@
  */
 package io.github.jmatsu.spthanks
 
-import org.gradle.testfixtures.ProjectBuilder
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
+import org.gradle.api.internal.project.ProjectInternal
+import org.gradle.kotlin.dsl.findByType
+import org.gradle.testfixtures.ProjectBuilder
 
-/**
- * A simple unit test for the 'io.github.jmatsu.spthanks.greeting' plugin.
- */
 class SpecialThanksPluginTest {
-    @Test fun `plugin registers task`() {
-        // Create a test project and apply the plugin
-        val project = ProjectBuilder.builder().build()
-        project.plugins.apply("io.github.jmatsu.spthanks.greeting")
 
-        // Verify the result
-        assertNotNull(project.tasks.findByName("greeting"))
+    lateinit var project: ProjectInternal
+
+    @BeforeTest
+    fun before() {
+        project = ProjectBuilder.builder().build() as ProjectInternal
+    }
+
+    @Test
+    fun `plugin create an extension`() {
+        val project = ProjectBuilder.builder().build()
+        project.plugins.apply("com.android.application")
+        project.plugins.apply("special-thanks")
+
+        val extension = project.extensions.findByType(SpecialThanksExtension::class)
+
+        assertNotNull(extension)
+        assertTrue {
+            extension == project.extensions.findByName("spthanks")
+        }
     }
 }
