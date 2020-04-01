@@ -10,4 +10,5 @@ object Version {
     const val agp = "3.6.1"
     const val junit5 = "5.6.1"
     const val junitPlatformLauncher = "1.6.1" // requires this to run tests from IntelliJ
+    const val mockk = "1.9.3"
 }

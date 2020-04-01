@@ -9,15 +9,15 @@ import io.github.jmatsu.spthanks.presentation.Disassembler
 import io.github.jmatsu.spthanks.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.spthanks.tasks.internal.TaskException
 import io.github.jmatsu.spthanks.tasks.internal.VariantAwareTask
-import org.gradle.api.Project
-import org.gradle.api.tasks.TaskAction
 import java.io.FileNotFoundException
 import javax.inject.Inject
+import org.gradle.api.Project
+import org.gradle.api.tasks.TaskAction
 
-abstract class ValidateLicenseTask
+abstract class ValidateLicenseListTask
 @Inject constructor(
     extension: SpecialThanksExtension,
-    variant: ApplicationVariant?
+    variant: ApplicationVariant
 ) : VariantAwareTask(extension, variant) {
     class InvalidLicenseException(message: String) : TaskException(message)
 
@@ -109,7 +109,7 @@ abstract class ValidateLicenseTask
     class Args(
         project: Project,
         extension: SpecialThanksExtension,
-        variant: ApplicationVariant?
+        variant: ApplicationVariant
     ) : ReadWriteLicenseTaskArgs(
         project = project,
         extension = extension,

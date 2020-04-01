@@ -6,9 +6,9 @@ import io.github.jmatsu.spthanks.model.ResolvedArtifact
 import io.github.jmatsu.spthanks.poko.ArtifactDefinition
 import io.github.jmatsu.spthanks.poko.PlainLicense
 import io.github.jmatsu.spthanks.poko.Scope
+import java.util.SortedMap
 import kotlinx.serialization.StringFormat
 import kotlinx.serialization.builtins.list
-import java.util.SortedMap
 
 class MergerableAssembler(
     scopedResolvedArtifacts: SortedMap<ResolveScope, List<ResolvedArtifact>>,

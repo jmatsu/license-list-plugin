@@ -15,7 +15,7 @@ import org.gradle.api.tasks.TaskAction
 abstract class InitLicenseListTask
 @Inject constructor(
     extension: SpecialThanksExtension,
-    variant: ApplicationVariant?
+    variant: ApplicationVariant
 ) : VariantAwareTask(extension, variant) {
     class FileAlreadyExistException(message: String) : TaskException(message)
 
@@ -56,7 +56,7 @@ abstract class InitLicenseListTask
     class Args(
         project: Project,
         extension: SpecialThanksExtension,
-        variant: ApplicationVariant?
+        variant: ApplicationVariant
     ) : ReadWriteLicenseTaskArgs(
         project = project,
         extension = extension,

@@ -16,7 +16,7 @@ import org.gradle.api.Project
 abstract class ReadWriteLicenseTaskArgs(
     project: Project,
     extension: SpecialThanksExtension,
-    variant: ApplicationVariant?
+    variant: ApplicationVariant
 ) {
     val format: StringFormat = when (extension.assembleFormat) {
         JsonFormat -> Convention.Json
@@ -48,14 +48,11 @@ abstract class ReadWriteLicenseTaskArgs(
         }
     }
 
-    val variantScopes: Set<ResolveScope.Variant> = when {
-        variant != null -> {
-            val build = variant.buildType.name
-            val flavors = variant.productFlavors.map { it.name }
+    val variantScopes: Set<ResolveScope.Variant> = let {
+        val flavors = variant.productFlavors.map { it.name }
+        val build = variant.buildType.name
 
-            (listOf(build) + flavors).map { ResolveScope.Variant(it) }.toSet()
-        }
-        else -> extension.targetVariants.map { ResolveScope.Variant(it) }.toSet()
+        (flavors + listOf(build)).map { ResolveScope.Variant(it) }.toSet()
     }
 
     val additionalScopes: Set<ResolveScope.Addition> = extension.additionalScopes.map { ResolveScope.Addition(it) }.toSet()

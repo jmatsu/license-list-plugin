@@ -46,9 +46,12 @@ dependencies {
     implementation("com.charleskorn.kaml:kaml:${Version.kaml}")
 
     compileOnly("com.android.tools.build:gradle:${Version.agp}")
+    testImplementation("com.android.tools.build:gradle:${Version.agp}")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation("io.mockk:mockk:${Version.mockk}")
+
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
 
@@ -57,8 +60,6 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:${Version.junitPlatformLauncher}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
-
-    testRuntimeOnly("com.android.tools.build:gradle:${Version.agp}")
 }
 
 gradlePlugin {

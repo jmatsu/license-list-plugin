@@ -34,6 +34,13 @@ open class SpecialThanksExtension
     var outputFile: File? = null
 
     /**
+     * A list of variants that default tasks will use for the dependency analysis and to get licenses.
+     * the default value is release.
+     */
+    @get:Input
+    var targetVariants: List<String> = listOf("release")
+
+    /**
      * a format of the output.
      * Must be one of `yaml` or `json`.
      * the default format is *yaml*.
@@ -62,13 +69,6 @@ open class SpecialThanksExtension
     var withScope: Boolean = true
 
     /**
-     * A set of variants that default tasks will use for the dependency analysis and to get licenses.
-     * the default value is empty.
-     */
-    @get:Input
-    var targetVariants: Set<String> = setOf()
-
-    /**
      * A set of additional scopes to analyze dependencies and get licenses.
      * the default value contains test and androidTest.
      *
@@ -77,12 +77,12 @@ open class SpecialThanksExtension
      * @sample additionalScopes += "functionalTest" is proper if you have defined functionalTest configuration
      */
     @get:Input
-    var additionalScopes: MutableSet<String> = setOf(
+    var additionalScopes: Set<String> = setOf(
         ResolveScope.Test,
         ResolveScope.AndroidTest
     ).map {
         it.name
-    }.toMutableSet()
+    }.toSet()
 
     /**
      * A set of configurations to be resolved.
@@ -91,18 +91,18 @@ open class SpecialThanksExtension
      * @see ArtifactManagement.CommonConfigurationNames
      */
     @get:Input
-    var targetConfigurations: MutableSet<String> = ArtifactManagement.CommonConfigurationNames.toMutableSet()
+    var targetConfigurations: Set<String> = ArtifactManagement.CommonConfigurationNames
 
     /**
      * Group names to exclude.
      */
     @get:Input
-    var excludeGroups: MutableSet<String> = hashSetOf()
+    var excludeGroups: Set<String> = setOf()
 
     /**
      * Artifact names to exclude.
      * The format is "<group>:<name>". e.g. "io.github.jmatsu:example" is it
      */
     @get:Input
-    var excludeArtifacts: MutableSet<String> = hashSetOf()
+    var excludeArtifacts: Set<String> = setOf()
 }
