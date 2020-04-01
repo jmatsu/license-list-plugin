@@ -1,4 +1,4 @@
-package io.github.jmatsu.spthanks.tasks
+package io.github.jmatsu.spthanks.tasks.internal
 
 import io.github.jmatsu.spthanks.BaseException
 

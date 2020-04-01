@@ -2,16 +2,17 @@ package io.github.jmatsu.spthanks.tasks
 
 import com.android.build.gradle.api.ApplicationVariant
 import io.github.jmatsu.spthanks.SpecialThanksExtension
+import io.github.jmatsu.spthanks.ext.xor2
 import io.github.jmatsu.spthanks.internal.ArtifactManagement
+import io.github.jmatsu.spthanks.presentation.Assembler
 import io.github.jmatsu.spthanks.presentation.Disassembler
 import io.github.jmatsu.spthanks.tasks.internal.ReadWriteLicenseTaskArgs
+import io.github.jmatsu.spthanks.tasks.internal.TaskException
 import io.github.jmatsu.spthanks.tasks.internal.VariantAwareTask
-import java.io.FileNotFoundException
-import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
-import org.gradle.util.ChangeListener
-import org.gradle.util.DiffUtil
+import java.io.FileNotFoundException
+import javax.inject.Inject
 
 abstract class ValidateLicenseTask
 @Inject constructor(
@@ -43,53 +44,64 @@ abstract class ValidateLicenseTask
             additionalScopes = args.additionalScopes
         )
 
+        val assembler = Assembler(
+            resolvedArtifactMap = scopedResolvedArtifacts
+        )
         val disassembler = Disassembler(
             style = args.style,
             format = args.format
         )
 
-        val text = args.artifactsFile.readText()
+        val artifactsText = args.artifactsFile.readText()
+        val catalogText = args.catalogFile.readText()
 
-        val recordedArtifacts = disassembler.disassemble(text).map { it.key }.toSet()
-        val currentArtifacts = scopedResolvedArtifacts.flatMap { (_, artifacts) -> artifacts.map { "${it.id.group}:${it.id.name}" } }.toSet()
+        val currentArtifacts = assembler.transformForFlatten()
 
-        val addedKeys = ArrayList<String>()
-        val removedKeys = ArrayList<String>()
+        val recordedArtifactKeys = disassembler.disassembleArtifacts(artifactsText).map { it.key }
+        val currentArtifactKeys = currentArtifacts.map { it.key }
 
-        DiffUtil.diff(currentArtifacts, recordedArtifacts, object : ChangeListener<String> {
-            override fun added(element: String) {
-                // TODO implement skip logic?
-                addedKeys += element
+        val (addedArtifactKeys, removedArtifactKeys) = currentArtifactKeys.xor2(recordedArtifactKeys)
+
+        val recordedLicenseKeys = disassembler.disassemblePlainLicenses(catalogText).map { it.key }
+        val currentLicenseKeys = currentArtifacts.flatMap { it.licenses }.map { it.value }
+
+        val (addedLicenseKeys, removedLicenseKeys) = currentLicenseKeys.xor2(recordedLicenseKeys)
+
+        if (removedArtifactKeys.isNotEmpty() || removedLicenseKeys.isNotEmpty()) {
+            logger.warn("You can remove the following artifacts and licenses.\n")
+
+            logger.warn("--- artifacts ---")
+
+            removedArtifactKeys.forEach { key ->
+                logger.warn(key)
             }
 
-            override fun changed(element: String) {
-                error("DiffUtil does not support changed because it's based on Set")
-            }
+            logger.warn("--- licenses ---")
 
-            override fun removed(element: String) {
-                removedKeys += element
-            }
-        })
-
-        if (removedKeys.isNotEmpty()) {
-            logger.warn("You can remove the following artifacts.\n")
-
-            removedKeys.forEach { key ->
+            removedLicenseKeys.forEach { key ->
                 logger.warn(key)
             }
 
             logger.warn("\n")
         }
 
-        if (addedKeys.isNotEmpty()) {
-            logger.warn("You need to handle the following artifacts that the current license file does not contain.\n")
+        if (addedArtifactKeys.isNotEmpty() || addedLicenseKeys.isNotEmpty()) {
+            logger.warn("You need to handle the following that the current license file does not contain.\n")
 
-            addedKeys.forEach { key ->
+            logger.warn("--- artifacts ---")
+
+            addedArtifactKeys.forEach { key ->
+                logger.warn(key)
+            }
+
+            logger.warn("--- licenses ---")
+
+            addedLicenseKeys.forEach { key ->
                 logger.warn(key)
             }
 
             throw InvalidLicenseException(
-                "${addedKeys.size} artifacts needs to be added"
+                "${addedArtifactKeys.size} artifacts and ${addedLicenseKeys.size} licenses must be added"
             )
         }
     }

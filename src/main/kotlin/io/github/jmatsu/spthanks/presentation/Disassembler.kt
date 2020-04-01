@@ -1,6 +1,7 @@
 package io.github.jmatsu.spthanks.presentation
 
 import io.github.jmatsu.spthanks.poko.ArtifactDefinition
+import io.github.jmatsu.spthanks.poko.PlainLicense
 import io.github.jmatsu.spthanks.poko.Scope
 import kotlinx.serialization.StringFormat
 import kotlinx.serialization.builtins.MapSerializer
@@ -11,7 +12,7 @@ class Disassembler(
     private val style: Assembler.Style,
     private val format: StringFormat
 ) {
-    fun disassemble(text: String): List<ArtifactDefinition> {
+    fun disassembleArtifacts(text: String): List<ArtifactDefinition> {
         return when (style) {
             Assembler.Style.Flatten -> {
                 format.parse(ArtifactDefinition.serializer().list, text)
@@ -33,5 +34,10 @@ class Disassembler(
                     .flatten()
             }
         }
+    }
+
+    fun disassemblePlainLicenses(text: String): List<PlainLicense> {
+        val serializer = PlainLicense.serializer().list
+        return format.parse(serializer, text)
     }
 }

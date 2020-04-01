@@ -6,6 +6,7 @@ import io.github.jmatsu.spthanks.internal.ArtifactManagement
 import io.github.jmatsu.spthanks.presentation.Assembler
 import io.github.jmatsu.spthanks.presentation.Convention
 import io.github.jmatsu.spthanks.tasks.internal.ReadWriteLicenseTaskArgs
+import io.github.jmatsu.spthanks.tasks.internal.TaskException
 import io.github.jmatsu.spthanks.tasks.internal.VariantAwareTask
 import javax.inject.Inject
 import org.gradle.api.Project
@@ -45,11 +46,11 @@ abstract class InitLicenseListTask
         )
 
         val artifactsText = assembler.assembleArtifacts(args.style, args.format)
-        val licenseCatalog = assembler.assemblePlainLicenses(Convention.Yaml) // the format is fixed
+        val licenseCatalogText = assembler.assemblePlainLicenses(Convention.Yaml) // the format is fixed
 
         args.outputDir.mkdirs()
         args.artifactsFile.writeText(artifactsText)
-        args.catalogFile.writeText(licenseCatalog)
+        args.catalogFile.writeText(licenseCatalogText)
     }
 
     class Args(

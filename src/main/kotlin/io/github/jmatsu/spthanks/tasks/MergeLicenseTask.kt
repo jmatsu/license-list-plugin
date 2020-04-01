@@ -2,26 +2,25 @@ package io.github.jmatsu.spthanks.tasks
 
 import com.android.build.gradle.api.ApplicationVariant
 import io.github.jmatsu.spthanks.SpecialThanksExtension
-import io.github.jmatsu.spthanks.ext.collectToMap
+import io.github.jmatsu.spthanks.ext.xor2
 import io.github.jmatsu.spthanks.internal.ArtifactManagement
-import io.github.jmatsu.spthanks.poko.ArtifactDefinition
 import io.github.jmatsu.spthanks.poko.PlainLicense
-import io.github.jmatsu.spthanks.poko.Scope
 import io.github.jmatsu.spthanks.presentation.Assembler
+import io.github.jmatsu.spthanks.presentation.Convention
 import io.github.jmatsu.spthanks.presentation.Disassembler
+import io.github.jmatsu.spthanks.presentation.MergerableAssembler
 import io.github.jmatsu.spthanks.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.spthanks.tasks.internal.VariantAwareTask
-import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
-import org.gradle.util.ChangeListener
-import org.gradle.util.DiffUtil
+import javax.inject.Inject
 
 abstract class MergeLicenseTask
 @Inject constructor(
     extension: SpecialThanksExtension,
     variant: ApplicationVariant?
 ) : VariantAwareTask(extension, variant) {
+
     @TaskAction
     fun execute() {
         val args = Args(project, extension, variant)
@@ -36,96 +35,44 @@ abstract class MergeLicenseTask
             variantScopes = args.variantScopes,
             additionalScopes = args.additionalScopes
         )
-        val licenseCapture = HashSet<PlainLicense>()
-        val scopedArtifactDefinitions = scopedResolvedArtifacts.mapValues { (_, artifacts) ->
-            artifacts.map { Assembler.assembleArtifact(it, licenseCapture) }
-        }
-
         val disassembler = Disassembler(
             style = args.style,
             format = args.format
         )
 
-        val text = args.artifactsFile.readText()
+        val artifactsText = args.artifactsFile.readText()
+        val catalogText = args.catalogFile.readText()
 
-        val recordedArtifacts = disassembler.disassemble(text).toSet()
-        val currentArtifacts = scopedArtifactDefinitions.values.flatten().toSet()
+        val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).toSet()
+        val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
 
-        val newArtifacts: MutableList<ArtifactDefinition> = ArrayList()
-        val removedArtifacts: MutableList<ArtifactDefinition> = ArrayList()
+        val currentArtifacts = run {
+            val fake = HashSet<PlainLicense>()
 
-        // FIXME may be better to use Myers algorithm because of time-complexity and interfaces
-        DiffUtil.diff(currentArtifacts.groupBy { it.key }, recordedArtifacts.groupBy { it.key }, object : ChangeListener<Map.Entry<String, List<ArtifactDefinition>>> {
-            override fun added(element: Map.Entry<String, List<ArtifactDefinition>>) {
-                // TODO skip logic
-                newArtifacts += element.value.first()
-            }
-
-            override fun changed(element: Map.Entry<String, List<ArtifactDefinition>>) {
-//                val new = element.value.first()
-//                val recorded = recordedArtifacts.first { it.key == element.key }
-
-                // FIXME determine how this plugin should treat this case
-            }
-
-            override fun removed(element: Map.Entry<String, List<ArtifactDefinition>>) {
-                removedArtifacts += element.value.first()
-            }
-        })
-
-        val newText = when (args.style) {
-            Assembler.Style.Flatten -> {
-                val removedKeys = removedArtifacts.map { it.key }
-
-                Assembler.assembleFlatten(
-                    format = args.format,
-                    definitions = (recordedArtifacts + newArtifacts).filterNot { it.key in removedKeys }.sorted()
-                )
-            }
-            Assembler.Style.StructuredWithoutScope -> {
-                val newKeys = newArtifacts.map { it.key }
-
-                val assemblee = scopedArtifactDefinitions
-                    .map { (_, definitions) ->
-                        definitions.mergeAndSort(newKeys = newKeys, strongerDefinitions = recordedArtifacts)
-                    }.reduce { acc, map -> acc + map }.toSortedMap()
-
-                Assembler.assembleStructuredWithoutScope(
-                    format = args.format,
-                    definitionMap = assemblee
-                )
-            }
-            Assembler.Style.StructuredWithScope -> {
-
-                val newKeys = newArtifacts.map { it.key }
-
-                val assemblee = scopedArtifactDefinitions
-                    .map { (scope, definitions) ->
-                        Scope(scope.name) to definitions.mergeAndSort(newKeys = newKeys, strongerDefinitions = recordedArtifacts)
-                    }.toMap()
-
-                Assembler.assembleStructuredWithScope(
-                    format = args.format,
-                    scopedDefinitionMap = assemblee
-                )
+            scopedResolvedArtifacts.flatMap { (_, artifacts) ->
+                artifacts.map { Assembler.assembleArtifact(it, licenseCapture = fake) }
             }
         }
 
-        // TODO license-catalog
-        args.artifactsFile.writeText(newText)
-    }
+        // TODO support changed artifacts : what's the usecase?
+        val (newArtifacts, _, removedArtifacts) = currentArtifacts.xor2(recordedArtifacts) { it.key }
 
-    fun List<ArtifactDefinition>.mergeAndSort(newKeys: List<String>, strongerDefinitions: Set<ArtifactDefinition>): Map<String, List<ArtifactDefinition>> {
-        return map { definition ->
-            val merged = if (definition.key in newKeys) {
-                definition
-            } else {
-                strongerDefinitions.first { it.key == definition.key }
-            }
+        val assembler = MergerableAssembler(
+            scopedResolvedArtifacts = scopedResolvedArtifacts,
+            baseArtifacts = recordedArtifacts,
+            newArtifacts = newArtifacts,
+            removedArtifacts = removedArtifacts,
+            baseLicenses = recordedLicenses
+        )
 
-            // destructure group:name
-            merged.key.split(":")[0] to merged.copy(key = merged.key.split(":")[1])
-        }.sortedBy { it.second }.sortedBy { it.first }.collectToMap()
+        val newArtifactsText = assembler.assembleArtifacts(
+            style = args.style,
+            format = args.format
+        )
+        val licenseCatalogText = assembler.assemblePlainLicenses(Convention.Yaml) // the format is fixed
+
+        args.artifactsFile.writeText(newArtifactsText)
+        args.catalogFile.writeText(licenseCatalogText)
     }
 
     class Args(
