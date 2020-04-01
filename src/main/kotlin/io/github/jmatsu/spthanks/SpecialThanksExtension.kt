@@ -7,7 +7,12 @@ import io.github.jmatsu.spthanks.dsl.YamlFormat
 import io.github.jmatsu.spthanks.internal.ArtifactManagement
 import io.github.jmatsu.spthanks.model.ResolveScope
 import java.io.File
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 
 open class SpecialThanksExtension
 @JvmOverloads constructor(
@@ -73,8 +78,8 @@ open class SpecialThanksExtension
      */
     @get:Input
     var additionalScopes: MutableSet<String> = setOf(
-            ResolveScope.Test,
-            ResolveScope.AndroidTest
+        ResolveScope.Test,
+        ResolveScope.AndroidTest
     ).map {
         it.name
     }.toMutableSet()

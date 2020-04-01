@@ -33,19 +33,19 @@ abstract class ValidateLicenseTask
         }
 
         val artifactManagement = ArtifactManagement(
-                project = project,
-                configurationNames = args.configurationNames,
-                excludeGroups = args.excludeGroups,
-                excludeArtifacts = args.excludeArtifacts
+            project = project,
+            configurationNames = args.configurationNames,
+            excludeGroups = args.excludeGroups,
+            excludeArtifacts = args.excludeArtifacts
         )
         val scopedResolvedArtifacts = artifactManagement.analyze(
-                variantScopes = args.variantScopes,
-                additionalScopes = args.additionalScopes
+            variantScopes = args.variantScopes,
+            additionalScopes = args.additionalScopes
         )
 
         val disassembler = Disassembler(
-                style = args.style,
-                format = args.format
+            style = args.style,
+            format = args.format
         )
 
         val text = args.artifactsFile.readText()
@@ -89,7 +89,7 @@ abstract class ValidateLicenseTask
             }
 
             throw InvalidLicenseException(
-                    "${addedKeys.size} artifacts needs to be added"
+                "${addedKeys.size} artifacts needs to be added"
             )
         }
     }
@@ -99,8 +99,8 @@ abstract class ValidateLicenseTask
         extension: SpecialThanksExtension,
         variant: ApplicationVariant?
     ) : ReadWriteLicenseTaskArgs(
-            project = project,
-            extension = extension,
-            variant = variant
+        project = project,
+        extension = extension,
+        variant = variant
     )
 }

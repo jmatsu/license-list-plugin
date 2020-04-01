@@ -27,14 +27,14 @@ abstract class MergeLicenseTask
         val args = Args(project, extension, variant)
 
         val artifactManagement = ArtifactManagement(
-                project = project,
-                configurationNames = args.configurationNames,
-                excludeGroups = args.excludeGroups,
-                excludeArtifacts = args.excludeArtifacts
+            project = project,
+            configurationNames = args.configurationNames,
+            excludeGroups = args.excludeGroups,
+            excludeArtifacts = args.excludeArtifacts
         )
         val scopedResolvedArtifacts = artifactManagement.analyze(
-                variantScopes = args.variantScopes,
-                additionalScopes = args.additionalScopes
+            variantScopes = args.variantScopes,
+            additionalScopes = args.additionalScopes
         )
         val licenseCapture = HashSet<PlainLicense>()
         val scopedArtifactDefinitions = scopedResolvedArtifacts.mapValues { (_, artifacts) ->
@@ -42,8 +42,8 @@ abstract class MergeLicenseTask
         }
 
         val disassembler = Disassembler(
-                style = args.style,
-                format = args.format
+            style = args.style,
+            format = args.format
         )
 
         val text = args.artifactsFile.readText()
@@ -78,21 +78,21 @@ abstract class MergeLicenseTask
                 val removedKeys = removedArtifacts.map { it.key }
 
                 Assembler.assembleFlatten(
-                        format = args.format,
-                        definitions = (recordedArtifacts + newArtifacts).filterNot { it.key in removedKeys }.sorted()
+                    format = args.format,
+                    definitions = (recordedArtifacts + newArtifacts).filterNot { it.key in removedKeys }.sorted()
                 )
             }
             Assembler.Style.StructuredWithoutScope -> {
                 val newKeys = newArtifacts.map { it.key }
 
                 val assemblee = scopedArtifactDefinitions
-                        .map { (_, definitions) ->
-                            definitions.mergeAndSort(newKeys = newKeys, strongerDefinitions = recordedArtifacts)
-                        }.reduce { acc, map -> acc + map }.toSortedMap()
+                    .map { (_, definitions) ->
+                        definitions.mergeAndSort(newKeys = newKeys, strongerDefinitions = recordedArtifacts)
+                    }.reduce { acc, map -> acc + map }.toSortedMap()
 
                 Assembler.assembleStructuredWithoutScope(
-                        format = args.format,
-                        definitionMap = assemblee
+                    format = args.format,
+                    definitionMap = assemblee
                 )
             }
             Assembler.Style.StructuredWithScope -> {
@@ -100,13 +100,13 @@ abstract class MergeLicenseTask
                 val newKeys = newArtifacts.map { it.key }
 
                 val assemblee = scopedArtifactDefinitions
-                        .map { (scope, definitions) ->
-                            Scope(scope.name) to definitions.mergeAndSort(newKeys = newKeys, strongerDefinitions = recordedArtifacts)
-                        }.toMap()
+                    .map { (scope, definitions) ->
+                        Scope(scope.name) to definitions.mergeAndSort(newKeys = newKeys, strongerDefinitions = recordedArtifacts)
+                    }.toMap()
 
                 Assembler.assembleStructuredWithScope(
-                        format = args.format,
-                        scopedDefinitionMap = assemblee
+                    format = args.format,
+                    scopedDefinitionMap = assemblee
                 )
             }
         }
@@ -133,8 +133,8 @@ abstract class MergeLicenseTask
         extension: SpecialThanksExtension,
         variant: ApplicationVariant?
     ) : ReadWriteLicenseTaskArgs(
-            project = project,
-            extension = extension,
-            variant = variant
+        project = project,
+        extension = extension,
+        variant = variant
     )
 }

@@ -17,7 +17,7 @@ class ScopeTest {
     @Test
     fun `serialize Scope`() {
         val scope = Scope(
-                name = "scope"
+            name = "scope"
         )
 
         expect("\"scope\"") {
@@ -28,7 +28,7 @@ class ScopeTest {
     @Test
     fun `deserialize LicenseKey`() {
         val expected = Scope(
-                name = "scope"
+            name = "scope"
         )
 
         expect(expected) {

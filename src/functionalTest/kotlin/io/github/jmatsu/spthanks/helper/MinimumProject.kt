@@ -28,11 +28,13 @@ fun setupProject(): MinimumProject {
             get() = settingsFile
 
         override fun applyPlugins(builder: StringBuilder.() -> Unit) {
-            buildFile.appendText("""
+            buildFile.appendText(
+                """
                 plugins {
                   ${buildString(builder)}
                 }
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
     }
 }

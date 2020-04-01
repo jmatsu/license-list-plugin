@@ -6,15 +6,15 @@ import kotlinx.serialization.modules.EmptyModule
 
 object Convention {
     val Yaml = com.charleskorn.kaml.Yaml(
-            context = EmptyModule,
-            configuration = YamlConfiguration(
-                    strictMode = false
-            )
+        context = EmptyModule,
+        configuration = YamlConfiguration(
+            strictMode = false
+        )
     )
     val Json = kotlinx.serialization.json.Json(
-            context = EmptyModule,
-            configuration = JsonConfiguration.Stable.copy(
-                    ignoreUnknownKeys = true
-            )
+        context = EmptyModule,
+        configuration = JsonConfiguration.Stable.copy(
+            ignoreUnknownKeys = true
+        )
     )
 }

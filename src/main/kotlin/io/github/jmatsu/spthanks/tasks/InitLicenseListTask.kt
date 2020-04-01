@@ -23,25 +23,25 @@ abstract class InitLicenseListTask
         val args = Args(project, extension, variant)
 
         if (args.artifactsFile.exists() && !args.forceOverwrite) {
-            throw FileAlreadyExistException("Overwriting ${args.artifactsFile.absolutePath} is forbidden. Please remove the file or provide a property (overwrite=true) when running this task to overwrite.")
+            throw FileAlreadyExistException("Overwriting ${args.artifactsFile.absolutePath} is forbidden. Provide overwrite=true when running this task to overwrite.")
         }
 
         if (args.catalogFile.exists() && !args.forceOverwrite) {
-            throw FileAlreadyExistException("Overwriting ${args.catalogFile.absolutePath} is forbidden. Please remove the file or provide a property (overwrite=true) when running this task to overwrite.")
+            throw FileAlreadyExistException("Overwriting ${args.artifactsFile.absolutePath} is forbidden. Provide overwrite=true when running this task to overwrite.")
         }
 
         val artifactManagement = ArtifactManagement(
-                project = project,
-                configurationNames = args.configurationNames,
-                excludeGroups = args.excludeGroups,
-                excludeArtifacts = args.excludeArtifacts
+            project = project,
+            configurationNames = args.configurationNames,
+            excludeGroups = args.excludeGroups,
+            excludeArtifacts = args.excludeArtifacts
         )
         val scopedResolvedArtifacts = artifactManagement.analyze(
-                variantScopes = args.variantScopes,
-                additionalScopes = args.additionalScopes
+            variantScopes = args.variantScopes,
+            additionalScopes = args.additionalScopes
         )
         val assembler = Assembler(
-                resolvedArtifactMap = scopedResolvedArtifacts
+            resolvedArtifactMap = scopedResolvedArtifacts
         )
 
         val artifactsText = assembler.assembleArtifacts(args.style, args.format)
@@ -57,9 +57,9 @@ abstract class InitLicenseListTask
         extension: SpecialThanksExtension,
         variant: ApplicationVariant?
     ) : ReadWriteLicenseTaskArgs(
-            project = project,
-            extension = extension,
-            variant = variant
+        project = project,
+        extension = extension,
+        variant = variant
     ) {
         val forceOverwrite: Boolean = project.properties["overwrite"]?.toString() == "true"
     }

@@ -3,7 +3,8 @@ package io.github.jmatsu.spthanks.helper
 import java.io.File
 
 fun File.appendAndroidExtension() {
-    appendText("""
+    appendText(
+        """
 
         android {
           defaultConfig {
@@ -16,5 +17,6 @@ fun File.appendAndroidExtension() {
           }
         }
 
-    """.trimIndent())
+    """.trimIndent()
+    )
 }

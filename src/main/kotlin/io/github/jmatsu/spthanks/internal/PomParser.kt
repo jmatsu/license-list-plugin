@@ -19,38 +19,38 @@ class PomParser(
         val associatedUrl: String? = pomRoot["url"]?.trimText() ?: pomRoot["scm.url"]?.trimText()
 
         val displayNameCandidates = arrayOf(
-                pomRoot["name"],
-                pomRoot["description"],
-                pomRoot["artifactId"]
+            pomRoot["name"],
+            pomRoot["description"],
+            pomRoot["artifactId"]
         ).mapNotNull {
             it?.trimText()
         }
 
         val licenses: List<License> = pomRoot["licenses"]
-                .childPaths()
-                .map {
-                    val name = it["name"]?.trimText()
-                    val url = it["url"]?.trimText()
-                    // Is distribution node required? :thinking_face:
-                    License(
-                            name = name,
-                            url = url
-                    )
-                }
+            .childPaths()
+            .map {
+                val name = it["name"]?.trimText()
+                val url = it["url"]?.trimText()
+                // Is distribution node required? :thinking_face:
+                License(
+                    name = name,
+                    url = url
+                )
+            }
 
         val copyrightHolders = pomRoot["developers"]
-                .childPaths()
-                .mapNotNull {
-                    it["name"]?.trimText()
-                }
+            .childPaths()
+            .mapNotNull {
+                it["name"]?.trimText()
+            }
 
         require(displayNameCandidates.isNotEmpty())
 
         return ResolvedPomFile(
-                associatedUrl = associatedUrl,
-                displayNameCandidates = displayNameCandidates,
-                copyrightHolders = copyrightHolders,
-                licenses = licenses
+            associatedUrl = associatedUrl,
+            displayNameCandidates = displayNameCandidates,
+            copyrightHolders = copyrightHolders,
+            licenses = licenses
         )
     }
 

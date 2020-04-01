@@ -17,7 +17,7 @@ class LicenseTest {
     @Test
     fun `serialize LicenseKey`() {
         val license = LicenseKey(
-                value = "license"
+            value = "license"
         )
 
         expect("\"license\"") {
@@ -28,7 +28,7 @@ class LicenseTest {
     @Test
     fun `deserialize LicenseKey`() {
         val expected = LicenseKey(
-                value = "license"
+            value = "license"
         )
 
         expect(expected) {
@@ -39,9 +39,9 @@ class LicenseTest {
     @Test
     fun `serialize PlainLicense`() {
         val license = PlainLicense(
-                name = "name",
-                url = "url",
-                key = "key"
+            name = "name",
+            url = "url",
+            key = "key"
         )
 
         expect("""{"key":"key","name":"name","url":"url"}""") {
@@ -52,9 +52,9 @@ class LicenseTest {
     @Test
     fun `deserialize PlainLicense`() {
         val expected = PlainLicense(
-                name = "name",
-                url = "url",
-                key = "key"
+            name = "name",
+            url = "url",
+            key = "key"
         )
 
         expect(expected) {

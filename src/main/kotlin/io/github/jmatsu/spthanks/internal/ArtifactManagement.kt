@@ -6,9 +6,7 @@ import io.github.jmatsu.spthanks.model.ResolveScope
 import io.github.jmatsu.spthanks.model.ResolvedArtifact
 import io.github.jmatsu.spthanks.model.ResolvedModuleIdentifier
 import io.github.jmatsu.spthanks.model.VersionString
-import java.util.*
-import kotlin.Comparator
-import kotlin.collections.ArrayList
+import java.util.SortedMap
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ComponentIdentifier
@@ -28,11 +26,11 @@ class ArtifactManagement(
          * Common configurations that will be used basically
          */
         val CommonConfigurationNames: Set<String> = setOf(
-                // runtimeOnly
-                "compileOnly",
-                "implementation",
-                "api",
-                "compile"
+            // runtimeOnly
+            "compileOnly",
+            "implementation",
+            "api",
+            "compile"
         )
     }
 
@@ -54,9 +52,9 @@ class ArtifactManagement(
         val variantConfigurations = project.allConfigurations(listOf(mergedVariant) + variantScopes)
 
         val scopedConfigurations = (listOf(mergedVariant to variantConfigurations) +
-                additionalScopes.map { scope ->
-                    scope to project.allConfigurations(listOf(mergedVariant) + variantScopes, scope = scope)
-                }).toMap()
+            additionalScopes.map { scope ->
+                scope to project.allConfigurations(listOf(mergedVariant) + variantScopes, scope = scope)
+            }).toMap()
 
         val components: MutableList<ComponentIdentifier> = ArrayList()
 
@@ -70,13 +68,13 @@ class ArtifactManagement(
 
                 newResolvedIdentifiers
             }.groupedSortedDistinct()
-                    .mapKeys { it.value.id!!.componentIdentifier }
+                .mapKeys { it.value.id!!.componentIdentifier }
         }
 
         val resolveResults = project.dependencies.createArtifactResolutionQuery()
-                .forComponents(scopedModules.flatMap { (_, modules) -> modules.keys })
-                .withArtifacts(MavenModule::class, MavenPomArtifact::class)
-                .execute()
+            .forComponents(scopedModules.flatMap { (_, modules) -> modules.keys })
+            .withArtifacts(MavenModule::class, MavenPomArtifact::class)
+            .execute()
 
         val scopedModuleSeq = scopedModules.asSequence()
 
@@ -101,23 +99,23 @@ class ArtifactManagement(
                         }
 
                         val id = ResolvedModuleIdentifier(
-                                group = group,
-                                name = name,
-                                version = VersionString(version),
-                                id = it.id
+                            group = group,
+                            name = name,
+                            version = VersionString(version),
+                            id = it.id
                         )
 
                         ResolveScope.Unknown to ResolvedArtifact(
-                                id = id,
-                                pomFile = pomFile
+                            id = id,
+                            pomFile = pomFile
                         )
                     }
                     else -> {
                         val (scope, modules) = e
 
                         scope to ResolvedArtifact(
-                                id = modules.getValue(component),
-                                pomFile = pomFile
+                            id = modules.getValue(component),
+                            pomFile = pomFile
                         )
                     }
                 }
@@ -179,7 +177,7 @@ class ArtifactManagement(
         }.mapValues {
             it.value.reduce { acc, id ->
                 acc.copy(
-                        version = arrayOf(acc.version, id.version).max()!!
+                    version = arrayOf(acc.version, id.version).max()!!
                 )
             }
         }.toSortedMap(Comparator { o1, o2 ->
@@ -187,7 +185,7 @@ class ArtifactManagement(
             requireNotNull(o2)
 
             o1.first.compareTo(o2.first)
-                    .takeIf { it != 0 } ?: o1.second.compareTo(o2.second)
+                .takeIf { it != 0 } ?: o1.second.compareTo(o2.second)
         })
     }
 
@@ -197,16 +195,16 @@ class ArtifactManagement(
     internal fun Configuration.toResolvedModuleIdentifiers(): List<ResolvedModuleIdentifier> {
         return lenientConfiguration()?.run {
             artifacts.filter { it.type == "aar" || it.type == "jar" }
-                    .filterNot { it.moduleVersion.id.group in excludeGroups }
-                    .filterNot { "${it.moduleVersion.id.group}:${it.moduleVersion.id.name}" in excludeArtifacts }
-                    .map { artifact ->
-                        ResolvedModuleIdentifier(
-                                name = artifact.moduleVersion.id.name,
-                                group = artifact.moduleVersion.id.group,
-                                version = VersionString(artifact.moduleVersion.id.version),
-                                id = artifact.id
-                        )
-                    }
+                .filterNot { it.moduleVersion.id.group in excludeGroups }
+                .filterNot { "${it.moduleVersion.id.group}:${it.moduleVersion.id.name}" in excludeArtifacts }
+                .map { artifact ->
+                    ResolvedModuleIdentifier(
+                        name = artifact.moduleVersion.id.name,
+                        group = artifact.moduleVersion.id.group,
+                        version = VersionString(artifact.moduleVersion.id.version),
+                        id = artifact.id
+                    )
+                }
         }.orEmpty()
     }
 }

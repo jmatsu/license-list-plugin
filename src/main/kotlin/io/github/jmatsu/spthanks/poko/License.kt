@@ -1,6 +1,12 @@
 package io.github.jmatsu.spthanks.poko
 
-import kotlinx.serialization.*
+import kotlinx.serialization.Decoder
+import kotlinx.serialization.Encoder
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.PrimitiveKind
+import kotlinx.serialization.SerialDescriptor
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializer
 
 sealed class License
 
@@ -12,7 +18,7 @@ data class LicenseKey(
     @Serializer(forClass = LicenseKey::class)
     companion object : KSerializer<LicenseKey> {
         override val descriptor: SerialDescriptor =
-                SerialDescriptor("LicenseKey", PrimitiveKind.STRING)
+            SerialDescriptor("LicenseKey", PrimitiveKind.STRING)
 
         override fun deserialize(decoder: Decoder): LicenseKey {
             return LicenseKey(decoder.decodeString())

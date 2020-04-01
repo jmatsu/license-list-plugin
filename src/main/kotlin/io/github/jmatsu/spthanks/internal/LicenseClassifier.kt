@@ -1,6 +1,6 @@
 package io.github.jmatsu.spthanks.internal
 
-import java.util.*
+import java.util.Locale
 
 class LicenseClassifier(
     val name: String?
@@ -223,8 +223,8 @@ class LicenseClassifier(
         operator fun Regex.contains(text: String): Boolean = containsMatchIn(text)
 
         val fallbackLicense = GuessedLicense.Undetermined(
-                name = name,
-                url = ""
+            name = name,
+            url = ""
         )
         val version = versionRegexp.find(name)?.groupValues?.drop(1)?.firstOrNull()?.takeIf { it.isNotBlank() }
 

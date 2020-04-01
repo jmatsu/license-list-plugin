@@ -10,6 +10,6 @@ data class ResolvedModuleIdentifier(
 ) : Comparable<ResolvedModuleIdentifier> {
     override fun compareTo(other: ResolvedModuleIdentifier): Int {
         return "$group:$name".compareTo("${other.group}:${other.name}")
-                .takeIf { it != 0 } ?: version.compareTo(other.version)
+            .takeIf { it != 0 } ?: version.compareTo(other.version)
     }
 }

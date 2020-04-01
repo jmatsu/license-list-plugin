@@ -9,8 +9,7 @@ import io.github.jmatsu.spthanks.poko.ArtifactDefinition
 import io.github.jmatsu.spthanks.poko.LicenseKey
 import io.github.jmatsu.spthanks.poko.PlainLicense
 import io.github.jmatsu.spthanks.poko.Scope
-import java.util.*
-import kotlin.collections.HashSet
+import java.util.SortedMap
 import kotlinx.serialization.StringFormat
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.list
@@ -23,11 +22,11 @@ class Assembler(
     companion object {
         fun assembleArtifact(artifact: ResolvedArtifact, licenseCapture: MutableSet<PlainLicense>): ArtifactDefinition {
             return ArtifactDefinition(
-                    key = "${artifact.id.group}:${artifact.id.name}",
-                    licenses = artifact.pomFile.licenses(licenseCapture),
-                    copyrightHolders = artifact.pomFile.copyrightHolders,
-                    url = artifact.pomFile.associatedUrl,
-                    displayName = artifact.pomFile.displayName
+                key = "${artifact.id.group}:${artifact.id.name}",
+                licenses = artifact.pomFile.licenses(licenseCapture),
+                copyrightHolders = artifact.pomFile.copyrightHolders,
+                url = artifact.pomFile.associatedUrl,
+                displayName = artifact.pomFile.displayName
             )
         }
 
@@ -54,20 +53,20 @@ class Assembler(
                         val key = "$name@${url.length}" // a salt
 
                         licenseCapture += PlainLicense(
-                                name = name,
-                                url = url,
-                                key = key
+                            name = name,
+                            url = url,
+                            key = key
                         )
 
                         LicenseKey(
-                                value = key
+                            value = key
                         )
                     }
                     else -> {
                         licenseCapture += PlainLicense(
-                                name = guessedLicense.name,
-                                url = guessedLicense.url,
-                                key = guessedLicense.key
+                            name = guessedLicense.name,
+                            url = guessedLicense.url,
+                            key = guessedLicense.key
                         )
 
                         LicenseKey(value = guessedLicense.key)
