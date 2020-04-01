@@ -64,9 +64,9 @@ dependencies {
 }
 
 gradlePlugin {
-    val `special-thanks` by plugins.creating {
+    val `license-list-gradle` by plugins.creating {
         id = Definition.pluginId
-        implementationClass = "io.github.jmatsu.spthanks.SpecialThanksPlugin"
+        implementationClass = "io.github.jmatsu.license.LicenseListPlugin"
     }
 }
 
@@ -103,10 +103,10 @@ bintray {
         name = Definition.name
         userOrg = "jmatsu"
         setLicenses("MIT")
-        websiteUrl = "https://github.com/jmatsu/special-thanks-plugin"
-        issueTrackerUrl = "https://github.com/jmatsu/special-thanks-plugin/issues"
-        vcsUrl = "https://github.com/jmatsu/special-thanks-plugin/issues.git"
-        githubRepo = "jmatsu/special-thanks-plugin"
+        websiteUrl = "https://github.com/jmatsu/license-list-plugin"
+        issueTrackerUrl = "https://github.com/jmatsu/license-list-plugin/issues"
+        vcsUrl = "https://github.com/jmatsu/license-list-plugin/issues.git"
+        githubRepo = "jmatsu/license-list-plugin"
         version(closureOf<VersionConfig> {
             name = project.version as String
             released = Instant.now().toString()

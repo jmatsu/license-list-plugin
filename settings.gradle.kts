@@ -7,7 +7,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "special-thanks"
+rootProject.name = "license-list-gradle"
 
 include("plugin")
 include("schema")
