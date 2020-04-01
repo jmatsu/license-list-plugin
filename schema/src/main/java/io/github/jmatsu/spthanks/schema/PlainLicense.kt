@@ -1,7 +1,7 @@
 package io.github.jmatsu.spthanks.schema
 
 interface PlainLicense {
-    val key: String
+    val key: LicenseKey
     val name: String
     val url: String
 }

@@ -41,7 +41,7 @@ class LicenseTest {
         val license = PlainLicense(
             name = "name",
             url = "url",
-            key = "key"
+            key = LicenseKey(value = "key")
         )
 
         expect("""{"key":"key","name":"name","url":"url"}""") {
@@ -54,7 +54,7 @@ class LicenseTest {
         val expected = PlainLicense(
             name = "name",
             url = "url",
-            key = "key"
+            key = LicenseKey(value = "key")
         )
 
         expect(expected) {

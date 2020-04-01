@@ -63,7 +63,7 @@ abstract class ValidateLicenseListTask
         val (addedArtifactKeys, removedArtifactKeys) = currentArtifactKeys.xor2(recordedArtifactKeys)
 
         val recordedLicenseKeys = disassembler.disassemblePlainLicenses(catalogText).map { it.key }
-        val currentLicenseKeys = currentArtifacts.flatMap { it.licenses }.map { it.value }
+        val currentLicenseKeys = currentArtifacts.flatMap { it.licenses }
 
         val (addedLicenseKeys, removedLicenseKeys) = currentLicenseKeys.xor2(recordedLicenseKeys)
 
@@ -79,7 +79,7 @@ abstract class ValidateLicenseListTask
             logger.warn("--- licenses ---")
 
             removedLicenseKeys.forEach { key ->
-                logger.warn(key)
+                logger.warn(key.value)
             }
 
             logger.warn("\n")
@@ -97,7 +97,7 @@ abstract class ValidateLicenseListTask
             logger.warn("--- licenses ---")
 
             addedLicenseKeys.forEach { key ->
-                logger.warn(key)
+                logger.warn(key.value)
             }
 
             throw InvalidLicenseException(

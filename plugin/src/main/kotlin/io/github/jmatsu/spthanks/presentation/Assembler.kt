@@ -50,26 +50,23 @@ class Assembler(
                     is LicenseClassifier.GuessedLicense.Undetermined -> {
                         val name = it.name ?: guessedLicense.name
                         val url = it.url ?: guessedLicense.url
-                        val key = "$name@${url.length}" // a salt
 
-                        licenseCapture += PlainLicense(
-                            name = name,
-                            url = url,
-                            key = key
-                        )
-
-                        LicenseKey(
-                            value = key
-                        )
+                        LicenseKey(value = "$name@${url.length}").also { key ->
+                            licenseCapture += PlainLicense(
+                                name = name,
+                                url = url,
+                                key = key
+                            )
+                        }
                     }
                     else -> {
-                        licenseCapture += PlainLicense(
-                            name = guessedLicense.name,
-                            url = guessedLicense.url,
-                            key = guessedLicense.key
-                        )
-
-                        LicenseKey(value = guessedLicense.key)
+                        LicenseKey(value = guessedLicense.key).also { key ->
+                            licenseCapture += PlainLicense(
+                                name = guessedLicense.name,
+                                url = guessedLicense.url,
+                                key = key
+                            )
+                        }
                     }
                 }
             }

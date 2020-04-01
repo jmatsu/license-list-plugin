@@ -32,7 +32,7 @@ data class LicenseKey(
 
 @Serializable
 data class PlainLicense(
-    override val key: String,
+    override val key: LicenseKey,
     override val name: String,
     override val url: String
 ) : License(), io.github.jmatsu.spthanks.schema.PlainLicense
