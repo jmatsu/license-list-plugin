@@ -8,6 +8,7 @@ sealed class License
 data class LicenseKey(
         val value: String
 ) : License() {
+    // TODO Make LicenseKey inline class if Serialization supports it, then I can remove this
     @Serializer(forClass = LicenseKey::class)
     companion object : KSerializer<LicenseKey> {
         override val descriptor: SerialDescriptor =

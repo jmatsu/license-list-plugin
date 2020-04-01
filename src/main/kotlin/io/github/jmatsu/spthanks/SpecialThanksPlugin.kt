@@ -8,7 +8,6 @@ import io.github.jmatsu.spthanks.tasks.ValidateLicenseTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
-import org.gradle.api.logging.Logging
 
 class SpecialThanksPlugin : Plugin<Project> {
     companion object {

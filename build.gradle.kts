@@ -10,9 +10,12 @@ import java.time.Instant
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
+    kotlin("plugin.serialization") version shared.Version.kotlin
+    id("org.jmailen.kotlinter") version shared.Version.kotlinter
+
+    // release stuff
     maven
     id("com.jfrog.bintray") version shared.Version.bintray
-    kotlin("plugin.serialization") version shared.Version.kotlin
 }
 
 repositories {
@@ -26,8 +29,10 @@ version = "0.0.1"
 configurations.configureEach {
     resolutionStrategy {
         eachDependency {
-            if (requested.group == "org.jetbrains.kotlin") {
-                useVersion(Version.kotlin)
+            when (requested.group) {
+                "org.jetbrains.kotlin" -> useVersion(Version.kotlin)
+                "org.junit.jupiter" -> useVersion(Version.junit5)
+                "org.junit.vintage" -> useVersion(Version.junit5)
             }
         }
     }
@@ -44,11 +49,16 @@ dependencies {
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.6.1")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.6.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.1")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.6.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+
+    testImplementation(gradleTestKit())
+
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${Version.junitPlatformLauncher}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
+
+    testRuntimeOnly("com.android.tools.build:gradle:${Version.agp}")
 }
 
 gradlePlugin {
@@ -60,14 +70,16 @@ gradlePlugin {
 
 // Add a source set for the functional test suite
 val functionalTestSourceSet = sourceSets.create("functionalTest") {
+    resources.srcDirs(File(project.buildDir, "functionalTest"))
 }
 
 gradlePlugin.testSourceSets(functionalTestSourceSet)
 configurations.getByName("functionalTestImplementation").extendsFrom(configurations.getByName("testImplementation"))
+configurations.getByName("functionalTestRuntimeOnly").extendsFrom(configurations.getByName("testRuntimeOnly"))
 
 val functionalTest by tasks.creating(Test::class) {
     testClassesDirs = functionalTestSourceSet.output.classesDirs
-    classpath = functionalTestSourceSet.runtimeClasspath
+    classpath = sourceSets.main.get().runtimeClasspath + functionalTestSourceSet.runtimeClasspath
 }
 
 val check by tasks.getting(Task::class) {
@@ -85,6 +97,13 @@ tasks.withType(Test::class) {
 
 tasks.getByName("clean") {
     delete(project.buildDir, project.file("buildSrc/build"))
+}
+
+kotlinter {
+    ignoreFailures = false
+    reporters = arrayOf("checkstyle", "html")
+    experimentalRules = false
+    fileBatchSize = 30
 }
 
 bintray {

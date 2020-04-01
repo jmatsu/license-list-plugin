@@ -4,21 +4,28 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.jmatsu</groupId>
-    <artifactId>example</artifactId>
+    <artifactId>example2</artifactId>
     <version>1.0.0</version>
     <packaging>aar</packaging>
-    <name>Example1</name>
-    <url>https://github.com/jmatsu</url>
     <licenses>
         <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
+            <name>license1</name>
+            <url>url1</url>
+        </license>
+        <license>
+            <name>license2</name>
+            <url>url2</url>
         </license>
     </licenses>
     <developers>
         <developer>
-            <name>jmatsu</name>
+            <name>jmatsu1</name>
+        </developer>
+        <developer>
+            <name>jmatsu2</name>
+        </developer>
+        <developer>
+            <name>jmatsu3</name>
         </developer>
     </developers>
     <scm>

@@ -15,13 +15,51 @@ class PomParserTest {
                     Arguments.of(
                             "pom-1.xml",
                             "Example1",
-                            listOf("Example1", "", "example"),
+                            listOf("Example1", "example"),
                             "https://github.com/jmatsu",
                             listOf("jmatsu"),
                             listOf(
                                     PomParser.License(
                                             name = "The Apache Software License, Version 2.0",
                                             url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                                    )
+                            )
+                    ),
+                    Arguments.of(
+                            "pom-2.xml",
+                            "example2",
+                            listOf("example2"),
+                            "https://github.com/jmatsu/special-thanks-plugin.git",
+                            listOf("jmatsu1", "jmatsu2", "jmatsu3"),
+                            listOf(
+                                    PomParser.License(
+                                            name = "license1",
+                                            url = "url1"
+                                    ),
+                                    PomParser.License(
+                                            name = "license2",
+                                            url = "url2"
+                                    )
+                            )
+                    ),
+                    Arguments.of(
+                            "pom-3.xml",
+                            "example3",
+                            listOf("example3"),
+                            null,
+                            emptyList<String>(),
+                            emptyList<String>()
+                    ),
+                    Arguments.of(
+                            "pom-4.xml",
+                            "example4",
+                            listOf("example4"),
+                            null,
+                            emptyList<String>(),
+                            listOf(
+                                    PomParser.License(
+                                            name = null,
+                                            url = null
                                     )
                             )
                     )
@@ -35,7 +73,7 @@ class PomParserTest {
             filepath: String,
             displayName: String,
             displayNameCandidates: List<String>,
-            associatedUrl: String,
+            associatedUrl: String?,
             copyrightHolders: List<String>,
             licenses: List<PomParser.License>
     ) {

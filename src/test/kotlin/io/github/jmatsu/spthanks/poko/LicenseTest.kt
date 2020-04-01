@@ -44,7 +44,7 @@ class LicenseTest {
                 key = "key"
         )
 
-        expect("""{"name":"name","url":"url","key":"key"}""") {
+        expect("""{"key":"key","name":"name","url":"url"}""") {
             json.stringify(PlainLicense.serializer(), license)
         }
     }
