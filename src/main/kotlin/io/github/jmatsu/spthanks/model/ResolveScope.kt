@@ -4,11 +4,11 @@ sealed class ResolveScope {
     abstract val name: String
 
     data class Variant(
-            override val name: String
+        override val name: String
     ) : ResolveScope()
 
     data class Addition(
-            override val name: String
+        override val name: String
     ) : ResolveScope()
 
     object Test : ResolveScope() {
@@ -24,14 +24,14 @@ sealed class ResolveScope {
      */
     @Suppress("Unused")
     data class UserDefined(
-            override val name: String
+        override val name: String
     ) : ResolveScope()
 
     /**
      * Only for internal uses
      */
     internal data class InternalUse(
-            override val name: String
+        override val name: String
     ) : ResolveScope()
 
     object Unknown : ResolveScope() {

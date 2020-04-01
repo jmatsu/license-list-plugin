@@ -11,16 +11,16 @@ import io.github.jmatsu.spthanks.presentation.Assembler
 import io.github.jmatsu.spthanks.presentation.Disassembler
 import io.github.jmatsu.spthanks.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.spthanks.tasks.internal.VariantAwareTask
+import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
 import org.gradle.util.ChangeListener
 import org.gradle.util.DiffUtil
-import javax.inject.Inject
 
 abstract class MergeLicenseTask
 @Inject constructor(
-        extension: SpecialThanksExtension,
-        variant: ApplicationVariant?
+    extension: SpecialThanksExtension,
+    variant: ApplicationVariant?
 ) : VariantAwareTask(extension, variant) {
     @TaskAction
     fun execute() {
@@ -129,9 +129,9 @@ abstract class MergeLicenseTask
     }
 
     class Args(
-            project: Project,
-            extension: SpecialThanksExtension,
-            variant: ApplicationVariant?
+        project: Project,
+        extension: SpecialThanksExtension,
+        variant: ApplicationVariant?
     ) : ReadWriteLicenseTaskArgs(
             project = project,
             extension = extension,

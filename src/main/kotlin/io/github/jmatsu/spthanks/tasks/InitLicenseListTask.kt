@@ -7,14 +7,14 @@ import io.github.jmatsu.spthanks.presentation.Assembler
 import io.github.jmatsu.spthanks.presentation.Convention
 import io.github.jmatsu.spthanks.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.spthanks.tasks.internal.VariantAwareTask
+import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
-import javax.inject.Inject
 
 abstract class InitLicenseListTask
 @Inject constructor(
-        extension: SpecialThanksExtension,
-        variant: ApplicationVariant?
+    extension: SpecialThanksExtension,
+    variant: ApplicationVariant?
 ) : VariantAwareTask(extension, variant) {
     class FileAlreadyExistException(message: String) : TaskException(message)
 
@@ -53,9 +53,9 @@ abstract class InitLicenseListTask
     }
 
     class Args(
-            project: Project,
-            extension: SpecialThanksExtension,
-            variant: ApplicationVariant?
+        project: Project,
+        extension: SpecialThanksExtension,
+        variant: ApplicationVariant?
     ) : ReadWriteLicenseTaskArgs(
             project = project,
             extension = extension,

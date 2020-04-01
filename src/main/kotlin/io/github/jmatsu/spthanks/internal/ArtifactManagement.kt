@@ -6,6 +6,9 @@ import io.github.jmatsu.spthanks.model.ResolveScope
 import io.github.jmatsu.spthanks.model.ResolvedArtifact
 import io.github.jmatsu.spthanks.model.ResolvedModuleIdentifier
 import io.github.jmatsu.spthanks.model.VersionString
+import java.util.*
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ComponentIdentifier
@@ -13,15 +16,12 @@ import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.kotlin.dsl.withArtifacts
 import org.gradle.maven.MavenModule
 import org.gradle.maven.MavenPomArtifact
-import java.util.*
-import kotlin.Comparator
-import kotlin.collections.ArrayList
 
 class ArtifactManagement(
-        private val project: Project,
-        private val configurationNames: Set<String>,
-        private val excludeGroups: Set<String> = emptySet(),
-        private val excludeArtifacts: Set<String> = emptySet()
+    private val project: Project,
+    private val configurationNames: Set<String>,
+    private val excludeGroups: Set<String> = emptySet(),
+    private val excludeArtifacts: Set<String> = emptySet()
 ) {
     companion object {
         /**
@@ -44,8 +44,8 @@ class ArtifactManagement(
      * @return resolved artifacts grouped by scopes and sorted by scopes
      */
     fun analyze(
-            variantScopes: Set<ResolveScope.Variant>,
-            additionalScopes: Set<ResolveScope.Addition>
+        variantScopes: Set<ResolveScope.Variant>,
+        additionalScopes: Set<ResolveScope.Addition>
     ): SortedMap<ResolveScope, List<ResolvedArtifact>> {
         val mergedVariant = variantScopes.reduce { acc, variant ->
             acc.copy(name = "${acc.name}${variant.name.capitalize()}")
@@ -134,8 +134,8 @@ class ArtifactManagement(
      * @return all configurations that we should resolve
      */
     private fun Project.allConfigurations(
-            variantScopes: List<ResolveScope.Variant>,
-            scope: ResolveScope? = null
+        variantScopes: List<ResolveScope.Variant>,
+        scope: ResolveScope? = null
     ): List<Configuration> {
         val suffixes = if (scope != null) {
             configurationNames.map { name ->

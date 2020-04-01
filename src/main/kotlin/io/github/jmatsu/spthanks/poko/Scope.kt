@@ -4,7 +4,7 @@ import kotlinx.serialization.*
 
 @Serializable
 data class Scope(
-        val name: String
+    val name: String
 ) {
 
     // TODO Make Scope inline class if Serialization supports it, then I can remove this

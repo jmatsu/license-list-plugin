@@ -3,10 +3,10 @@ package io.github.jmatsu.spthanks.model
 import org.gradle.api.artifacts.component.ComponentArtifactIdentifier
 
 data class ResolvedModuleIdentifier(
-        val group: String,
-        val name: String,
-        val version: VersionString = VersionString("+"),
-        val id: ComponentArtifactIdentifier? = null
+    val group: String,
+    val name: String,
+    val version: VersionString = VersionString("+"),
+    val id: ComponentArtifactIdentifier? = null
 ) : Comparable<ResolvedModuleIdentifier> {
     override fun compareTo(other: ResolvedModuleIdentifier): Int {
         return "$group:$name".compareTo("${other.group}:${other.name}")

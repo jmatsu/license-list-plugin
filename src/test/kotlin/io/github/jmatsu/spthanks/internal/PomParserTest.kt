@@ -1,11 +1,11 @@
 package io.github.jmatsu.spthanks.internal
 
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
 import java.io.File
 import java.util.stream.Stream
 import kotlin.test.expect
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 
 class PomParserTest {
     companion object {
@@ -70,12 +70,12 @@ class PomParserTest {
     @ParameterizedTest
     @MethodSource("providePomFiles")
     fun `parse`(
-            filepath: String,
-            displayName: String,
-            displayNameCandidates: List<String>,
-            associatedUrl: String?,
-            copyrightHolders: List<String>,
-            licenses: List<PomParser.License>
+        filepath: String,
+        displayName: String,
+        displayNameCandidates: List<String>,
+        associatedUrl: String?,
+        copyrightHolders: List<String>,
+        licenses: List<PomParser.License>
     ) {
         var pomFile: File? = null
         try {

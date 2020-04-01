@@ -3,7 +3,7 @@ package io.github.jmatsu.spthanks.internal
 import java.util.*
 
 class LicenseClassifier(
-        val name: String?
+    val name: String?
 ) {
     // https://choosealicense.com/
     object PredefinedKey {
@@ -75,7 +75,6 @@ class LicenseClassifier(
             override val key: String = PredefinedKey.BSD_2_CLAUSE
             override val name: String = "BSD 2-Clause \"Simplified\" License"
         }
-
 
         object BSD3C : GitHubAPICompatibleLicense() {
             override val key: String = PredefinedKey.BSD_3_CLAUSE
@@ -176,9 +175,9 @@ class LicenseClassifier(
         // ---
 
         data class Undetermined(
-                override val key: String = PredefinedKey.UNDETERMINED,
-                override val name: String,
-                override val url: String
+            override val key: String = PredefinedKey.UNDETERMINED,
+            override val name: String,
+            override val url: String
         ) : GuessedLicense()
     }
 
@@ -294,5 +293,4 @@ class LicenseClassifier(
             else -> fallbackLicense
         }
     }
-
 }

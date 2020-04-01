@@ -9,16 +9,16 @@ import io.github.jmatsu.spthanks.poko.ArtifactDefinition
 import io.github.jmatsu.spthanks.poko.LicenseKey
 import io.github.jmatsu.spthanks.poko.PlainLicense
 import io.github.jmatsu.spthanks.poko.Scope
+import java.util.*
+import kotlin.collections.HashSet
 import kotlinx.serialization.StringFormat
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
-import java.util.*
-import kotlin.collections.HashSet
 
 class Assembler(
-        private val resolvedArtifactMap: SortedMap<ResolveScope, List<ResolvedArtifact>>,
-        private val licenseCapture: MutableSet<PlainLicense> = HashSet()
+    private val resolvedArtifactMap: SortedMap<ResolveScope, List<ResolvedArtifact>>,
+    private val licenseCapture: MutableSet<PlainLicense> = HashSet()
 ) {
     companion object {
         fun assembleArtifact(artifact: ResolvedArtifact, licenseCapture: MutableSet<PlainLicense>): ArtifactDefinition {

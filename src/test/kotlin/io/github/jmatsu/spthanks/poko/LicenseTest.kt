@@ -1,10 +1,10 @@
 package io.github.jmatsu.spthanks.poko
 
+import kotlin.test.expect
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.expect
 
 class LicenseTest {
     lateinit var json: Json

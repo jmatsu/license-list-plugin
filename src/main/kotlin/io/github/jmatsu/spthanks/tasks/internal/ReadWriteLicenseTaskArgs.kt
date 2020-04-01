@@ -9,14 +9,14 @@ import io.github.jmatsu.spthanks.dsl.YamlFormat
 import io.github.jmatsu.spthanks.model.ResolveScope
 import io.github.jmatsu.spthanks.presentation.Assembler
 import io.github.jmatsu.spthanks.presentation.Convention
+import java.io.File
 import kotlinx.serialization.StringFormat
 import org.gradle.api.Project
-import java.io.File
 
 abstract class ReadWriteLicenseTaskArgs(
-        project: Project,
-        extension: SpecialThanksExtension,
-        variant: ApplicationVariant?
+    project: Project,
+    extension: SpecialThanksExtension,
+    variant: ApplicationVariant?
 ) {
     val format: StringFormat = when (extension.assembleFormat) {
         JsonFormat -> Convention.Json

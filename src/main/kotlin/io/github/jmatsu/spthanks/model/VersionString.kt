@@ -3,7 +3,7 @@ package io.github.jmatsu.spthanks.model
 import io.github.jmatsu.spthanks.SpecialThanksPlugin
 
 data class VersionString(
-        val value: String
+    val value: String
 ) : Comparable<VersionString> {
     private val hunks: List<Int> = value.split(".").map {
         if (it == "+") {

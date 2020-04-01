@@ -6,11 +6,11 @@ import io.github.jmatsu.spthanks.model.ResolvedPomFile
 import java.io.File
 
 class PomParser(
-        private val file: File
+    private val file: File
 ) {
     data class License(
-            val name: String?,
-            val url: String?
+        val name: String?,
+        val url: String?
     )
 
     fun parse(): ResolvedPomFile {

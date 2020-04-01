@@ -8,8 +8,8 @@ import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
 
 class Disassembler(
-        private val style: Assembler.Style,
-        private val format: StringFormat
+    private val style: Assembler.Style,
+    private val format: StringFormat
 ) {
     fun disassemble(text: String): List<ArtifactDefinition> {
         return when (style) {

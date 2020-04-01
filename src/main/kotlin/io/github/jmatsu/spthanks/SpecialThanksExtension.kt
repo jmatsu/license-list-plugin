@@ -6,12 +6,12 @@ import io.github.jmatsu.spthanks.dsl.StructuredStyle
 import io.github.jmatsu.spthanks.dsl.YamlFormat
 import io.github.jmatsu.spthanks.internal.ArtifactManagement
 import io.github.jmatsu.spthanks.model.ResolveScope
-import org.gradle.api.tasks.*
 import java.io.File
+import org.gradle.api.tasks.*
 
 open class SpecialThanksExtension
 @JvmOverloads constructor(
-        @get:Internal val name: String = "default"
+    @get:Internal val name: String = "default"
 ) {
     /**
      * true means this plugin is enabled, otherwise this plugin is disabled.

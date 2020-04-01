@@ -1,11 +1,10 @@
 package io.github.jmatsu.spthanks.internal
 
+import kotlin.test.expect
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import kotlin.test.expect
 
 class LicenseClassifierTest {
-
 
     @ParameterizedTest
     @ValueSource(
