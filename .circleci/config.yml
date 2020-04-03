@@ -40,19 +40,7 @@ commands:
             - ~/.android
             - ~/.gradle
             - .gradle
-            - ~/.m2
           key: gradle-<< parameters.cache_version >>-{{ checksum "~/<< parameters.cache_name >>.lock" }}
-  restore_plugin_jars:
-    steps:
-      - restore_cache:
-          keys:
-            - plugin-jars-{{ .Environment.CIRCLE_BRANCH }}
-  save_plugin_jars:
-    steps:
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: plugin-jars-{{ .Environment.CIRCLE_BRANCH }}
 
 jobs:
   install_plugin_jars:
@@ -61,10 +49,11 @@ jobs:
       - setup_workspace
       - restore_gradle_cache:
           cache_name: plugin
-      - run: ./gradlew jar
-      - save_plugin_jars
-      - save_gradle_cache:
-          cache_name: plugin
+      - run: ./gradlew install
+      - persist_to_workspace:
+          root: ~/.m2
+          paths:
+            - repository
 
   acceptance_test:
     executor: android
@@ -72,7 +61,8 @@ jobs:
       - setup_workspace
       - restore_gradle_cache:
           cache_name: example
-      - restore_plugin_jars
+      - attach_workspace:
+          at: ~/.m2
       - run: 
           name: check if validate action does not fail and does not produce any diff
           command: |
