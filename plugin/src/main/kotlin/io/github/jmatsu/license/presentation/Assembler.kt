@@ -1,5 +1,6 @@
 package io.github.jmatsu.license.presentation
 
+import io.github.jmatsu.license.LicenseListPlugin
 import io.github.jmatsu.license.ext.collectToMap
 import io.github.jmatsu.license.internal.LicenseClassifier
 import io.github.jmatsu.license.model.ResolveScope
@@ -95,7 +96,13 @@ class Assembler(
 
     fun assemblePlainLicenses(format: StringFormat): String {
         // assemble must be called in advance
-        return format.stringify(PlainLicense.serializer().list, licenseCapture.sortedBy { it.name })
+        val licenses = licenseCapture.sortedBy { it.key.value }
+
+        licenses.forEach {
+            LicenseListPlugin.logger?.info(it.key.toString())
+        }
+
+        return format.stringify(PlainLicense.serializer().list, licenses)
     }
 
     fun transformForFlatten(): List<ArtifactDefinition> {

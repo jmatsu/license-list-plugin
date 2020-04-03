@@ -35,13 +35,16 @@ configurations.configureEach {
 }
 
 dependencies {
-    implementation(project(":schema"))
+    implementation(project(":license-list-schema"))
 
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Version.kotlinSerialization}")
     implementation("com.charleskorn.kaml:kaml:${Version.kaml}")
+
+    implementation("org.freemarker:freemarker:${Version.freemaker}")
+    implementation("org.yaml:snakeyaml:${Version.snakeyaml}")
 
     compileOnly("com.android.tools.build:gradle:${Version.agp}")
     testImplementation("com.android.tools.build:gradle:${Version.agp}")
@@ -97,7 +100,7 @@ bintray {
     key = System.getenv("BINTRAY_KEY")
     pkg(closureOf<PackageConfig> {
         repo = "maven"
-        name = Definition.name
+        name = Definition.pluginName
         userOrg = "jmatsu"
         setLicenses("MIT")
         websiteUrl = "https://github.com/jmatsu/license-list-plugin"

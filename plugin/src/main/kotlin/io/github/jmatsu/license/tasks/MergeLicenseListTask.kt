@@ -32,16 +32,16 @@ abstract class MergeLicenseListTask
             excludeArtifacts = args.excludeArtifacts
         )
         val scopedResolvedArtifacts = artifactManagement.analyze(
-            variantScopes = args.variantScopes,
+            variantScope = args.variantScope,
             additionalScopes = args.additionalScopes
         )
         val disassembler = Disassembler(
-            style = args.style,
-            format = args.format
+            style = args.assemblyStyle,
+            format = args.assemblyFormat
         )
 
-        val artifactsText = args.artifactsFile.readText()
-        val catalogText = args.catalogFile.readText()
+        val artifactsText = args.assembledArtifactsFile.readText()
+        val catalogText = args.assembledLicenseCatalogFile.readText()
 
         val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).toSet()
         val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
@@ -66,13 +66,13 @@ abstract class MergeLicenseListTask
         )
 
         val newArtifactsText = assembler.assembleArtifacts(
-            style = args.style,
-            format = args.format
+            style = args.assemblyStyle,
+            format = args.assemblyFormat
         )
-        val licenseCatalogText = assembler.assemblePlainLicenses(Convention.Yaml) // the format is fixed
+        val licenseCatalogText = assembler.assemblePlainLicenses(Convention.Yaml.Assembly) // the format is fixed
 
-        args.artifactsFile.writeText(newArtifactsText)
-        args.catalogFile.writeText(licenseCatalogText)
+        args.assembledArtifactsFile.writeText(newArtifactsText)
+        args.assembledLicenseCatalogFile.writeText(licenseCatalogText)
     }
 
     class Args(

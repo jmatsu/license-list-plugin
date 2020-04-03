@@ -1,0 +1,105 @@
+version: 2.1
+
+executors:
+  android:
+    docker:
+      - image: circleci/android:api-29
+    working_directory: ~/top/example
+    environment:
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.daemon=false'
+  plugin:
+    docker:
+      - image: circleci/openjdk:8
+    working_directory: ~/top
+    environment:
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.daemon=false'
+
+commands:
+  setup_workspace:
+    steps:
+      - checkout:
+          path: ~/top
+
+  restore_gradle_cache:
+    parameters: &gradle_cache_parameters
+      cache_version:
+        type: string
+        default: v3
+      cache_name:
+        type: string
+    steps:
+      - run: ~/top/.circleci/generate_hashfile > ~/<< parameters.cache_name >>.lock
+      - restore_cache:
+          keys:
+            - gradle-<< parameters.cache_version >>-{{ checksum "~/<< parameters.cache_name >>.lock" }}
+  save_gradle_cache:
+    parameters: *gradle_cache_parameters
+    steps:
+      - save_cache:
+          paths:
+            - ~/.android
+            - ~/.gradle
+            - .gradle
+          key: gradle-<< parameters.cache_version >>-{{ checksum "~/<< parameters.cache_name >>.lock" }}
+
+jobs:
+  install_plugin_jars:
+    executor: plugin
+    steps:
+      - setup_workspace
+      - restore_gradle_cache:
+          cache_name: plugin
+      - run: ./gradlew install
+      - persist_to_workspace:
+          root: ~/.m2
+          paths:
+            - repository
+
+  acceptance_test:
+    executor: android
+    steps:
+      - setup_workspace
+      - restore_gradle_cache:
+          cache_name: example
+      - attach_workspace:
+          at: ~/.m2
+      - run: 
+          name: check if validate action does not fail and does not produce any diff
+          command: |
+            ./gradlew validateLicenseList
+            [[ -z "$(git diff --name-only -- app)" ]]
+
+      - run: 
+          name: check if init action does not fail and does not produce any diff
+          command: |
+            ./gradlew initLicenseList -Poverwrite=true
+            [[ -z "$(git diff --name-only -- app)" ]]
+
+      - run: 
+          name: check if merge action does not fail and revert changes propery
+          command: |
+            cp -f fixtures/* app/
+            git config --global user.email "noreply@example.com"
+            git config --global user.name "jmatsu"
+            git add .
+            git commit -m "Save dirty diff"
+            ./gradlew mergeLicenseList
+            # preserve samplelicense and the order
+            [[ -z "$(git diff --name-only -- app/license-catalog.yml)" ]]
+            # revert removed artifacts so diff is available
+            [[ -n "$(git diff --name-only -- app/artifact-definition.yml)" ]]
+            # generated diff should be same to the merge result above
+            patch -fu app/artifact-definition.yml < fixtures/artifact-definition.patch
+            [[ -z "$(git diff --name-only -- app/artifact-definition.yml)" ]]
+      # TODO snapshot tests provided by espresso
+      - save_gradle_cache:
+          cache_name: example
+
+workflows:
+  version: 2
+  on_commit:
+    jobs:
+      - install_plugin_jars
+      - acceptance_test:
+          requires:
+            - install_plugin_jars

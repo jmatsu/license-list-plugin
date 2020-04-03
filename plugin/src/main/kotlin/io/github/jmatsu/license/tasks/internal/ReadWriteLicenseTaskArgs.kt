@@ -16,18 +16,18 @@ import org.gradle.api.Project
 abstract class ReadWriteLicenseTaskArgs(
     project: Project,
     extension: LicenseListExtension,
-    variant: ApplicationVariant?
+    variant: ApplicationVariant
 ) {
-    val format: StringFormat = when (extension.assembleFormat) {
-        JsonFormat -> Convention.Json
-        YamlFormat -> Convention.Yaml
+    val assemblyFormat: StringFormat = when (extension.assembleFormat) {
+        JsonFormat -> Convention.Json.Assembly
+        YamlFormat -> Convention.Yaml.Assembly
         else -> throw IllegalArgumentException("Only one of $FlattenStyle or $StructuredStyle are allowed.")
     }
 
-    val style: Assembler.Style = when (extension.assembleStyle) {
+    val assemblyStyle: Assembler.Style = when (extension.assembleStyle) {
         FlattenStyle -> Assembler.Style.Flatten
         StructuredStyle -> {
-            if (extension.withScope) {
+            if (extension.groupByScopes) {
                 Assembler.Style.StructuredWithScope
             } else {
                 Assembler.Style.StructuredWithoutScope
@@ -36,7 +36,7 @@ abstract class ReadWriteLicenseTaskArgs(
         else -> throw IllegalArgumentException("Only one of $FlattenStyle or $StructuredStyle are allowed.")
     }
 
-    val ext: String = when (extension.assembleFormat) {
+    val assembledFileExt: String = when (extension.assembleFormat) {
         JsonFormat -> "json"
         YamlFormat -> "yml"
         else -> error("nothing has come")
@@ -48,18 +48,13 @@ abstract class ReadWriteLicenseTaskArgs(
         }
     }
 
-    val variantScopes: Set<ResolveScope.Variant> = variant?.let {
-        val flavors = variant.productFlavors.map { it.name }
-        val build = variant.buildType.name
-
-        (flavors + listOf(build)).map { ResolveScope.Variant(it) }.toSet()
-    }.orEmpty()
+    val variantScope: ResolveScope.Variant = ResolveScope.Variant(variant.name)
 
     val additionalScopes: Set<ResolveScope.Addition> = extension.additionalScopes.map { ResolveScope.Addition(it) }.toSet()
 
-    val artifactsFile: File = extension.outputFile ?: File(project.projectDir, "license.$ext")
-    val outputDir: File = artifactsFile.parentFile
-    val catalogFile: File = File(artifactsFile.parentFile, "license-catalog.yml")
+    val assembleOutputDir: File = extension.artifactDefinitionFile ?: project.projectDir
+    val assembledArtifactsFile: File = File(assembleOutputDir, "artifact-definition.$assembledFileExt")
+    val assembledLicenseCatalogFile: File = File(assembleOutputDir, "license-catalog.yml")
 
     val excludeGroups: Set<String> = HashSet(extension.excludeGroups)
     val excludeArtifacts: Set<String> = HashSet(extension.excludeArtifacts)

@@ -1,6 +1,7 @@
 package io.github.jmatsu.license.dsl
 
-typealias AssembleStyle = String
+typealias AssembleStyle = Style
 
-const val FlattenStyle: AssembleStyle = "flatten"
-const val StructuredStyle: AssembleStyle = "structured"
+fun isAssembleStyle(style: Style): Boolean {
+    return style in arrayOf(StructuredStyle, FlattenStyle)
+}

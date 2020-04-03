@@ -23,12 +23,12 @@ abstract class InitLicenseListTask
     fun execute() {
         val args = Args(project, extension, variant)
 
-        if (args.artifactsFile.exists() && !args.forceOverwrite) {
-            throw FileAlreadyExistException("Overwriting ${args.artifactsFile.absolutePath} is forbidden. Provide overwrite=true when running this task to overwrite.")
+        if (args.assembledArtifactsFile.exists() && !args.forceOverwrite) {
+            throw FileAlreadyExistException("Overwriting ${args.assembledArtifactsFile.absolutePath} is forbidden. Provide overwrite=true when running this task to overwrite.")
         }
 
-        if (args.catalogFile.exists() && !args.forceOverwrite) {
-            throw FileAlreadyExistException("Overwriting ${args.artifactsFile.absolutePath} is forbidden. Provide overwrite=true when running this task to overwrite.")
+        if (args.assembledLicenseCatalogFile.exists() && !args.forceOverwrite) {
+            throw FileAlreadyExistException("Overwriting ${args.assembledArtifactsFile.absolutePath} is forbidden. Provide overwrite=true when running this task to overwrite.")
         }
 
         val artifactManagement = ArtifactManagement(
@@ -38,19 +38,19 @@ abstract class InitLicenseListTask
             excludeArtifacts = args.excludeArtifacts
         )
         val scopedResolvedArtifacts = artifactManagement.analyze(
-            variantScopes = args.variantScopes,
+            variantScope = args.variantScope,
             additionalScopes = args.additionalScopes
         )
         val assembler = Assembler(
             resolvedArtifactMap = scopedResolvedArtifacts
         )
 
-        val artifactsText = assembler.assembleArtifacts(args.style, args.format)
-        val licenseCatalogText = assembler.assemblePlainLicenses(Convention.Yaml) // the format is fixed
+        val artifactsText = assembler.assembleArtifacts(args.assemblyStyle, args.assemblyFormat)
+        val licenseCatalogText = assembler.assemblePlainLicenses(Convention.Yaml.Assembly) // the format is fixed
 
-        args.outputDir.mkdirs()
-        args.artifactsFile.writeText(artifactsText)
-        args.catalogFile.writeText(licenseCatalogText)
+        args.assembleOutputDir.mkdirs()
+        args.assembledArtifactsFile.writeText(artifactsText)
+        args.assembledLicenseCatalogFile.writeText(licenseCatalogText)
     }
 
     class Args(

@@ -1,0 +1,42 @@
+--- app/artifact-definition.yml	2020-04-04 05:19:05.000000000 +0900
++++ fixtures/artifact-definition.yml	2020-04-04 05:09:49.000000000 +0900
+     org.antlr:
+       - key: antlr4
+         displayName: ANTLR 4 Tool
+@@ -469,12 +471,6 @@
+           - Suzanne Millstein
+         licenses:
+           - mit
+-    org.codehaus.mojo:
+-      - key: animal-sniffer-annotations
+-        displayName: Animal Sniffer Annotations
+-        url: null
+-        copyrightHolders: []
+-        licenses: []
+     org.jetbrains:
+       - key: annotations
+         displayName: IntelliJ IDEA Annotations
+@@ -597,23 +593,3 @@
+         copyrightHolders: []
+         licenses:
+           - apache-2.0
+-    net.sf.kxml:
+-      - key: kxml2
+-        displayName: kXML 2 is a small XML pull parser based on the common XML pull
+-            API
+-        url: http://kxml.sourceforge.net/
+-        copyrightHolders: []
+-        licenses:
+-          - BSD style@73
+-          - Public Domain@48
+-    org.hamcrest:
+-      - key: hamcrest-integration
+-        displayName: Hamcrest Integration
+-        url: null
+-        copyrightHolders: []
+-        licenses: []
+-      - key: hamcrest-library
+-        displayName: Hamcrest library
+-        url: null
+-        copyrightHolders: []
+-        licenses: []

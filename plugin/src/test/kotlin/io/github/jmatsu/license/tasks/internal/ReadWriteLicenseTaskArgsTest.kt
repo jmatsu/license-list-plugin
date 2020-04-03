@@ -1,8 +1,6 @@
 package io.github.jmatsu.license.tasks.internal
 
 import com.android.build.gradle.api.ApplicationVariant
-import com.android.builder.model.BuildType
-import com.android.builder.model.ProductFlavor
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.model.ResolveScope
@@ -40,14 +38,7 @@ class ReadWriteLicenseTaskArgsTest {
         project.plugins.apply("license-list")
         extension = requireNotNull(project.extensions.findByType(LicenseListExtension::class))
         variant = mockk {
-            every { productFlavors } returns listOf(
-                mockk<ProductFlavor> {
-                    every { name } returns "feature"
-                }
-            )
-            every { buildType } returns mockk<BuildType> {
-                every { name } returns "release"
-            }
+            every { name } returns "featureRelease"
         }
     }
 
@@ -56,20 +47,20 @@ class ReadWriteLicenseTaskArgsTest {
         val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
 
         with(args) {
-            assertEquals(Assembler.Style.StructuredWithScope, style)
-            assertEquals(Convention.Yaml, format)
-            assertEquals("yml", ext)
+            assertEquals(Assembler.Style.StructuredWithScope, assemblyStyle)
+            assertEquals(Convention.Yaml.Assembly, assemblyFormat)
+            assertEquals("yml", assembledFileExt)
             assertEquals(ArtifactManagement.CommonConfigurationNames, configurationNames)
-            assertEquals(setOf(ResolveScope.Variant("feature"), ResolveScope.Variant("release")), variantScopes)
+            assertEquals(ResolveScope.Variant("featureRelease"), variantScope)
             assertEquals(
                 setOf(
                     ResolveScope.Addition("test"),
                     ResolveScope.Addition("androidTest")
                 ), additionalScopes
             )
-            assertEquals(File(project.projectDir, "license.yml"), artifactsFile)
-            assertEquals(project.projectDir, outputDir)
-            assertEquals(File(project.projectDir, "license-catalog.yml"), catalogFile)
+            assertEquals(File(project.projectDir, "artifact-definition.yml"), assembledArtifactsFile)
+            assertEquals(project.projectDir, assembleOutputDir)
+            assertEquals(File(project.projectDir, "license-catalog.yml"), assembledLicenseCatalogFile)
             assertEquals(emptySet(), excludeGroups)
             assertEquals(emptySet(), excludeArtifacts)
         }
@@ -77,12 +68,12 @@ class ReadWriteLicenseTaskArgsTest {
 
     @Test
     fun `withScope is false`() {
-        extension.withScope = false
+        extension.groupByScopes = false
 
         val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
 
         with(args) {
-            assertEquals(Assembler.Style.StructuredWithoutScope, style)
+            assertEquals(Assembler.Style.StructuredWithoutScope, assemblyStyle)
         }
     }
 
@@ -93,7 +84,7 @@ class ReadWriteLicenseTaskArgsTest {
         val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
 
         with(args) {
-            assertEquals(Assembler.Style.Flatten, style)
+            assertEquals(Assembler.Style.Flatten, assemblyStyle)
         }
     }
 
@@ -104,61 +95,34 @@ class ReadWriteLicenseTaskArgsTest {
         val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
 
         with(args) {
-            assertEquals(Convention.Json, format)
-            assertEquals("json", ext)
-            assertEquals(File(project.projectDir, "license.json"), artifactsFile)
-            assertEquals(File(project.projectDir, "license-catalog.yml"), catalogFile)
+            assertEquals(Convention.Json.Assembly, assemblyFormat)
+            assertEquals("json", assembledFileExt)
+            assertEquals(File(project.projectDir, "artifact-definition.json"), assembledArtifactsFile)
+            assertEquals(File(project.projectDir, "license-catalog.yml"), assembledLicenseCatalogFile)
         }
     }
 
     @Test
-    fun `targetVariants is appendable but no impact`() {
-        extension.targetVariants += setOf("abc", "xyz")
+    fun `targetVariant is modifiable but no impact`() {
+        extension.targetVariant = "debug"
 
         val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
 
         with(args) {
-            assertEquals(Assembler.Style.StructuredWithScope, style)
-            assertEquals(Convention.Yaml, format)
-            assertEquals("yml", ext)
+            assertEquals(Assembler.Style.StructuredWithScope, assemblyStyle)
+            assertEquals(Convention.Yaml.Assembly, assemblyFormat)
+            assertEquals("yml", assembledFileExt)
             assertEquals(ArtifactManagement.CommonConfigurationNames, configurationNames)
-            assertEquals(setOf(ResolveScope.Variant("feature"), ResolveScope.Variant("release")), variantScopes)
+            assertEquals(ResolveScope.Variant("featureRelease"), variantScope)
             assertEquals(
                 setOf(
                     ResolveScope.Addition("test"),
                     ResolveScope.Addition("androidTest")
                 ), additionalScopes
             )
-            assertEquals(File(project.projectDir, "license.yml"), artifactsFile)
-            assertEquals(project.projectDir, outputDir)
-            assertEquals(File(project.projectDir, "license-catalog.yml"), catalogFile)
-            assertEquals(emptySet(), excludeGroups)
-            assertEquals(emptySet(), excludeArtifacts)
-        }
-    }
-
-    @Test
-    fun `targetVariants is removable but no impact`() {
-        extension.targetVariants += setOf("abc", "xyz")
-        extension.targetVariants -= setOf("abc")
-
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
-
-        with(args) {
-            assertEquals(Assembler.Style.StructuredWithScope, style)
-            assertEquals(Convention.Yaml, format)
-            assertEquals("yml", ext)
-            assertEquals(ArtifactManagement.CommonConfigurationNames, configurationNames)
-            assertEquals(setOf(ResolveScope.Variant("feature"), ResolveScope.Variant("release")), variantScopes)
-            assertEquals(
-                setOf(
-                    ResolveScope.Addition("test"),
-                    ResolveScope.Addition("androidTest")
-                ), additionalScopes
-            )
-            assertEquals(File(project.projectDir, "license.yml"), artifactsFile)
-            assertEquals(project.projectDir, outputDir)
-            assertEquals(File(project.projectDir, "license-catalog.yml"), catalogFile)
+            assertEquals(File(project.projectDir, "artifact-definition.yml"), assembledArtifactsFile)
+            assertEquals(project.projectDir, assembleOutputDir)
+            assertEquals(File(project.projectDir, "license-catalog.yml"), assembledLicenseCatalogFile)
             assertEquals(emptySet(), excludeGroups)
             assertEquals(emptySet(), excludeArtifacts)
         }
@@ -224,7 +188,9 @@ class ReadWriteLicenseTaskArgsTest {
             assertEquals(
                 setOf(
                     "compileOnly",
-                    "implementation"
+                    "implementation",
+                    "annotationProcessor",
+                    "kapt"
                 ), configurationNames
             )
         }
