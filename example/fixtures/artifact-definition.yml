@@ -1,0 +1,542 @@
+"yellowBlueRelease":
+  "androidx.activity":
+  - key: "activity"
+    displayName: "Activity"
+    url: "https://developer.android.com/jetpack/androidx"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.annotation":
+  "androidx.core":
+  - key: "core"
+    displayName: "Android Support Library compat"
+    url: "https://developer.android.com/jetpack/androidx"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  - key: "core-ktx"
+    displayName: "Core Kotlin Extensions"
+    url: "https://developer.android.com/jetpack/androidx"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.cursoradapter":
+  - key: "cursoradapter"
+    displayName: "Android Support Library Cursor Adapter"
+    url: "http://developer.android.com/tools/extras/support-library.html"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.customview":
+  - key: "customview"
+    displayName: "Android Support Library Custom View"
+    url: "http://developer.android.com/tools/extras/support-library.html"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.databinding":
+  - key: "databinding-adapters"
+    displayName: "databinding-adapters"
+    url: null
+    copyrightHolders: []
+    licenses:
+    - "apache-2.0"
+  - key: "databinding-common"
+    displayName: "Data Binding Base Library"
+    url: "https://developer.android.com/studio"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  - key: "databinding-compiler"
+    displayName: "Data Binding Annotation Processor"
+    url: "https://developer.android.com/studio"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  - key: "databinding-compiler-common"
+    displayName: "Data Binding Compiler Common"
+    url: "https://developer.android.com/studio"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  - key: "databinding-runtime"
+    displayName: "databinding-runtime"
+    url: null
+    copyrightHolders: []
+    licenses:
+    - "apache-2.0"
+  - key: "viewbinding"
+    displayName: "viewbinding"
+    url: null
+    copyrightHolders: []
+    licenses:
+    - "apache-2.0"
+  "androidx.drawerlayout":
+  - key: "drawerlayout"
+    displayName: "Android Support Library Drawer Layout"
+    url: "http://developer.android.com/tools/extras/support-library.html"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.fragment":
+  - key: "fragment"
+    displayName: "Android Support Library fragment"
+    url: "https://developer.android.com/jetpack/androidx"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.interpolator":
+  - key: "interpolator"
+    displayName: "Android Support Library Interpolators"
+    url: "http://developer.android.com/tools/extras/support-library.html"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.lifecycle":
+  - key: "lifecycle-common"
+    displayName: "Android Lifecycle-Common"
+    url: "https://developer.android.com/topic/libraries/architecture/index.html"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  - key: "lifecycle-livedata"
+    displayName: "Android Lifecycle LiveData"
+    url: "https://developer.android.com/topic/libraries/architecture/index.html"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  - key: "lifecycle-livedata-core"
+    displayName: "Android Lifecycle LiveData Core"
+    url: "https://developer.android.com/topic/libraries/architecture/index.html"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  - key: "lifecycle-runtime"
+    displayName: "Android Lifecycle Runtime"
+    url: "https://developer.android.com/topic/libraries/architecture/index.html"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  - key: "lifecycle-viewmodel"
+    displayName: "Android Lifecycle ViewModel"
+    url: "https://developer.android.com/topic/libraries/architecture/index.html"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.loader":
+  - key: "loader"
+    displayName: "Android Support Library loader"
+    url: "http://developer.android.com/tools/extras/support-library.html"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.recyclerview":
+  - key: "recyclerview"
+    displayName: "Android Support RecyclerView v7"
+    url: "https://developer.android.com/jetpack/androidx"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.transition":
+  - key: "transition"
+    displayName: "Android Transition Support Library"
+    url: "https://developer.android.com/jetpack/androidx"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.vectordrawable":
+  - key: "vectordrawable"
+    displayName: "Android Support VectorDrawable"
+    url: "https://developer.android.com/jetpack/androidx"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  - key: "vectordrawable-animated"
+    displayName: "Android Support AnimatedVectorDrawable"
+    url: "https://developer.android.com/jetpack/androidx"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.versionedparcelable":
+  - key: "versionedparcelable"
+    displayName: "VersionedParcelable"
+    url: "http://developer.android.com/tools/extras/support-library.html"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.viewpager":
+  - key: "viewpager"
+    displayName: "Android Support Library View Pager"
+    url: "http://developer.android.com/tools/extras/support-library.html"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "androidx.viewpager2":
+  - key: "viewpager2"
+    displayName: "AndroidX Widget ViewPager2"
+    url: "https://developer.android.com/jetpack/androidx"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "com.android.databinding":
+  - key: "baseLibrary"
+    displayName: "Data Binding Base Library"
+    url: "https://developer.android.com/studio"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "com.android.tools":
+  - key: "annotations"
+    displayName: "Android Tools Annotations library"
+    url: "https://developer.android.com/studio"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "com.android.tools.build.jetifier":
+  - key: "jetifier-core"
+    displayName: "Android Jetifier Core"
+    url: "https://developer.android.com/jetpack/androidx"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "com.google.android.material":
+  - key: "material"
+    displayName: "Material Components for Android"
+    url: "https://github.com/material-components/material-components-android"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "com.google.auto":
+  - key: "auto-common"
+    displayName: "Auto Common Libraries"
+    url: "http://github.com/google/auto"
+    copyrightHolders: []
+    licenses: []
+  "com.google.code.findbugs":
+  - key: "jsr305"
+    displayName: "FindBugs-jsr305"
+    url: "http://findbugs.sourceforge.net/"
+    copyrightHolders: []
+    licenses:
+    - "apache-2.0"
+  "com.google.code.gson":
+  - key: "gson"
+    displayName: "Gson"
+    url: null
+    copyrightHolders: []
+    licenses: []
+  "com.google.errorprone":
+  - key: "error_prone_annotations"
+    displayName: "error-prone annotations"
+    url: null
+    copyrightHolders: []
+    licenses:
+    - "apache-2.0"
+  "com.google.guava":
+  - key: "failureaccess"
+    displayName: "Guava InternalFutureFailureAccess and InternalFutures"
+    url: null
+    copyrightHolders: []
+    licenses: []
+  - key: "guava"
+    displayName: "Guava: Google Core Libraries for Java"
+    url: null
+    copyrightHolders: []
+    licenses: []
+  - key: "listenablefuture"
+    displayName: "Guava ListenableFuture only"
+    url: null
+    copyrightHolders: []
+    licenses: []
+  "com.google.j2objc":
+  - key: "j2objc-annotations"
+    displayName: "J2ObjC Annotations"
+    url: "https://github.com/google/j2objc/"
+    copyrightHolders: []
+    licenses:
+    - "apache-2.0"
+  "com.googlecode.juniversalchardet":
+  - key: "juniversalchardet"
+    displayName: "juniversalchardet"
+    url: "http://juniversalchardet.googlecode.com/"
+    copyrightHolders: []
+    licenses:
+    - "Mozilla Public License 1.1 (MPL 1.1)@39"
+  "com.squareup":
+  - key: "javapoet"
+    displayName: "JavaPoet"
+    url: "http://github.com/square/javapoet/"
+    copyrightHolders: []
+    licenses:
+    - "apache-2.0"
+  - key: "kotlinpoet"
+    displayName: "KotlinPoet"
+    url: "https://github.com/square/kotlinpoet"
+    copyrightHolders:
+    - "Square, Inc."
+    licenses:
+    - "apache-2.0"
+  "com.squareup.moshi":
+  - key: "moshi"
+    displayName: "Moshi"
+    url: null
+    copyrightHolders: []
+    licenses: []
+  - key: "moshi-kotlin-codegen"
+    displayName: "moshi-kotlin-codegen"
+    url: null
+    copyrightHolders: []
+    licenses: []
+  "com.squareup.okio":
+  - key: "okio"
+    displayName: "Okio"
+    url: null
+    copyrightHolders: []
+    licenses: []
+  "com.xwray":
+  - key: "groupie"
+    displayName: "Groupie"
+    url: "https://github.com/xwray/groupie"
+    copyrightHolders:
+    - "Lisa Wray"
+    licenses:
+    - "mit"
+  - key: "groupie-databinding"
+    displayName: "Groupie"
+    url: "https://github.com/xwray/groupie"
+    copyrightHolders:
+    - "Lisa Wray"
+    licenses:
+    - "mit"
+  "commons-codec":
+  - key: "commons-codec"
+    displayName: "Apache Commons Codec"
+    url: "http://commons.apache.org/proper/commons-codec/"
+    copyrightHolders:
+    - "Henri Yandell"
+    - "Tim OBrien"
+    - "Scott Sanders"
+    - "Rodney Waldhoff"
+    - "Daniel Rall"
+    - "Jon S. Stevens"
+    - "Gary Gregory"
+    - "David Graham"
+    - "Julius Davies"
+    - "Thomas Neidhart"
+    licenses: []
+  "commons-io":
+  - key: "commons-io"
+    displayName: "Commons IO"
+    url: "http://commons.apache.org/io/"
+    copyrightHolders:
+    - "Scott Sanders"
+    - "dIon Gillard"
+    - "Nicola Ken Barozzi"
+    - "Henri Yandell"
+    - "Stephen Colebourne"
+    - "Jeremias Maerki"
+    - "Matthew Hawthorne"
+    - "Martin Cooper"
+    - "Rob Oxspring"
+    - "Jochen Wiedmann"
+    - "Niall Pemberton"
+    - "Jukka Zitting"
+    - "Gary Gregory"
+    licenses: []
+  "io.github.jmatsu":
+  - key: "license-list-schema"
+    displayName: "license-list-schema"
+    url: null
+    copyrightHolders: []
+    licenses: []
+  "org.antlr":
+  - key: "antlr4"
+    displayName: "ANTLR 4 Tool"
+    url: null
+    copyrightHolders: []
+    licenses: []
+  "org.checkerframework":
+  - key: "checker-qual"
+    displayName: "Checker Qual"
+    url: "https://checkerframework.org"
+    copyrightHolders:
+    - "Michael Ernst"
+    - "Werner M. Dietl"
+    - "Suzanne Millstein"
+    licenses:
+    - "mit"
+  "org.codehaus.mojo":
+  - key: "animal-sniffer-annotations"
+    displayName: "Animal Sniffer Annotations"
+    url: null
+    copyrightHolders: []
+    licenses: []
+  "org.jetbrains":
+  - key: "annotations"
+    displayName: "IntelliJ IDEA Annotations"
+    url: "http://www.jetbrains.org"
+    copyrightHolders:
+    - "JetBrains Team"
+    licenses:
+    - "apache-2.0"
+  "org.jetbrains.kotlin":
+  - key: "kotlin-reflect"
+    displayName: "org.jetbrains.kotlin:kotlin-reflect"
+    url: "https://kotlinlang.org/"
+    copyrightHolders:
+    - "Kotlin Team"
+    licenses:
+    - "apache-2.0"
+  - key: "kotlin-stdlib"
+    displayName: "org.jetbrains.kotlin:kotlin-stdlib"
+    url: "https://kotlinlang.org/"
+    copyrightHolders:
+    - "Kotlin Team"
+    licenses:
+    - "apache-2.0"
+  - key: "kotlin-stdlib-common"
+    displayName: "org.jetbrains.kotlin:kotlin-stdlib-common"
+    url: "https://kotlinlang.org/"
+    copyrightHolders:
+    - "Kotlin Team"
+    licenses:
+    - "apache-2.0"
+  - key: "kotlin-stdlib-jdk7"
+    displayName: "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
+    url: "https://kotlinlang.org/"
+    copyrightHolders:
+    - "Kotlin Team"
+    licenses:
+    - "apache-2.0"
+  - key: "kotlin-stdlib-jdk8"
+    displayName: "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    url: "https://kotlinlang.org/"
+    copyrightHolders:
+    - "Kotlin Team"
+    licenses:
+    - "apache-2.0"
+"test":
+  "junit":
+  - key: "junit"
+    displayName: "JUnit"
+    url: "http://junit.org"
+    copyrightHolders:
+    - "David Saff"
+    - "Kevin Cooney"
+    - "Stefan Birkner"
+    - "Marc Philipp"
+    licenses:
+    - "epl-1.0"
+  "org.hamcrest":
+  - key: "hamcrest-core"
+    displayName: "Hamcrest Core"
+    url: null
+    copyrightHolders: []
+    licenses: []
+"androidTest":
+  "com.android.support":
+  - key: "support-annotations"
+    displayName: "Android Support Library Annotations"
+    url: "http://developer.android.com/tools/extras/support-library.html"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "com.android.support.test":
+  - key: "monitor"
+    displayName: "Android Testing Support Library"
+    url: "https://developer.android.com/testing"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  - key: "runner"
+    displayName: "Android Testing Support Library"
+    url: "https://developer.android.com/testing"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "com.android.support.test.espresso":
+  - key: "espresso-core"
+    displayName: "Android Testing Support Library"
+    url: "https://developer.android.com/testing"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  - key: "espresso-idling-resource"
+    displayName: "Android Testing Support Library"
+    url: "https://developer.android.com/testing"
+    copyrightHolders:
+    - "The Android Open Source Project"
+    licenses:
+    - "apache-2.0"
+  "com.google.code.findbugs":
+  - key: "jsr305"
+    displayName: "FindBugs-jsr305"
+    url: "http://findbugs.sourceforge.net/"
+    copyrightHolders: []
+    licenses:
+    - "apache-2.0"
+  "com.squareup":
+  - key: "javawriter"
+    displayName: "JavaWriter"
+    url: "http://github.com/square/javawriter/"
+    copyrightHolders: []
+    licenses:
+    - "apache-2.0"
+  "javax.inject":
+  - key: "javax.inject"
+    displayName: "javax.inject"
+    url: "http://code.google.com/p/atinject/"
+    copyrightHolders: []
+    licenses:
+    - "apache-2.0"
+  "net.sf.kxml":
+  - key: "kxml2"
+    displayName: "kXML 2 is a small XML pull parser based on the common XML pull API"
+    url: "http://kxml.sourceforge.net/"
+    copyrightHolders: []
+    licenses:
+    - "BSD style@73"
+    - "Public Domain@48"
+  "org.hamcrest":
+  - key: "hamcrest-integration"
+    displayName: "Hamcrest Integration"
+    url: null
+    copyrightHolders: []
+    licenses: []
+  - key: "hamcrest-library"
+    displayName: "Hamcrest library"
+    url: null
+    copyrightHolders: []
+    licenses: []

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -eux
+
+# go to the root of this project
+cd $(git rev-parse --show-toplevel)
+
+#
+# you need to add *.gradle files if you have any other dependencies
+#
+
+# read build.gradle from each modules
+while read path; do
+    md5sum $path
+done < <(find . -name "build.gradle" | sort)
+
+# read build.gradle.kts from each modules
+while read path; do
+    md5sum $path
+done < <(find . -name "build.gradle.kts" | sort)
+
+# read gradle.properties from each modules
+while read path; do
+    md5sum $path
+done < <(find . -name "gradle.properties" | sort)
+
+# read kt files of buildSrc project
+while read path; do
+    md5sum $path
+done < <(find buildSrc -name "*.kt" | sort)
