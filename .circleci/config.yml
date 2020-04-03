@@ -46,13 +46,13 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - plugin-jars-{{ Environment.CIRCLE_BRANCH }}
+            - plugin-jars-{{ .Environment.CIRCLE_BRANCH }}
   save_plugin_jars:
     steps:
       - save_cache:
           paths:
             - ~/.m2
-          key: plugin-jars-{{ Environment.CIRCLE_BRANCH }}
+          key: plugin-jars-{{ .Environment.CIRCLE_BRANCH }}
 
 jobs:
   install_plugin_jars:
