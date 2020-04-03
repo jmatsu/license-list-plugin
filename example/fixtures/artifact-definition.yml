@@ -7,6 +7,90 @@ yellowBlueRelease:
           - The Android Open Source Project
         licenses:
           - apache-2.0
+    androidx.annotation:
+      - key: annotation
+        displayName: Android Support Library Annotations
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+      - key: annotation-experimental
+        displayName: Experimental annotation
+        url: https://developer.android.com/jetpack/androidx
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.appcompat:
+      - key: appcompat
+        displayName: Android AppCompat Library v7
+        url: https://developer.android.com/jetpack/androidx
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+      - key: appcompat-resources
+        displayName: Android Resources Library
+        url: https://developer.android.com/jetpack/androidx
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.arch.core:
+      - key: core-common
+        displayName: Android Arch-Common
+        url: https://developer.android.com/topic/libraries/architecture/index.html
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+      - key: core-runtime
+        displayName: Android Arch-Runtime
+        url: https://developer.android.com/topic/libraries/architecture/index.html
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.cardview:
+      - key: cardview
+        displayName: Android Support CardView v7
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.collection:
+      - key: collection
+        displayName: Android Support Library collections
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.coordinatorlayout:
+      - key: coordinatorlayout
+        displayName: Android Support Library Coordinator Layout
+        url: https://developer.android.com/jetpack/androidx
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.core:
+      - key: core
+        displayName: Android Support Library compat
+        url: https://developer.android.com/jetpack/androidx
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+      - key: core-ktx
+        displayName: Core Kotlin Extensions
+        url: https://developer.android.com/jetpack/androidx
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
     androidx.cursoradapter:
       - key: cursoradapter
         displayName: Android Support Library Cursor Adapter
@@ -47,6 +131,26 @@ yellowBlueRelease:
       - key: databinding-compiler-common
         displayName: Data Binding Compiler Common
         url: https://developer.android.com/studio
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+      - key: databinding-runtime
+        displayName: databinding-runtime
+        url: null
+        copyrightHolders: []
+        licenses:
+          - apache-2.0
+      - key: viewbinding
+        displayName: viewbinding
+        url: null
+        copyrightHolders: []
+        licenses:
+          - apache-2.0
+    androidx.drawerlayout:
+      - key: drawerlayout
+        displayName: Android Support Library Drawer Layout
+        url: http://developer.android.com/tools/extras/support-library.html
         copyrightHolders:
           - The Android Open Source Project
         licenses:

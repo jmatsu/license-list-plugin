@@ -1,5 +1,6 @@
 package io.github.jmatsu.license.presentation
 
+import io.github.jmatsu.license.LicenseListPlugin
 import io.github.jmatsu.license.ext.collectToMap
 import io.github.jmatsu.license.internal.LicenseClassifier
 import io.github.jmatsu.license.model.ResolveScope
@@ -9,11 +10,11 @@ import io.github.jmatsu.license.poko.ArtifactDefinition
 import io.github.jmatsu.license.poko.LicenseKey
 import io.github.jmatsu.license.poko.PlainLicense
 import io.github.jmatsu.license.poko.Scope
-import java.util.SortedMap
 import kotlinx.serialization.StringFormat
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
+import java.util.SortedMap
 
 class Assembler(
     private val resolvedArtifactMap: SortedMap<ResolveScope, List<ResolvedArtifact>>,
@@ -95,7 +96,13 @@ class Assembler(
 
     fun assemblePlainLicenses(format: StringFormat): String {
         // assemble must be called in advance
-        return format.stringify(PlainLicense.serializer().list, licenseCapture.sortedBy { it.name })
+        val licenses = licenseCapture.sortedBy { it.key.value }
+
+        licenses.forEach {
+            LicenseListPlugin.logger?.info(it.key.toString())
+        }
+
+        return format.stringify(PlainLicense.serializer().list, licenses)
     }
 
     fun transformForFlatten(): List<ArtifactDefinition> {

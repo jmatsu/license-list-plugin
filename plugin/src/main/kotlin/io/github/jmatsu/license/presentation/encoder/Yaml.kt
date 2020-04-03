@@ -31,6 +31,6 @@ class Yaml(
         })
 
         // format
-        return snake.dump(snake.load(output))
+        return snake.dump(snake.load<T>(output))
     }
 }

@@ -6,9 +6,9 @@ import io.github.jmatsu.license.model.ResolvedArtifact
 import io.github.jmatsu.license.poko.ArtifactDefinition
 import io.github.jmatsu.license.poko.PlainLicense
 import io.github.jmatsu.license.poko.Scope
-import java.util.SortedMap
 import kotlinx.serialization.StringFormat
 import kotlinx.serialization.builtins.list
+import java.util.SortedMap
 
 class MergerableAssembler(
     scopedResolvedArtifacts: SortedMap<ResolveScope, List<ResolvedArtifact>>,
@@ -67,8 +67,9 @@ class MergerableAssembler(
         val newLicenses = licenseCapture.map { newLicense ->
             baseLicenseMap[newLicense.key]?.first() ?: newLicense
         }
+        val preservedLicenses = baseLicenseMap.filterKeys { licenseKey -> baseArtifacts.any { licenseKey in it.licenses } }.flatMap { it.value }
 
-        return format.stringify(PlainLicense.serializer().list, newLicenses.sortedBy { it.name })
+        return format.stringify(PlainLicense.serializer().list, (newLicenses + preservedLicenses).sortedBy { it.key.value })
     }
 
     fun List<ArtifactDefinition>.mergeAndSort(newKeys: List<String>, strongerDefinitions: Set<ArtifactDefinition>): Map<String, List<ArtifactDefinition>> {
