@@ -40,7 +40,7 @@ abstract class ValidateLicenseListTask
             excludeArtifacts = args.excludeArtifacts
         )
         val scopedResolvedArtifacts = artifactManagement.analyze(
-            variantScopes = args.variantScopes,
+            variantScope = args.variantScope,
             additionalScopes = args.additionalScopes
         )
 

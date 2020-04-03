@@ -38,7 +38,7 @@ abstract class InitLicenseListTask
             excludeArtifacts = args.excludeArtifacts
         )
         val scopedResolvedArtifacts = artifactManagement.analyze(
-            variantScopes = args.variantScopes,
+            variantScope = args.variantScope,
             additionalScopes = args.additionalScopes
         )
         val assembler = Assembler(

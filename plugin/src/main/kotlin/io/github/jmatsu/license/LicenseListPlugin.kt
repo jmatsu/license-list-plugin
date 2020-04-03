@@ -22,9 +22,10 @@ class LicenseListPlugin : Plugin<Project> {
 
         project.plugins.withType(AppPlugin::class.java) {
             val extension = requireNotNull(project.extensions.getByType(LicenseListExtension::class.java))
-            val targetVariantName = extension.targetVariant
-
             val androidExtension = requireNotNull(project.extensions.findByType(AppExtension::class.java))
+
+            // Do not read values of the extension because it may not be reflected yet
+
             androidExtension.applicationVariants.whenObjectAdded {
                 val variantName = name
 
@@ -52,7 +53,9 @@ class LicenseListPlugin : Plugin<Project> {
                     """.trimMargin()
                 }
 
-                if (targetVariantName == variantName) {
+                if (extension.targetVariant == variantName) {
+                    project.logger.info("$variantName has been matched to targetVariant.")
+
                     project.tasks.register("initLicenseList") {
                         dependsOn(project.tasks.findByName("init${variantName.capitalize()}LicenseList"))
                     }

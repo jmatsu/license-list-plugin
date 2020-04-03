@@ -15,6 +15,23 @@ android {
         versionName = "1.0"
     }
 
+    flavorDimensions("one", "two")
+
+    productFlavors {
+        create("yellow") {
+            dimension = "one"
+        }
+        create("red") {
+            dimension = "one"
+        }
+        create("white") {
+            dimension = "two"
+        }
+        create("blue") {
+            dimension = "two"
+        }
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
@@ -65,5 +82,6 @@ kapt {
 }
 
 licenseList {
-
+    targetVariant = "yellowBlueRelease"
+    assembleStyle = "structured"
 }

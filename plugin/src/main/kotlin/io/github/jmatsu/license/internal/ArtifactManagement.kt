@@ -1,7 +1,6 @@
 package io.github.jmatsu.license.internal
 
 import io.github.jmatsu.license.ext.collectToMap
-import io.github.jmatsu.license.ext.combination
 import io.github.jmatsu.license.ext.lenientConfiguration
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.model.ResolvedArtifact
@@ -31,32 +30,28 @@ class ArtifactManagement(
             "compileOnly",
             "implementation",
             "api",
-            "compile"
+            "compile",
+            "annotationProcessor",
+            "kapt"
         )
     }
 
     /**
      * Analyze dependencies based on the given scopes.
      *
-     * @param variantScopes variants like free, paid, debug, release that depend on users' projects. This plugin relies on the order. May be empty.
+     * @param variantScope a variant like freeRelease that depends on users' projects.
      * @param additionalScopes not plain scopes like test, androidTest and what users have defined. No order-aware. May be empty.
      * @return resolved artifacts grouped by scopes and sorted by scopes
      */
     fun analyze(
-        variantScopes: Set<ResolveScope.Variant>,
+        variantScope: ResolveScope.Variant,
         additionalScopes: Set<ResolveScope.Addition>
     ): SortedMap<ResolveScope, List<ResolvedArtifact>> {
-        val mergedVariants = variantScopes.combination(k = variantScopes.size).map { variants ->
-            variants.reduce { acc, variant ->
-                acc.copy(name = "${acc.name}${variant.name.capitalize()}")
-            }
-        }
+        val variantConfigurations = project.allConfigurations(variantScope)
 
-        val variantConfigurations = project.allConfigurations(mergedVariants + variantScopes)
-
-        val scopedConfigurations = (mergedVariants.map { mergedVariant -> mergedVariant to variantConfigurations } +
+        val scopedConfigurations = (listOf(variantScope to variantConfigurations) +
             additionalScopes.map { scope ->
-                scope to project.allConfigurations(mergedVariants + variantScopes, scope = scope)
+                scope to project.allConfigurations(variantScope, additionalScope = scope)
             }).toMap()
 
         val components: MutableList<ComponentIdentifier> = ArrayList()
@@ -81,7 +76,7 @@ class ArtifactManagement(
 
         val scopedModuleSeq = scopedModules.asSequence()
 
-        val allScopes = variantScopes + additionalScopes
+        val allScopes = listOf(variantScope) + additionalScopes
 
         return resolveResults.resolvedComponents.flatMap { result ->
             result.getArtifacts(MavenPomArtifact::class.java).map {
@@ -130,39 +125,30 @@ class ArtifactManagement(
 
     /**
      * Return all configurations based the given scopes.
-     * This method will build configurations corresponding to scopes like Android plugin does.
      *
-     * @return all configurations that we should resolve
+     * @return all configurations that we should resolve but some of them might be *ancestor* configuration.
      */
     private fun Project.allConfigurations(
-        variantScopes: List<ResolveScope.Variant>,
-        scope: ResolveScope? = null
+        variantScope: ResolveScope.Variant,
+        additionalScope: ResolveScope? = null
     ): List<Configuration> {
-        val suffixes = if (scope != null) {
+        val suffixes = if (additionalScope != null) {
             configurationNames.map { name ->
-                scope.name.decapitalize() + name.capitalize()
+                additionalScope.name.decapitalize() + name.capitalize()
             }
         } else {
             configurationNames
         }
 
-        val mergedVariant = variantScopes.reduce { acc, variant ->
-            acc.copy(name = "${acc.name}${variant.name.capitalize()}")
-        }
-
-        val targetConfigurationNames = suffixes + variantScopes.flatMap { variantScope ->
-            suffixes.map { suffix ->
-                variantScope.name.decapitalize() + suffix.capitalize()
-            }
-        } + suffixes.map { suffix ->
-            mergedVariant.name.decapitalize() + suffix.capitalize()
+        val targetConfigurationNames = suffixes + suffixes.map { suffix ->
+            variantScope.name.decapitalize() + suffix.capitalize()
         }
 
         return project.configurations.flatMap {
             it.all.filter { configuration ->
                 (configuration.name in targetConfigurationNames).also { isTarget ->
                     if (isTarget) {
-                        project.logger.debug("Configuration(name = ${configuration.name}) will be search")
+                        project.logger.info("Configuration(name = ${configuration.name}) will be search")
                     }
                 }
             }
