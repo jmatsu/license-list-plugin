@@ -1,5 +1,6 @@
 package io.github.jmatsu.license.presentation.encoder
 
+import com.charleskorn.kaml.Yaml as Kaml
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialFormat
 import kotlinx.serialization.SerializationStrategy
@@ -7,7 +8,6 @@ import kotlinx.serialization.StringFormat
 import kotlinx.serialization.modules.EmptyModule
 import kotlinx.serialization.modules.SerialModule
 import org.yaml.snakeyaml.DumperOptions
-import com.charleskorn.kaml.Yaml as Kaml
 import org.yaml.snakeyaml.Yaml as SnakeYaml
 
 class Yaml(

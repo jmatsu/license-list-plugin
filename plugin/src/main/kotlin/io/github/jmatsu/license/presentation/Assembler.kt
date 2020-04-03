@@ -10,11 +10,11 @@ import io.github.jmatsu.license.poko.ArtifactDefinition
 import io.github.jmatsu.license.poko.LicenseKey
 import io.github.jmatsu.license.poko.PlainLicense
 import io.github.jmatsu.license.poko.Scope
+import java.util.SortedMap
 import kotlinx.serialization.StringFormat
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
-import java.util.SortedMap
 
 class Assembler(
     private val resolvedArtifactMap: SortedMap<ResolveScope, List<ResolvedArtifact>>,
