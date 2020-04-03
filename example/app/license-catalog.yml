@@ -7,6 +7,9 @@
   - key: epl-1.0
     name: Eclipse Public License 1.0
     url: https://opensource.org/licenses/EPL-1.0
+  - key: NewLicense
+    name: An example license that is unavailable in pom files
+    url: https://github.com/jmatsu/license-list-plugin
   - key: mit
     name: MIT License
     url: https://api.github.com/licenses/mit
@@ -16,6 +19,3 @@
   - key: Public Domain@48
     name: Public Domain
     url: http://creativecommons.org/licenses/publicdomain
-  - key: NewLicense
-    name: An example license that is unavailable in pom files
-    url: https://github.com/jmatsu/license-list-plugin

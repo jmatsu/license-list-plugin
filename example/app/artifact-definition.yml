@@ -450,7 +450,7 @@ yellowBlueRelease:
     io.github.jmatsu:
       - key: license-list-schema
         displayName: license-list-schema
-        url: "https://github.com/jmatsu/license-list-plugin"
+        url: https://github.com/jmatsu/license-list-plugin
         copyrightHolders:
           - Jumpei Matsuda
         licenses:
