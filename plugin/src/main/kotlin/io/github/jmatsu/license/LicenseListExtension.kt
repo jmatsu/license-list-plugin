@@ -1,5 +1,6 @@
 package io.github.jmatsu.license
 
+import freemarker.template.Version
 import io.github.jmatsu.license.dsl.AssembleFormat
 import io.github.jmatsu.license.dsl.AssembleStyle
 import io.github.jmatsu.license.dsl.HtmlFormat
@@ -9,6 +10,8 @@ import io.github.jmatsu.license.dsl.YamlFormat
 import io.github.jmatsu.license.dsl.isAssembleFormat
 import io.github.jmatsu.license.dsl.isAssembleStyle
 import io.github.jmatsu.license.dsl.isVisualizeFormat
+import io.github.jmatsu.license.dsl.validation.fileNameProperty
+import io.github.jmatsu.license.dsl.validation.optionalDirectoryFileProperty
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.model.ResolveScope
 import java.io.File
@@ -31,13 +34,12 @@ open class LicenseListExtension
     var isEnabled: Boolean = true
 
     /**
-     * A file object of a license file.
+     * A parent directory of an artifact definition file.
      */
     @get:PathSensitive(PathSensitivity.RELATIVE)
     @get:InputFile
-    @Optional
-    var outputFile: File? = null
-    // TODO may be need to reconsider the name of the property
+    @get:Optional
+    var artifactDefinitionFile: File? by optionalDirectoryFileProperty()
 
     /**
      * A variant that default tasks will use for the dependency analysis and to get licenses.
@@ -153,13 +155,33 @@ open class LicenseListExtension
      */
     @get:Input
     @get:PathSensitive(PathSensitivity.RELATIVE)
-    @Optional
-    var htmlTemplateDir: File? = null
+    @get:Optional
+    var htmlTemplateDir: File? by optionalDirectoryFileProperty(requireExist = true)
 
     /**
      * A version to be used visualizing html format
      */
     @get:Input
-    @Optional
-    var freeMakerVersion: String? = null
+    @get:Optional
+    var freeMakerVersion: String?
+        get() = internalFreeMakerVersion?.toString()
+        set(value) {
+            internalFreeMakerVersion = Version(value)
+        }
+
+    internal var internalFreeMakerVersion: Version? = null
+
+    /**
+     * An output directory of the generated visualized file.
+     */
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    @get:InputFile
+    @get:Optional
+    var outputDir: File? by optionalDirectoryFileProperty()
+
+    /**
+     * A basename of a visualized licenses' file
+     */
+    @get:Input
+    var visualizedFileBasename: String by fileNameProperty("license-list")
 }

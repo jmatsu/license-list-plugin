@@ -58,7 +58,7 @@ abstract class VisualizeLicenseListTask
         val text = visualizer.visualizeArtifacts(args.visualizeFormat)
 
         args.visualizeOutputDir.mkdirs()
-        File(args.visualizeOutputDir, "license.${args.visualizedFileExt}").writeText(text)
+        File(args.visualizeOutputDir, args.visualizedFilename).writeText(text)
     }
 
     class Args(
@@ -70,13 +70,15 @@ abstract class VisualizeLicenseListTask
         extension = extension,
         variant = variant
     ) {
-        // FIXME use extension
         val visualizeOutputDir: File =
-            variant.sourceSets.flatMap {
-                it.assetsDirectories
-            }.firstOrNull {
-                it.absolutePath.endsWith("/${variant.mergedFlavor.name}/assets")
-            } ?: assembleOutputDir
+            extension.outputDir ?: let {
+                // find first strategy
+                variant.sourceSets.flatMap {
+                    it.assetsDirectories
+                }.firstOrNull {
+                    it.absolutePath.endsWith("/${variant.name}/assets")
+                }
+            } ?: project.projectDir
 
         val visualizedFileExt: String = when (extension.visualizeFormat) {
             JsonFormat -> "json"
@@ -88,11 +90,13 @@ abstract class VisualizeLicenseListTask
             JsonFormat -> Convention.Json.Visualization
             HtmlFormat -> Convention.Html.Visualization(
                 htmlConfiguration = HtmlConfiguration(
-                    version = extension.freeMakerVersion?.let { Version(it) } ?: Version("2.3.8"),
+                    version = extension.internalFreeMakerVersion ?: Version("2.3.28"),
                     templateDir = extension.htmlTemplateDir
                 )
             )
             else -> throw IllegalArgumentException("Only one of $JsonFormat or $HtmlFormat are allowed.")
         }
+
+        val visualizedFilename: String = "${extension.visualizedFileBasename}.$visualizedFileExt"
     }
 }

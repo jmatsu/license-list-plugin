@@ -1,6 +1,7 @@
 package io.github.jmatsu.license.internal
 
 import io.github.jmatsu.license.ext.collectToMap
+import io.github.jmatsu.license.ext.combination
 import io.github.jmatsu.license.ext.lenientConfiguration
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.model.ResolvedArtifact
@@ -45,15 +46,17 @@ class ArtifactManagement(
         variantScopes: Set<ResolveScope.Variant>,
         additionalScopes: Set<ResolveScope.Addition>
     ): SortedMap<ResolveScope, List<ResolvedArtifact>> {
-        val mergedVariant = variantScopes.reduce { acc, variant ->
-            acc.copy(name = "${acc.name}${variant.name.capitalize()}")
+        val mergedVariants = variantScopes.combination(k = variantScopes.size).map { variants ->
+            variants.reduce { acc, variant ->
+                acc.copy(name = "${acc.name}${variant.name.capitalize()}")
+            }
         }
 
-        val variantConfigurations = project.allConfigurations(listOf(mergedVariant) + variantScopes)
+        val variantConfigurations = project.allConfigurations(mergedVariants + variantScopes)
 
-        val scopedConfigurations = (listOf(mergedVariant to variantConfigurations) +
+        val scopedConfigurations = (mergedVariants.map { mergedVariant -> mergedVariant to variantConfigurations } +
             additionalScopes.map { scope ->
-                scope to project.allConfigurations(listOf(mergedVariant) + variantScopes, scope = scope)
+                scope to project.allConfigurations(mergedVariants + variantScopes, scope = scope)
             }).toMap()
 
         val components: MutableList<ComponentIdentifier> = ArrayList()

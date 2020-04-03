@@ -57,7 +57,7 @@ class ReadWriteLicenseTaskArgsTest {
 
         with(args) {
             assertEquals(Assembler.Style.StructuredWithScope, assemblyStyle)
-            assertEquals(Convention.Yaml, assemblyFormat)
+            assertEquals(Convention.Yaml.Assembly, assemblyFormat)
             assertEquals("yml", assembledFileExt)
             assertEquals(ArtifactManagement.CommonConfigurationNames, configurationNames)
             assertEquals(setOf(ResolveScope.Variant("feature"), ResolveScope.Variant("release")), variantScopes)
@@ -67,7 +67,7 @@ class ReadWriteLicenseTaskArgsTest {
                     ResolveScope.Addition("androidTest")
                 ), additionalScopes
             )
-            assertEquals(File(project.projectDir, "license.yml"), assembledArtifactsFile)
+            assertEquals(File(project.projectDir, "artifact-definition.yml"), assembledArtifactsFile)
             assertEquals(project.projectDir, assembleOutputDir)
             assertEquals(File(project.projectDir, "license-catalog.yml"), assembledLicenseCatalogFile)
             assertEquals(emptySet(), excludeGroups)
@@ -104,9 +104,9 @@ class ReadWriteLicenseTaskArgsTest {
         val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
 
         with(args) {
-            assertEquals(Convention.Json, assemblyFormat)
+            assertEquals(Convention.Json.Assembly, assemblyFormat)
             assertEquals("json", assembledFileExt)
-            assertEquals(File(project.projectDir, "license.json"), assembledArtifactsFile)
+            assertEquals(File(project.projectDir, "artifact-definition.json"), assembledArtifactsFile)
             assertEquals(File(project.projectDir, "license-catalog.yml"), assembledLicenseCatalogFile)
         }
     }
@@ -119,7 +119,7 @@ class ReadWriteLicenseTaskArgsTest {
 
         with(args) {
             assertEquals(Assembler.Style.StructuredWithScope, assemblyStyle)
-            assertEquals(Convention.Yaml, assemblyFormat)
+            assertEquals(Convention.Yaml.Assembly, assemblyFormat)
             assertEquals("yml", assembledFileExt)
             assertEquals(ArtifactManagement.CommonConfigurationNames, configurationNames)
             assertEquals(setOf(ResolveScope.Variant("feature"), ResolveScope.Variant("release")), variantScopes)
@@ -129,7 +129,7 @@ class ReadWriteLicenseTaskArgsTest {
                     ResolveScope.Addition("androidTest")
                 ), additionalScopes
             )
-            assertEquals(File(project.projectDir, "license.yml"), assembledArtifactsFile)
+            assertEquals(File(project.projectDir, "artifact-definition.yml"), assembledArtifactsFile)
             assertEquals(project.projectDir, assembleOutputDir)
             assertEquals(File(project.projectDir, "license-catalog.yml"), assembledLicenseCatalogFile)
             assertEquals(emptySet(), excludeGroups)
