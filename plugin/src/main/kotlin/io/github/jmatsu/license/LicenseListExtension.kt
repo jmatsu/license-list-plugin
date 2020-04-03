@@ -144,4 +144,22 @@ open class LicenseListExtension
 
             field = value
         }
+
+    /**
+     * A directory that contains custom `license.html.ftl`
+     *
+     * @see io.github.jmatsu.license.presentation.encoder.Html
+     * @sample /resources/templates/license.html.ftl
+     */
+    @get:Input
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    @Optional
+    var htmlTemplateDir: File? = null
+
+    /**
+     * A version to be used visualizing html format
+     */
+    @get:Input
+    @Optional
+    var freeMakerVersion: String? = null
 }

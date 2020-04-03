@@ -1,9 +1,7 @@
-package io.github.jmatsu.license.internal
+package io.github.jmatsu.license.presentation.encoder
 
 import freemarker.template.Configuration
 import freemarker.template.TemplateExceptionHandler
-import freemarker.template.Version
-import io.github.jmatsu.license.LicenseListPlugin
 import io.github.jmatsu.license.poko.DisplayArtifact
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
@@ -17,7 +15,8 @@ import java.util.Locale
  * Not a proper string format of kotlin serialization. This is just a wrapper class to unify types.
  */
 class Html(
-    override val context: SerialModule = EmptyModule
+    override val context: SerialModule = EmptyModule,
+    private val htmlConfiguration: HtmlConfiguration
 ) : StringFormat {
     override fun <T> parse(deserializer: DeserializationStrategy<T>, string: String): T {
         error("does not support")
@@ -27,8 +26,13 @@ class Html(
         @Suppress("UNCHECKED_CAST")
         value as List<DisplayArtifact>
 
-        val configuration = Configuration(Version("2.3.8"))
-        configuration.setClassLoaderForTemplateLoading(this.javaClass.classLoader, "templates")
+        val configuration = Configuration(htmlConfiguration.version)
+
+        if (htmlConfiguration.templateDir == null) {
+            configuration.setClassLoaderForTemplateLoading(this.javaClass.classLoader, "templates")
+        } else {
+            configuration.setDirectoryForTemplateLoading(htmlConfiguration.templateDir)
+        }
 
         configuration.defaultEncoding = "UTF-8";
         configuration.locale = Locale.US;
@@ -39,7 +43,7 @@ class Html(
             "artifacts" to value
         )
 
-        val template = configuration.getTemplate("index.html.ftl")
+        val template = configuration.getTemplate("license.html.ftl")
 
         return StringWriter().apply {
             use {

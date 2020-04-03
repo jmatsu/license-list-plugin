@@ -1,6 +1,7 @@
 package io.github.jmatsu.license.tasks
 
 import com.android.build.gradle.api.ApplicationVariant
+import freemarker.template.Version
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.dsl.HtmlFormat
 import io.github.jmatsu.license.dsl.JsonFormat
@@ -8,6 +9,7 @@ import io.github.jmatsu.license.poko.DisplayArtifact
 import io.github.jmatsu.license.presentation.Convention
 import io.github.jmatsu.license.presentation.Disassembler
 import io.github.jmatsu.license.presentation.Visualizer
+import io.github.jmatsu.license.presentation.encoder.HtmlConfiguration
 import io.github.jmatsu.license.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.license.tasks.internal.VariantAwareTask
 import kotlinx.serialization.StringFormat
@@ -84,7 +86,12 @@ abstract class VisualizeLicenseListTask
 
         val visualizeFormat: StringFormat = when (extension.visualizeFormat) {
             JsonFormat -> Convention.Json.Visualization
-            HtmlFormat -> Convention.Html.Visualization
+            HtmlFormat -> Convention.Html.Visualization(
+                htmlConfiguration = HtmlConfiguration(
+                    version = extension.freeMakerVersion?.let { Version(it) } ?: Version("2.3.8"),
+                    templateDir = extension.htmlTemplateDir
+                )
+            )
             else -> throw IllegalArgumentException("Only one of $JsonFormat or $HtmlFormat are allowed.")
         }
     }

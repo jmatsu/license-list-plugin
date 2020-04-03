@@ -1,6 +1,8 @@
 package io.github.jmatsu.license.presentation
 
 import com.charleskorn.kaml.YamlConfiguration
+import io.github.jmatsu.license.presentation.encoder.Html
+import io.github.jmatsu.license.presentation.encoder.HtmlConfiguration
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.modules.EmptyModule
 
@@ -32,8 +34,10 @@ object Convention {
     }
 
     object Html {
-        val Visualization = io.github.jmatsu.license.internal.Html(
-            context = EmptyModule
+        @Suppress("FunctionName")
+        fun Visualization(htmlConfiguration: HtmlConfiguration) = Html(
+            context = EmptyModule,
+            htmlConfiguration = htmlConfiguration
         )
     }
 }

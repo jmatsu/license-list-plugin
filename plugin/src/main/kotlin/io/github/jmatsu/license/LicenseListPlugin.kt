@@ -28,25 +28,25 @@ class LicenseListPlugin : Plugin<Project> {
             androidExtension.applicationVariants.whenObjectAdded {
                 val variantName = name
 
-                project.tasks.register("initLicenseList${variantName.capitalize()}", InitLicenseListTask::class.java, extension, this).configure {
+                project.tasks.register("init${variantName.capitalize()}LicenseList", InitLicenseListTask::class.java, extension, this).configure {
                     description = """
                         |Initialize a license list based on the configuration for $variantName
                     """.trimMargin()
                 }
 
-                project.tasks.register("validateLicenseList${variantName.capitalize()}", ValidateLicenseListTask::class.java, extension, this).configure {
+                project.tasks.register("validate${variantName.capitalize()}LicenseList", ValidateLicenseListTask::class.java, extension, this).configure {
                     description = """
                         |Validate the existing license list based on the configuration for $variantName
                     """.trimMargin()
                 }
 
-                project.tasks.register("mergeLicenseList${variantName.capitalize()}", MergeLicenseListTask::class.java, extension, this).configure {
+                project.tasks.register("merge${variantName.capitalize()}LicenseList", MergeLicenseListTask::class.java, extension, this).configure {
                     description = """
                         |Merge the existing license list and the current license list that are retrieved from pom files based on the configuration for $variantName
                     """.trimMargin()
                 }
 
-                project.tasks.register("visualizeLicenseList${variantName.capitalize()}", VisualizeLicenseListTask::class.java, extension, this).configure {
+                project.tasks.register("visualize${variantName.capitalize()}LicenseList", VisualizeLicenseListTask::class.java, extension, this).configure {
                     description = """
                         |Visualize the existing license list of $variantName as the given style
                     """.trimMargin()
@@ -54,19 +54,19 @@ class LicenseListPlugin : Plugin<Project> {
 
                 if (targetVariantName == variantName) {
                     project.tasks.register("initLicenseList") {
-                        dependsOn(project.tasks.findByName("initLicenseList${variantName.capitalize()}"))
+                        dependsOn(project.tasks.findByName("init${variantName.capitalize()}LicenseList"))
                     }
 
                     project.tasks.register("validateLicenseList") {
-                        dependsOn(project.tasks.findByName("validateLicenseList${variantName.capitalize()}"))
+                        dependsOn(project.tasks.findByName("validate${variantName.capitalize()}LicenseList"))
                     }
 
                     project.tasks.register("mergeLicenseList") {
-                        dependsOn(project.tasks.findByName("mergeLicenseList${variantName.capitalize()}"))
+                        dependsOn(project.tasks.findByName("merge${variantName.capitalize()}LicenseList"))
                     }
 
                     project.tasks.register("visualizeLicenseList") {
-                        dependsOn(project.tasks.findByName("visualizeLicenseList${variantName.capitalize()}"))
+                        dependsOn(project.tasks.findByName("visualize${variantName.capitalize()}LicenseList"))
                     }
                 }
             }
