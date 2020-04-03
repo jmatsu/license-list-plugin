@@ -18,16 +18,16 @@ abstract class ReadWriteLicenseTaskArgs(
     extension: LicenseListExtension,
     variant: ApplicationVariant?
 ) {
-    val format: StringFormat = when (extension.assembleFormat) {
-        JsonFormat -> Convention.Json
-        YamlFormat -> Convention.Yaml
+    val assemblyFormat: StringFormat = when (extension.assembleFormat) {
+        JsonFormat -> Convention.Json.Assembly
+        YamlFormat -> Convention.Yaml.Assembly
         else -> throw IllegalArgumentException("Only one of $FlattenStyle or $StructuredStyle are allowed.")
     }
 
-    val style: Assembler.Style = when (extension.assembleStyle) {
+    val assemblyStyle: Assembler.Style = when (extension.assembleStyle) {
         FlattenStyle -> Assembler.Style.Flatten
         StructuredStyle -> {
-            if (extension.withScope) {
+            if (extension.groupByScopes) {
                 Assembler.Style.StructuredWithScope
             } else {
                 Assembler.Style.StructuredWithoutScope

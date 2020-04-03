@@ -1,6 +1,7 @@
 package io.github.jmatsu.license.dsl
 
-typealias VisualizeStyle = String
+typealias VisualizeFormat = Format
 
-const val JsonStyle: VisualizeStyle = "json"
-const val HtmlStyle: VisualizeStyle = "html"
+fun isVisualizeFormat(format: Format): Boolean {
+    return format in arrayOf(JsonFormat, HtmlFormat)
+}

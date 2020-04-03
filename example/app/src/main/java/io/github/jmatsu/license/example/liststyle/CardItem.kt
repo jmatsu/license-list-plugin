@@ -21,6 +21,7 @@ class CardItem(
 
         if (definition.url != null) {
             viewBinding.projectUrl.text = HtmlCompat.fromHtml("""<a href="${definition.url}">${definition.key}</a>""", HtmlCompat.FROM_HTML_MODE_COMPACT)
+            viewBinding.projectUrl.movementMethod = LinkMovementMethod.getInstance()
             viewBinding.projectUrl.visibility = View.VISIBLE
         } else {
             viewBinding.projectUrl.visibility = View.GONE

@@ -56,8 +56,8 @@ class ReadWriteLicenseTaskArgsTest {
         val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
 
         with(args) {
-            assertEquals(Assembler.Style.StructuredWithScope, style)
-            assertEquals(Convention.Yaml, format)
+            assertEquals(Assembler.Style.StructuredWithScope, assemblyStyle)
+            assertEquals(Convention.Yaml, assemblyFormat)
             assertEquals("yml", assembledFileExt)
             assertEquals(ArtifactManagement.CommonConfigurationNames, configurationNames)
             assertEquals(setOf(ResolveScope.Variant("feature"), ResolveScope.Variant("release")), variantScopes)
@@ -77,12 +77,12 @@ class ReadWriteLicenseTaskArgsTest {
 
     @Test
     fun `withScope is false`() {
-        extension.withScope = false
+        extension.groupByScopes = false
 
         val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
 
         with(args) {
-            assertEquals(Assembler.Style.StructuredWithoutScope, style)
+            assertEquals(Assembler.Style.StructuredWithoutScope, assemblyStyle)
         }
     }
 
@@ -93,7 +93,7 @@ class ReadWriteLicenseTaskArgsTest {
         val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
 
         with(args) {
-            assertEquals(Assembler.Style.Flatten, style)
+            assertEquals(Assembler.Style.Flatten, assemblyStyle)
         }
     }
 
@@ -104,7 +104,7 @@ class ReadWriteLicenseTaskArgsTest {
         val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
 
         with(args) {
-            assertEquals(Convention.Json, format)
+            assertEquals(Convention.Json, assemblyFormat)
             assertEquals("json", assembledFileExt)
             assertEquals(File(project.projectDir, "license.json"), assembledArtifactsFile)
             assertEquals(File(project.projectDir, "license-catalog.yml"), assembledLicenseCatalogFile)
@@ -112,41 +112,14 @@ class ReadWriteLicenseTaskArgsTest {
     }
 
     @Test
-    fun `targetVariants is appendable but no impact`() {
-        extension.targetVariants += setOf("abc", "xyz")
+    fun `targetVariant is modifiable but no impact`() {
+        extension.targetVariant = "debug"
 
         val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
 
         with(args) {
-            assertEquals(Assembler.Style.StructuredWithScope, style)
-            assertEquals(Convention.Yaml, format)
-            assertEquals("yml", assembledFileExt)
-            assertEquals(ArtifactManagement.CommonConfigurationNames, configurationNames)
-            assertEquals(setOf(ResolveScope.Variant("feature"), ResolveScope.Variant("release")), variantScopes)
-            assertEquals(
-                setOf(
-                    ResolveScope.Addition("test"),
-                    ResolveScope.Addition("androidTest")
-                ), additionalScopes
-            )
-            assertEquals(File(project.projectDir, "license.yml"), assembledArtifactsFile)
-            assertEquals(project.projectDir, assembleOutputDir)
-            assertEquals(File(project.projectDir, "license-catalog.yml"), assembledLicenseCatalogFile)
-            assertEquals(emptySet(), excludeGroups)
-            assertEquals(emptySet(), excludeArtifacts)
-        }
-    }
-
-    @Test
-    fun `targetVariants is removable but no impact`() {
-        extension.targetVariants += setOf("abc", "xyz")
-        extension.targetVariants -= setOf("abc")
-
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
-
-        with(args) {
-            assertEquals(Assembler.Style.StructuredWithScope, style)
-            assertEquals(Convention.Yaml, format)
+            assertEquals(Assembler.Style.StructuredWithScope, assemblyStyle)
+            assertEquals(Convention.Yaml, assemblyFormat)
             assertEquals("yml", assembledFileExt)
             assertEquals(ArtifactManagement.CommonConfigurationNames, configurationNames)
             assertEquals(setOf(ResolveScope.Variant("feature"), ResolveScope.Variant("release")), variantScopes)

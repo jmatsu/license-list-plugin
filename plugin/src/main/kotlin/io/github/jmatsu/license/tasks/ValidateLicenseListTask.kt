@@ -48,8 +48,8 @@ abstract class ValidateLicenseListTask
             resolvedArtifactMap = scopedResolvedArtifacts
         )
         val disassembler = Disassembler(
-            style = args.style,
-            format = args.format
+            style = args.assemblyStyle,
+            format = args.assemblyFormat
         )
 
         val artifactsText = args.assembledArtifactsFile.readText()

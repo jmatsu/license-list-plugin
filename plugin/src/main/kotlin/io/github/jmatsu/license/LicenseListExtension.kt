@@ -1,18 +1,23 @@
 package io.github.jmatsu.license
 
+import io.github.jmatsu.license.dsl.AssembleFormat
 import io.github.jmatsu.license.dsl.AssembleStyle
-import io.github.jmatsu.license.dsl.Format
+import io.github.jmatsu.license.dsl.HtmlFormat
 import io.github.jmatsu.license.dsl.StructuredStyle
+import io.github.jmatsu.license.dsl.VisualizeFormat
 import io.github.jmatsu.license.dsl.YamlFormat
+import io.github.jmatsu.license.dsl.isAssembleFormat
+import io.github.jmatsu.license.dsl.isAssembleStyle
+import io.github.jmatsu.license.dsl.isVisualizeFormat
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.model.ResolveScope
-import java.io.File
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
+import java.io.File
 
 open class LicenseListExtension
 @JvmOverloads constructor(
@@ -35,21 +40,28 @@ open class LicenseListExtension
     // TODO may be need to reconsider the name of the property
 
     /**
-     * A list of variants that default tasks will use for the dependency analysis and to get licenses.
+     * A variant that default tasks will use for the dependency analysis and to get licenses.
      * the default value is release.
      */
     @get:Input
-    var targetVariants: List<String> = listOf("release")
+    var targetVariant: String = "release"
 
     /**
      * a format of the output.
      * Must be one of `yaml` or `json`.
      * the default format is *yaml*.
      *
-     * @see Format
+     * @see AssembleFormat
      */
     @get:Input
-    var assembleFormat: Format = YamlFormat
+    var assembleFormat: AssembleFormat = YamlFormat
+        set(value) {
+            if (!isAssembleFormat(value)) {
+                error("$value is not one of assemble formats")
+            }
+
+            field = value
+        }
 
     /**
      * a style to assemble the output.
@@ -60,14 +72,21 @@ open class LicenseListExtension
      */
     @get:Input
     var assembleStyle: AssembleStyle = StructuredStyle
+        set(value) {
+            if (!isAssembleStyle(value)) {
+                error("$value is not one of assemble styles")
+            }
+
+            field = value
+        }
 
     /**
-     * true means this plugin append scopes to the assembled output, otherwise no scope will be visible.
+     * true means this plugin will group the assembled output by scopes, otherwise no scope will be available in the output.
      * this option will be ignored if assembleStyle is flatten.
      * true by default.
      */
     @get:Input
-    var withScope: Boolean = true
+    var groupByScopes: Boolean = true
 
     /**
      * A set of additional scopes to analyze dependencies and get licenses.
@@ -89,6 +108,10 @@ open class LicenseListExtension
      * A set of configurations to be resolved.
      * the default value is what will be basically included to your application files or be used during development.
      *
+     * You can add your custom configurations to this property.
+     * Let's say `targetConfigurations += "doggy"` has been passed to this extension,
+     * then this plugin will resolve <flavors...>Doggy and doggy configurations and collect their dependencies.
+     *
      * @see ArtifactManagement.CommonConfigurationNames
      */
     @get:Input
@@ -106,4 +129,19 @@ open class LicenseListExtension
      */
     @get:Input
     var excludeArtifacts: Set<String> = setOf()
+
+    /**
+     * A style for how this plugin will visualize artifacts and licenses.
+     *
+     * @see VisualizeFormat
+     */
+    @get:Input
+    var visualizeFormat: VisualizeFormat = HtmlFormat
+        set(value) {
+            if (!isVisualizeFormat(value)) {
+                error("$value is not one of visualize formats")
+            }
+
+            field = value
+        }
 }

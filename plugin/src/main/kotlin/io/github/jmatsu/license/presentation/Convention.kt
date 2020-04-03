@@ -4,27 +4,36 @@ import com.charleskorn.kaml.YamlConfiguration
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.modules.EmptyModule
 
-class Convention {
-    companion object {
-        val Yaml = com.charleskorn.kaml.Yaml(
+object Convention {
+    object Yaml {
+        val Assembly = com.charleskorn.kaml.Yaml(
             context = EmptyModule,
             configuration = YamlConfiguration(
                 strictMode = false
             )
         )
-        val Json = kotlinx.serialization.json.Json(
+    }
+
+    object Json {
+        val Assembly = kotlinx.serialization.json.Json(
             context = EmptyModule,
             configuration = JsonConfiguration.Stable.copy(
                 ignoreUnknownKeys = true
             )
         )
-        val DisplayJson = kotlinx.serialization.json.Json(
+        val Visualization = kotlinx.serialization.json.Json(
             context = EmptyModule,
             configuration = JsonConfiguration.Stable.copy(
                 ignoreUnknownKeys = true,
                 unquotedPrint = false,
                 prettyPrint = false
             )
+        )
+    }
+
+    object Html {
+        val Visualization = io.github.jmatsu.license.internal.Html(
+            context = EmptyModule
         )
     }
 }

@@ -22,7 +22,7 @@ class LicenseListPlugin : Plugin<Project> {
 
         project.plugins.withType(AppPlugin::class.java) {
             val extension = requireNotNull(project.extensions.getByType(LicenseListExtension::class.java))
-            val targetVariantName = extension.targetVariants.joinToString("") { it.capitalize() }.decapitalize()
+            val targetVariantName = extension.targetVariant
 
             val androidExtension = requireNotNull(project.extensions.findByType(AppExtension::class.java))
             androidExtension.applicationVariants.whenObjectAdded {

@@ -2,11 +2,15 @@ package io.github.jmatsu.license.tasks
 
 import com.android.build.gradle.api.ApplicationVariant
 import io.github.jmatsu.license.LicenseListExtension
+import io.github.jmatsu.license.dsl.HtmlFormat
+import io.github.jmatsu.license.dsl.JsonFormat
 import io.github.jmatsu.license.poko.DisplayArtifact
+import io.github.jmatsu.license.presentation.Convention
 import io.github.jmatsu.license.presentation.Disassembler
 import io.github.jmatsu.license.presentation.Visualizer
 import io.github.jmatsu.license.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.license.tasks.internal.VariantAwareTask
+import kotlinx.serialization.StringFormat
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -23,8 +27,8 @@ abstract class VisualizeLicenseListTask
         val args = Args(project, extension, variant)
 
         val disassembler = Disassembler(
-            style = args.style,
-            format = args.format
+            style = args.assemblyStyle,
+            format = args.assemblyFormat
         )
 
         val artifactsText = args.assembledArtifactsFile.readText()
@@ -49,12 +53,10 @@ abstract class VisualizeLicenseListTask
             displayArtifacts = displayArtifacts
         )
 
-        val text = visualizer.visualizeArtifacts(Visualizer.Style.JsonStyle)
+        val text = visualizer.visualizeArtifacts(args.visualizeFormat)
 
         args.visualizeOutputDir.mkdirs()
-        File(args.visualizeOutputDir, "license.json").writeText(text)
-
-        // TODO HTML? ListView?
+        File(args.visualizeOutputDir, "license.${args.visualizedFileExt}").writeText(text)
     }
 
     class Args(
@@ -73,5 +75,17 @@ abstract class VisualizeLicenseListTask
             }.firstOrNull {
                 it.absolutePath.endsWith("/${variant.mergedFlavor.name}/assets")
             } ?: assembleOutputDir
+
+        val visualizedFileExt: String = when (extension.visualizeFormat) {
+            JsonFormat -> "json"
+            HtmlFormat -> "html"
+            else -> error("nothing has come")
+        }
+
+        val visualizeFormat: StringFormat = when (extension.visualizeFormat) {
+            JsonFormat -> Convention.Json.Visualization
+            HtmlFormat -> Convention.Html.Visualization
+            else -> throw IllegalArgumentException("Only one of $JsonFormat or $HtmlFormat are allowed.")
+        }
     }
 }

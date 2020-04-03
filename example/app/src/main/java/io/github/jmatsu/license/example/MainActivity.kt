@@ -1,6 +1,8 @@
 package io.github.jmatsu.license.example
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.moshi.Moshi
@@ -36,5 +38,20 @@ class MainActivity : AppCompatActivity() {
         }.also { items ->
             adapter.update(items)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.share, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.findItem(R.id.main)?.isEnabled = false
+        menu?.findItem(R.id.html)?.setOnMenuItemClickListener {
+            startActivity(Intent(this, HtmlLicenseActivity::class.java))
+            finish()
+            true
+        }
+        return super.onPrepareOptionsMenu(menu)
     }
 }

@@ -1,14 +1,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.jmatsu.license.example">
 
-    <application android:theme="@style/Theme.MaterialComponents.Light">
-        <activity android:name=".MainActivity">
+    <application
+        android:allowBackup="false"
+        android:label="LicenseSample"
+        android:theme="@style/Theme.MaterialComponents.Light">
+        <activity
+            android:name=".MainActivity"
+            android:label="Json Sample">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HtmlLicenseActivity" />
+        <activity
+            android:name=".HtmlLicenseActivity"
+            android:label="Html Sample" />
     </application>
 </manifest>

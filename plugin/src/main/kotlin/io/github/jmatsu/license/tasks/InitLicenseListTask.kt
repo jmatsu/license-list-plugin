@@ -45,8 +45,8 @@ abstract class InitLicenseListTask
             resolvedArtifactMap = scopedResolvedArtifacts
         )
 
-        val artifactsText = assembler.assembleArtifacts(args.style, args.format)
-        val licenseCatalogText = assembler.assemblePlainLicenses(Convention.Yaml) // the format is fixed
+        val artifactsText = assembler.assembleArtifacts(args.assemblyStyle, args.assemblyFormat)
+        val licenseCatalogText = assembler.assemblePlainLicenses(Convention.Yaml.Assembly) // the format is fixed
 
         args.assembleOutputDir.mkdirs()
         args.assembledArtifactsFile.writeText(artifactsText)
