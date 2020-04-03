@@ -60,7 +60,7 @@ class ReadWriteLicenseTaskArgsTest {
             assertEquals(Convention.Yaml.Assembly, assemblyFormat)
             assertEquals("yml", assembledFileExt)
             assertEquals(ArtifactManagement.CommonConfigurationNames, configurationNames)
-            assertEquals(setOf(ResolveScope.Variant("feature"), ResolveScope.Variant("release")), variantScopes)
+            assertEquals(ResolveScope.Variant("featureRelease"), variantScope)
             assertEquals(
                 setOf(
                     ResolveScope.Addition("test"),
@@ -122,7 +122,7 @@ class ReadWriteLicenseTaskArgsTest {
             assertEquals(Convention.Yaml.Assembly, assemblyFormat)
             assertEquals("yml", assembledFileExt)
             assertEquals(ArtifactManagement.CommonConfigurationNames, configurationNames)
-            assertEquals(setOf(ResolveScope.Variant("feature"), ResolveScope.Variant("release")), variantScopes)
+            assertEquals(ResolveScope.Variant("featureRelease"), variantScope)
             assertEquals(
                 setOf(
                     ResolveScope.Addition("test"),
