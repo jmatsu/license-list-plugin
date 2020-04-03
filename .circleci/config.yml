@@ -24,7 +24,7 @@ commands:
     parameters: &gradle_cache_parameters
       cache_version:
         type: string
-        default: v2
+        default: v3
       cache_name:
         type: string
     steps:
@@ -79,6 +79,8 @@ jobs:
           name: check if merge action does not fail and revert changes propery
           command: |
             cp -f fixtures/* app/
+            git config --global user.email "noreply@example.com"
+            git config --global user.name "jmatsu"
             git add .
             git commit -m "Save dirty diff"
             ./gradlew mergeLicenseList
