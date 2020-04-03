@@ -3,12 +3,12 @@ package io.github.jmatsu.license.tasks
 import com.android.build.gradle.api.ApplicationVariant
 import io.github.jmatsu.license.LicenseListExtension
 import io.mockk.mockk
-import org.gradle.api.Project
-import org.gradle.kotlin.dsl.findByType
-import org.gradle.testfixtures.ProjectBuilder
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.findByType
+import org.gradle.testfixtures.ProjectBuilder
 
 class VisualizeLicenseListTaskTest {
     lateinit var project: Project

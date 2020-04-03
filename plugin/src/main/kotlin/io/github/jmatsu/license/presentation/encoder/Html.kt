@@ -3,13 +3,13 @@ package io.github.jmatsu.license.presentation.encoder
 import freemarker.template.Configuration
 import freemarker.template.TemplateExceptionHandler
 import io.github.jmatsu.license.poko.DisplayArtifact
+import java.io.StringWriter
+import java.util.Locale
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.StringFormat
 import kotlinx.serialization.modules.EmptyModule
 import kotlinx.serialization.modules.SerialModule
-import java.io.StringWriter
-import java.util.Locale
 
 /**
  * Not a proper string format of kotlin serialization. This is just a wrapper class to unify types.
@@ -34,9 +34,9 @@ class Html(
             configuration.setDirectoryForTemplateLoading(htmlConfiguration.templateDir)
         }
 
-        configuration.defaultEncoding = "UTF-8";
-        configuration.locale = Locale.US;
-        configuration.templateExceptionHandler = TemplateExceptionHandler.RETHROW_HANDLER;
+        configuration.defaultEncoding = "UTF-8"
+        configuration.locale = Locale.US
+        configuration.templateExceptionHandler = TemplateExceptionHandler.RETHROW_HANDLER
 
         val input = mapOf(
             "title" to "title",

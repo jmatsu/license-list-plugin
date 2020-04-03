@@ -9,9 +9,9 @@ import io.github.jmatsu.license.dsl.YamlFormat
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.presentation.Assembler
 import io.github.jmatsu.license.presentation.Convention
+import java.io.File
 import kotlinx.serialization.StringFormat
 import org.gradle.api.Project
-import java.io.File
 
 abstract class ReadWriteLicenseTaskArgs(
     project: Project,

@@ -12,11 +12,11 @@ import io.github.jmatsu.license.presentation.Visualizer
 import io.github.jmatsu.license.presentation.encoder.HtmlConfiguration
 import io.github.jmatsu.license.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.license.tasks.internal.VariantAwareTask
+import java.io.File
+import javax.inject.Inject
 import kotlinx.serialization.StringFormat
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
-import java.io.File
-import javax.inject.Inject
 
 abstract class VisualizeLicenseListTask
 @Inject constructor(
