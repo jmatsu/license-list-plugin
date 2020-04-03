@@ -24,7 +24,7 @@ commands:
     parameters: &gradle_cache_parameters
       cache_version:
         type: string
-        default: v1
+        default: v2
       cache_name:
         type: string
     steps:
