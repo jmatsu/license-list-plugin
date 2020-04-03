@@ -40,8 +40,8 @@ abstract class MergeLicenseListTask
             format = args.format
         )
 
-        val artifactsText = args.artifactsFile.readText()
-        val catalogText = args.catalogFile.readText()
+        val artifactsText = args.assembledArtifactsFile.readText()
+        val catalogText = args.assembledLicenseCatalogFile.readText()
 
         val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).toSet()
         val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
@@ -71,8 +71,8 @@ abstract class MergeLicenseListTask
         )
         val licenseCatalogText = assembler.assemblePlainLicenses(Convention.Yaml) // the format is fixed
 
-        args.artifactsFile.writeText(newArtifactsText)
-        args.catalogFile.writeText(licenseCatalogText)
+        args.assembledArtifactsFile.writeText(newArtifactsText)
+        args.assembledLicenseCatalogFile.writeText(licenseCatalogText)
     }
 
     class Args(

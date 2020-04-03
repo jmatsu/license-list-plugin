@@ -10,6 +10,11 @@ subprojects {
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
         }
     }
+
+    repositories {
+        google()
+        jcenter()
+    }
 }
 
 rootProject.tasks.register("clean", Delete::class) {

@@ -1,10 +1,16 @@
 @file:Suppress("RemoveRedundantQualifierName")
 
+import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
+import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
 import shared.Version
+import java.time.Instant
 
 plugins {
     `kotlin-dsl`
     id("org.jmailen.kotlinter") version shared.Version.kotlinter
+
+    maven
+    id("com.jfrog.bintray") version shared.Version.bintray
 }
 
 repositories {
@@ -25,19 +31,7 @@ configurations.configureEach {
 }
 
 dependencies {
-    compileOnly(platform("org.jetbrains.kotlin:kotlin-bom"))
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk7")
-
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-    testImplementation("io.mockk:mockk:${Version.mockk}")
-
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("org.junit.jupiter:junit-jupiter-params")
-
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${Version.junitPlatformLauncher}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
 }
 
 kotlinter {
@@ -46,3 +40,25 @@ kotlinter {
     experimentalRules = false
     fileBatchSize = 30
 }
+
+bintray {
+    user = System.getenv("BINTRAY_USER")
+    key = System.getenv("BINTRAY_KEY")
+    pkg(closureOf<PackageConfig> {
+        repo = "maven"
+        name = shared.Definition.schemaName
+        userOrg = "jmatsu"
+        setLicenses("MIT")
+        websiteUrl = "https://github.com/jmatsu/license-list-plugin"
+        issueTrackerUrl = "https://github.com/jmatsu/license-list-plugin/issues"
+        vcsUrl = "https://github.com/jmatsu/license-list-plugin/issues.git"
+        githubRepo = "jmatsu/license-list-plugin"
+        version(closureOf<VersionConfig> {
+            name = project.version as String
+            released = Instant.now().toString()
+        })
+    })
+
+    setConfigurations("archives")
+}
+

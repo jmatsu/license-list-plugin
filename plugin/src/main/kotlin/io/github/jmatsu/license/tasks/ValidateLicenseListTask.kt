@@ -25,12 +25,12 @@ abstract class ValidateLicenseListTask
     fun execute() {
         val args = Args(project, extension, variant)
 
-        if (!args.artifactsFile.exists()) {
-            throw FileNotFoundException("${args.artifactsFile.absolutePath} is not found")
+        if (!args.assembledArtifactsFile.exists()) {
+            throw FileNotFoundException("${args.assembledArtifactsFile.absolutePath} is not found")
         }
 
-        if (!args.catalogFile.exists()) {
-            throw FileNotFoundException("${args.catalogFile.absolutePath} is not found")
+        if (!args.assembledLicenseCatalogFile.exists()) {
+            throw FileNotFoundException("${args.assembledLicenseCatalogFile.absolutePath} is not found")
         }
 
         val artifactManagement = ArtifactManagement(
@@ -52,8 +52,8 @@ abstract class ValidateLicenseListTask
             format = args.format
         )
 
-        val artifactsText = args.artifactsFile.readText()
-        val catalogText = args.catalogFile.readText()
+        val artifactsText = args.assembledArtifactsFile.readText()
+        val catalogText = args.assembledLicenseCatalogFile.readText()
 
         val currentArtifacts = assembler.transformForFlatten()
 

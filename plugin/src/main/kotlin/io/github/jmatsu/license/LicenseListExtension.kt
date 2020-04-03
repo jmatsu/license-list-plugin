@@ -32,6 +32,7 @@ open class LicenseListExtension
     @get:InputFile
     @Optional
     var outputFile: File? = null
+    // TODO may be need to reconsider the name of the property
 
     /**
      * A list of variants that default tasks will use for the dependency analysis and to get licenses.

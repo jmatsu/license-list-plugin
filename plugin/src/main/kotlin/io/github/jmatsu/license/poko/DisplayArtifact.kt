@@ -1,5 +1,8 @@
 package io.github.jmatsu.license.poko
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class DisplayArtifact(
     override val key: String,
     override val displayName: String,

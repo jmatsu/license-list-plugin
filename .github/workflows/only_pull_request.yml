@@ -24,12 +24,17 @@ jobs:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
       - name: Build
-        run: ./gradlew :plugin:jar
+        run: ./gradlew jar
       - uses: actions/upload-artifact@v1
         if: success()
         with:
           name: plugin-jar
           path: plugin/build/libs
+      - uses: actions/upload-artifact@v1
+        if: success()
+        with:
+          name: schema-jar
+          path: schema/build/libs
   test:
     runs-on: ubuntu-latest
 

@@ -9,9 +9,9 @@ import io.github.jmatsu.license.dsl.YamlFormat
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.presentation.Assembler
 import io.github.jmatsu.license.presentation.Convention
-import java.io.File
 import kotlinx.serialization.StringFormat
 import org.gradle.api.Project
+import java.io.File
 
 abstract class ReadWriteLicenseTaskArgs(
     project: Project,
@@ -36,7 +36,7 @@ abstract class ReadWriteLicenseTaskArgs(
         else -> throw IllegalArgumentException("Only one of $FlattenStyle or $StructuredStyle are allowed.")
     }
 
-    val ext: String = when (extension.assembleFormat) {
+    val assembledFileExt: String = when (extension.assembleFormat) {
         JsonFormat -> "json"
         YamlFormat -> "yml"
         else -> error("nothing has come")
@@ -57,9 +57,9 @@ abstract class ReadWriteLicenseTaskArgs(
 
     val additionalScopes: Set<ResolveScope.Addition> = extension.additionalScopes.map { ResolveScope.Addition(it) }.toSet()
 
-    val artifactsFile: File = extension.outputFile ?: File(project.projectDir, "license.$ext")
-    val outputDir: File = artifactsFile.parentFile
-    val catalogFile: File = File(artifactsFile.parentFile, "license-catalog.yml")
+    val assembleOutputDir: File = extension.outputFile?.parentFile ?: project.projectDir
+    val assembledArtifactsFile: File = File(assembleOutputDir, "license.$assembledFileExt")
+    val assembledLicenseCatalogFile: File = File(assembleOutputDir, "license-catalog.yml")
 
     val excludeGroups: Set<String> = HashSet(extension.excludeGroups)
     val excludeArtifacts: Set<String> = HashSet(extension.excludeArtifacts)
