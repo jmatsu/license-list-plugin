@@ -11,11 +11,12 @@ import io.github.jmatsu.license.dsl.isAssembleFormat
 import io.github.jmatsu.license.dsl.isAssembleStyle
 import io.github.jmatsu.license.dsl.isVisualizeFormat
 import io.github.jmatsu.license.dsl.validation.fileNameProperty
-import io.github.jmatsu.license.dsl.validation.optionalDirectoryFileProperty
+import io.github.jmatsu.license.dsl.validation.optionalDirectoryProperty
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.model.ResolveScope
 import java.io.File
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
@@ -39,7 +40,7 @@ open class LicenseListExtension
     @get:PathSensitive(PathSensitivity.RELATIVE)
     @get:InputFile
     @get:Optional
-    var artifactDefinitionFile: File? by optionalDirectoryFileProperty()
+    var artifactDefinitionFile: File? by optionalDirectoryProperty()
 
     /**
      * A variant that default tasks will use for the dependency analysis and to get licenses.
@@ -153,10 +154,10 @@ open class LicenseListExtension
      * @see io.github.jmatsu.license.presentation.encoder.Html
      * @sample /resources/templates/license.html.ftl
      */
-    @get:Input
+    @get:InputDirectory
     @get:PathSensitive(PathSensitivity.RELATIVE)
     @get:Optional
-    var htmlTemplateDir: File? by optionalDirectoryFileProperty(requireExist = true)
+    var htmlTemplateDir: File? by optionalDirectoryProperty()
 
     /**
      * A version to be used visualizing html format
@@ -175,9 +176,9 @@ open class LicenseListExtension
      * An output directory of the generated visualized file.
      */
     @get:PathSensitive(PathSensitivity.RELATIVE)
-    @get:InputFile
+    @get:InputDirectory
     @get:Optional
-    var outputDir: File? by optionalDirectoryFileProperty()
+    var outputDir: File? by optionalDirectoryProperty()
 
     /**
      * A basename of a visualized licenses' file

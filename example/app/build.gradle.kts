@@ -19,16 +19,16 @@ android {
 
     productFlavors {
         create("yellow") {
-            dimension = "one"
+            setDimension("one")
         }
         create("red") {
-            dimension = "one"
+            setDimension("one")
         }
         create("white") {
-            dimension = "two"
+            setDimension("two")
         }
         create("blue") {
-            dimension = "two"
+            setDimension("two")
         }
     }
 
@@ -84,4 +84,5 @@ kapt {
 licenseList {
     targetVariant = "yellowBlueRelease"
     assembleStyle = "structured"
+    visualizeFormat = "json"
 }

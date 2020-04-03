@@ -145,11 +145,11 @@ class ArtifactManagement(
         }
 
         return project.configurations.flatMap {
-            it.all.filter { configuration ->
-                (configuration.name in targetConfigurationNames).also { isTarget ->
-                    if (isTarget) {
-                        project.logger.info("Configuration(name = ${configuration.name}) will be search")
-                    }
+            it.all
+        }.distinctBy { it.name }.filter { configuration ->
+            (configuration.name in targetConfigurationNames).also { isTarget ->
+                if (isTarget) {
+                    project.logger.info("Configuration(name = ${configuration.name}) will be search")
                 }
             }
         }

@@ -13,7 +13,7 @@ class HtmlLicenseActivity : AppCompatActivity() {
 
         val webView: WebView = findViewById(R.id.webView)
 
-        webView.loadUrl("file:///android_asset/license.html")
+        webView.loadUrl("file:///android_asset/license-list.html")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

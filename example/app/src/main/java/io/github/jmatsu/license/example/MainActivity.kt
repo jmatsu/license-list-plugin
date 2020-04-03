@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         val adapter = GroupAdapter<GroupieViewHolder>()
         recyclerView.adapter = adapter
 
-        val text = assets.open("license.json").bufferedReader().readText()
+        val text = assets.open("license-list.json").bufferedReader().readText()
         val moshi = Moshi.Builder().add(LicenseKeyPoko.Adapter).build()
 
         val definitionListType = Types.newParameterizedType(List::class.java, ArtifactDifinitionPoko::class.java)

@@ -40,14 +40,7 @@ class ReadWriteLicenseTaskArgsTest {
         project.plugins.apply("license-list")
         extension = requireNotNull(project.extensions.findByType(LicenseListExtension::class))
         variant = mockk {
-            every { productFlavors } returns listOf(
-                mockk<ProductFlavor> {
-                    every { name } returns "feature"
-                }
-            )
-            every { buildType } returns mockk<BuildType> {
-                every { name } returns "release"
-            }
+            every { name } returns "featureRelease"
         }
     }
 
@@ -197,7 +190,9 @@ class ReadWriteLicenseTaskArgsTest {
             assertEquals(
                 setOf(
                     "compileOnly",
-                    "implementation"
+                    "implementation",
+                    "annotationProcessor",
+                    "kapt"
                 ), configurationNames
             )
         }
