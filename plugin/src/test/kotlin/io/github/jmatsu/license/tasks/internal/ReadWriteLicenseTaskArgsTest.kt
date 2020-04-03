@@ -1,8 +1,6 @@
 package io.github.jmatsu.license.tasks.internal
 
 import com.android.build.gradle.api.ApplicationVariant
-import com.android.builder.model.BuildType
-import com.android.builder.model.ProductFlavor
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.model.ResolveScope
