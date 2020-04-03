@@ -16,3 +16,6 @@
   - key: mit
     name: MIT License
     url: https://api.github.com/licenses/mit
+  - key: sample license
+    name: Sample license
+    url: nothing

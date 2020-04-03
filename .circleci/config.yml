@@ -79,6 +79,8 @@ jobs:
           name: check if merge action does not fail and revert changes propery
           command: |
             cp -f fixtures/* app/
+            git add .
+            git commit -m "Save dirty diff"
             ./gradlew mergeLicenseList
             [[ -z "$(git diff --name-only -- app)" ]]
 
