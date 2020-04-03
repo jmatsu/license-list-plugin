@@ -69,7 +69,7 @@ class MergerableAssembler(
         }
         val preservedLicenses = baseLicenseMap.filterKeys { licenseKey -> baseArtifacts.any { licenseKey in it.licenses } }.flatMap { it.value }
 
-        return format.stringify(PlainLicense.serializer().list, (newLicenses + preservedLicenses).sortedBy { it.key.value })
+        return format.stringify(PlainLicense.serializer().list, (newLicenses + preservedLicenses).distinctBy { it.key }.sortedBy { it.key.value })
     }
 
     fun List<ArtifactDefinition>.mergeAndSort(newKeys: List<String>, strongerDefinitions: Set<ArtifactDefinition>): Map<String, List<ArtifactDefinition>> {

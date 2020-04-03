@@ -84,8 +84,13 @@ jobs:
             git add .
             git commit -m "Save dirty diff"
             ./gradlew mergeLicenseList
-            [[ -z "$(git diff --name-only -- app)" ]]
-
+            # preserve samplelicense and the order
+            [[ -z "$(git diff --name-only -- app/license-catalog.yml)" ]]
+            # revert removed artifacts so diff is available
+            [[ -n "$(git diff --name-only -- app/artifact-definition.yml)" ]]
+            # generated diff should be same to the merge result above
+            patch -u fixtures/artifact-definition.yml < fixtures/artifact-definition.patch
+            [[ -z "$(git diff --name-only -- app/artifact-definition.yml)" ]]
       # TODO snapshot tests provided by espresso
       - save_gradle_cache:
           cache_name: example
