@@ -5,6 +5,7 @@ object Version {
     const val kotlinSerialization = "0.20.0"
     const val kaml = "0.17.0"
     const val freemaker = "2.3.30"
+    const val snakeyaml = "1.26"
 
     const val kotlinter = "2.3.2"
     const val bintray = "1.7.3"

@@ -8,10 +8,13 @@ import kotlinx.serialization.modules.EmptyModule
 
 object Convention {
     object Yaml {
-        val Assembly = com.charleskorn.kaml.Yaml(
+        val Assembly = io.github.jmatsu.license.presentation.encoder.Yaml(
             context = EmptyModule,
-            configuration = YamlConfiguration(
-                strictMode = false
+            kaml = com.charleskorn.kaml.Yaml(
+                context = EmptyModule,
+                configuration = YamlConfiguration(
+                    strictMode = false
+                )
             )
         )
     }

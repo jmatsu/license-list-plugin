@@ -44,6 +44,7 @@ dependencies {
     implementation("com.charleskorn.kaml:kaml:${Version.kaml}")
 
     implementation("org.freemarker:freemarker:${Version.freemaker}")
+    implementation("org.yaml:snakeyaml:${Version.snakeyaml}")
 
     compileOnly("com.android.tools.build:gradle:${Version.agp}")
     testImplementation("com.android.tools.build:gradle:${Version.agp}")
