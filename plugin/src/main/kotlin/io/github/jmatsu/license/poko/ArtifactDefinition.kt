@@ -1,9 +1,11 @@
 package io.github.jmatsu.license.poko
 
+import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ArtifactDefinition(
+    @Required
     override val key: String,
     override val displayName: String,
     override val url: String?,

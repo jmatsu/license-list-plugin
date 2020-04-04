@@ -87,7 +87,7 @@ NOTE: [example](./example) renders its licenses based on the both of json and ht
 Add `wearApp` to configurations that will be discovered.
 
 ```kotlin
-licenseList {
+assembly {
     targetConfigurations += "wearApp"
 }
 ```
@@ -96,18 +96,18 @@ licenseList {
 
 No action is required if the variant's configurations extend the custom configurations. 
 
-Let's say you have created a `functionalTestImplementation` configuration like the following. 
+Let's say you have created a `functionalTestImplementation` configuration and tweaked it like the following.
 
 ```kotlin
 configurations.getByName("functionalTestImplementation").extendsFrom(configurations.getByName("testImplementation"))
 ```
 
-`functionalTestImplementation` is kinda *root* configuration so any other configurations include it. It means `functionalTestImplementation` is not a discovery target.
+`functionalTestImplementation` is a root configuration. Other configurations do not include it. It means `functionalTestImplementation` is not a discovery target.
 
 This plugin supports such an independent configuration as well. There are two patterns to resolve `functionalTestImplementation`.
 
 ```kotlin
-licenseList {
+assembly {
     // Elements in additionalScopes will be used to build dynamic configurations with using targetConfigurations
     // e.g. `functional` will be used to build `functionalImplementation`, `functionalTestImplementation` and so on
     additionalScopes += "functional"
@@ -121,7 +121,7 @@ licenseList {
 This plugin uses FreeMaker to generate HTML files and can accept an user-defined template like the following.
 
 ```kotlin
-licenseList {
+visualization {
     // the name of the template file must be *license.html.ftl
     htmlTemplateDir = file("customTemplateDir")
 }
@@ -131,7 +131,7 @@ Please check the original `ftl` file for variables that you can use.
 
 ## Limitations
 
-- Only for Android application projects.
+- Only for Android application projects. Java project support is planned.
 
 ## Contributing
 

@@ -1,8 +1,10 @@
 package io.github.jmatsu.license.tasks
 
 import com.android.build.gradle.api.ApplicationVariant
+import com.google.common.annotations.VisibleForTesting
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.ext.xor2
+import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.poko.PlainLicense
 import io.github.jmatsu.license.presentation.Assembler
@@ -21,58 +23,71 @@ abstract class MergeLicenseListTask
     variant: ApplicationVariant
 ) : VariantAwareTask(extension, variant) {
 
+    @VisibleForTesting
+    internal object Executor {
+        operator fun invoke(project: Project, args: Args) {
+            val artifactIgnoreParser = ArtifactIgnoreParser(
+                ignoreFile = args.ignoreFile
+            )
+
+            val artifactManagement = ArtifactManagement(
+                project = project,
+                configurationNames = args.configurationNames,
+                exclusionRegex = artifactIgnoreParser.parse()
+            )
+            val scopedResolvedArtifacts = artifactManagement.analyze(
+                variantScope = args.variantScope,
+                additionalScopes = args.additionalScopes
+            )
+            val disassembler = Disassembler(
+                style = args.assemblyStyle,
+                format = args.assemblyFormat
+            )
+
+            val artifactsText = args.assembledArtifactsFile.readText()
+            val catalogText = args.assembledLicenseCatalogFile.readText()
+
+            val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).toSet()
+            val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
+
+            val currentArtifacts = run {
+                val fake = HashSet<PlainLicense>()
+
+                scopedResolvedArtifacts.flatMap { (_, artifacts) ->
+                    artifacts.map { Assembler.assembleArtifact(it, licenseCapture = fake) }
+                }
+            }
+
+            // TODO support changed artifacts : what's the usecase?
+            val (newArtifacts, _, removedArtifacts) = currentArtifacts.xor2(recordedArtifacts) { it.key }
+
+            val assembler = MergerableAssembler(
+                scopedResolvedArtifacts = scopedResolvedArtifacts,
+                baseArtifacts = recordedArtifacts,
+                newArtifacts = newArtifacts,
+                removedArtifacts = removedArtifacts,
+                baseLicenses = recordedLicenses
+            )
+
+            val newArtifactsText = assembler.assembleArtifacts(
+                style = args.assemblyStyle,
+                format = args.assemblyFormat
+            )
+            val licenseCatalogText = assembler.assemblePlainLicenses(Convention.Yaml.Assembly) // the format is fixed
+
+            args.assembledArtifactsFile.writeText(newArtifactsText)
+            args.assembledLicenseCatalogFile.writeText(licenseCatalogText)
+        }
+    }
+
     @TaskAction
     fun execute() {
         val args = Args(project, extension, variant)
 
-        val artifactManagement = ArtifactManagement(
+        Executor(
             project = project,
-            configurationNames = args.configurationNames,
-            excludeGroups = args.excludeGroups,
-            excludeArtifacts = args.excludeArtifacts
+            args = args
         )
-        val scopedResolvedArtifacts = artifactManagement.analyze(
-            variantScope = args.variantScope,
-            additionalScopes = args.additionalScopes
-        )
-        val disassembler = Disassembler(
-            style = args.assemblyStyle,
-            format = args.assemblyFormat
-        )
-
-        val artifactsText = args.assembledArtifactsFile.readText()
-        val catalogText = args.assembledLicenseCatalogFile.readText()
-
-        val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).toSet()
-        val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
-
-        val currentArtifacts = run {
-            val fake = HashSet<PlainLicense>()
-
-            scopedResolvedArtifacts.flatMap { (_, artifacts) ->
-                artifacts.map { Assembler.assembleArtifact(it, licenseCapture = fake) }
-            }
-        }
-
-        // TODO support changed artifacts : what's the usecase?
-        val (newArtifacts, _, removedArtifacts) = currentArtifacts.xor2(recordedArtifacts) { it.key }
-
-        val assembler = MergerableAssembler(
-            scopedResolvedArtifacts = scopedResolvedArtifacts,
-            baseArtifacts = recordedArtifacts,
-            newArtifacts = newArtifacts,
-            removedArtifacts = removedArtifacts,
-            baseLicenses = recordedLicenses
-        )
-
-        val newArtifactsText = assembler.assembleArtifacts(
-            style = args.assemblyStyle,
-            format = args.assemblyFormat
-        )
-        val licenseCatalogText = assembler.assemblePlainLicenses(Convention.Yaml.Assembly) // the format is fixed
-
-        args.assembledArtifactsFile.writeText(newArtifactsText)
-        args.assembledLicenseCatalogFile.writeText(licenseCatalogText)
     }
 
     class Args(

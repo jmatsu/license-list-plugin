@@ -434,10 +434,12 @@ yellowBlueRelease:
         licenses: []
     io.github.jmatsu:
       - key: license-list-schema
-        displayName: license-list-schema
-        url: null
-        copyrightHolders: []
-        licenses: []
+        displayName: license-list-schema-modified
+        url: https://github.com/jmatsu/license-list-plugin
+        copyrightHolders:
+          - Jumpei Matsuda
+        licenses:
+          - z-special-license for test
     org.antlr:
       - key: antlr4
         displayName: ANTLR 4 Tool
@@ -460,14 +462,6 @@ yellowBlueRelease:
         url: null
         copyrightHolders: []
         licenses: []
-    org.jetbrains:
-      - key: annotations
-        displayName: IntelliJ IDEA Annotations
-        url: http://www.jetbrains.org
-        copyrightHolders:
-          - JetBrains Team
-        licenses:
-          - apache-2.0
     org.jetbrains.kotlin:
       - key: kotlin-reflect
         displayName: org.jetbrains.kotlin:kotlin-reflect
@@ -483,13 +477,6 @@ yellowBlueRelease:
           - Kotlin Team
         licenses:
           - apache-2.0
-      - key: kotlin-stdlib-common
-        displayName: org.jetbrains.kotlin:kotlin-stdlib-common
-        url: https://kotlinlang.org/
-        copyrightHolders:
-          - Kotlin Team
-        licenses:
-          - apache-2.0
       - key: kotlin-stdlib-jdk7
         displayName: org.jetbrains.kotlin:kotlin-stdlib-jdk7
         url: https://kotlinlang.org/
@@ -497,25 +484,7 @@ yellowBlueRelease:
           - Kotlin Team
         licenses:
           - apache-2.0
-      - key: kotlin-stdlib-jdk8
-        displayName: org.jetbrains.kotlin:kotlin-stdlib-jdk8
-        url: https://kotlinlang.org/
-        copyrightHolders:
-          - Kotlin Team
-        licenses:
-          - apache-2.0
 test:
-    junit:
-      - key: junit
-        displayName: JUnit
-        url: http://junit.org
-        copyrightHolders:
-          - David Saff
-          - Kevin Cooney
-          - Stefan Birkner
-          - Marc Philipp
-        licenses:
-          - epl-1.0
     org.hamcrest:
       - key: hamcrest-core
         displayName: Hamcrest Core

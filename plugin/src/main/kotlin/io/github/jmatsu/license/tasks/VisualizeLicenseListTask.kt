@@ -1,6 +1,7 @@
 package io.github.jmatsu.license.tasks
 
 import com.android.build.gradle.api.ApplicationVariant
+import com.google.common.annotations.VisibleForTesting
 import freemarker.template.Version
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.dsl.HtmlFormat
@@ -24,41 +25,50 @@ abstract class VisualizeLicenseListTask
     variant: ApplicationVariant
 ) : VariantAwareTask(extension, variant) {
 
+    @VisibleForTesting
+    internal object Executor {
+        operator fun invoke(args: Args) {
+            val disassembler = Disassembler(
+                style = args.assemblyStyle,
+                format = args.assemblyFormat
+            )
+
+            val artifactsText = args.assembledArtifactsFile.readText()
+            val catalogText = args.assembledLicenseCatalogFile.readText()
+
+            val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).toSet()
+            val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
+
+            val displayArtifacts = recordedArtifacts.map { artifact ->
+                DisplayArtifact(
+                    key = artifact.key,
+                    displayName = artifact.displayName,
+                    url = artifact.url,
+                    copyrightHolders = artifact.copyrightHolders,
+                    licenses = artifact.licenses.map { key ->
+                        recordedLicenses.first { it.key == key }
+                    }
+                )
+            }
+
+            val visualizer = Visualizer(
+                displayArtifacts = displayArtifacts
+            )
+
+            val text = visualizer.visualizeArtifacts(args.visualizationFormat)
+
+            args.visualizeOutputDir.mkdirs()
+            args.visualizedFile.writeText(text)
+        }
+    }
+
     @TaskAction
     fun execute() {
         val args = Args(project, extension, variant)
 
-        val disassembler = Disassembler(
-            style = args.assemblyStyle,
-            format = args.assemblyFormat
+        Executor(
+            args = args
         )
-
-        val artifactsText = args.assembledArtifactsFile.readText()
-        val catalogText = args.assembledLicenseCatalogFile.readText()
-
-        val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).toSet()
-        val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
-
-        val displayArtifacts = recordedArtifacts.map { artifact ->
-            DisplayArtifact(
-                key = artifact.key,
-                displayName = artifact.displayName,
-                url = artifact.url,
-                copyrightHolders = artifact.copyrightHolders,
-                licenses = artifact.licenses.map { key ->
-                    recordedLicenses.first { it.key == key }
-                }
-            )
-        }
-
-        val visualizer = Visualizer(
-            displayArtifacts = displayArtifacts
-        )
-
-        val text = visualizer.visualizeArtifacts(args.visualizeFormat)
-
-        args.visualizeOutputDir.mkdirs()
-        File(args.visualizeOutputDir, args.visualizedFilename).writeText(text)
     }
 
     class Args(
@@ -70,8 +80,8 @@ abstract class VisualizeLicenseListTask
         extension = extension,
         variant = variant
     ) {
-        val visualizeOutputDir: File =
-            extension.outputDir ?: let {
+        val visualizeOutputDir: File by lazy {
+            variantAwareOptions.visualization.outputDir ?: let {
                 // find first strategy
                 variant.sourceSets.flatMap {
                     it.assetsDirectories
@@ -79,24 +89,29 @@ abstract class VisualizeLicenseListTask
                     it.absolutePath.endsWith("/${variant.name}/assets")
                 }
             } ?: project.projectDir
-
-        val visualizedFileExt: String = when (extension.visualizeFormat) {
-            JsonFormat -> "json"
-            HtmlFormat -> "html"
-            else -> error("nothing has come")
         }
 
-        val visualizeFormat: StringFormat = when (extension.visualizeFormat) {
-            JsonFormat -> Convention.Json.Visualization
-            HtmlFormat -> Convention.Html.Visualization(
-                htmlConfiguration = HtmlConfiguration(
-                    version = extension.internalFreeMakerVersion ?: Version("2.3.28"),
-                    templateDir = extension.htmlTemplateDir
+        val visualizedFileExt: String by lazy {
+            when (variantAwareOptions.visualization.format) {
+                JsonFormat -> "json"
+                HtmlFormat -> "html"
+                else -> error("nothing has come")
+            }
+        }
+
+        val visualizationFormat: StringFormat by lazy {
+            when (variantAwareOptions.visualization.format) {
+                JsonFormat -> Convention.Json.Visualization
+                HtmlFormat -> Convention.Html.Visualization(
+                    htmlConfiguration = HtmlConfiguration(
+                        version = Version(variantAwareOptions.visualization.freeMakerVersion ?: "2.3.28"),
+                        templateDir = variantAwareOptions.visualization.htmlTemplateDir
+                    )
                 )
-            )
-            else -> throw IllegalArgumentException("Only one of $JsonFormat or $HtmlFormat are allowed.")
+                else -> throw IllegalArgumentException("Only one of $JsonFormat or $HtmlFormat are allowed.")
+            }
         }
-
-        val visualizedFilename: String = "${extension.visualizedFileBasename}.$visualizedFileExt"
+        val visualizedFile: File
+            get() = File(visualizeOutputDir, "license-list.$visualizedFileExt")
     }
 }

@@ -22,6 +22,21 @@ yellowBlueRelease:
           - The Android Open Source Project
         licenses:
           - apache-2.0
+    androidx.appcompat:
+      - key: appcompat
+        displayName: Android AppCompat Library v7
+        url: https://developer.android.com/jetpack/androidx
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+      - key: appcompat-resources
+        displayName: Android Resources Library
+        url: https://developer.android.com/jetpack/androidx
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
     androidx.arch.core:
       - key: core-common
         displayName: Android Arch-Common
@@ -533,6 +548,13 @@ androidTest:
           - apache-2.0
     com.android.support.test:
       - key: monitor
+        displayName: Android Testing Support Library
+        url: https://developer.android.com/testing
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+      - key: runner
         displayName: Android Testing Support Library
         url: https://developer.android.com/testing
         copyrightHolders:

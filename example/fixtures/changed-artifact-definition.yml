@@ -22,21 +22,6 @@ yellowBlueRelease:
           - The Android Open Source Project
         licenses:
           - apache-2.0
-    androidx.appcompat:
-      - key: appcompat
-        displayName: Android AppCompat Library v7
-        url: https://developer.android.com/jetpack/androidx
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
-      - key: appcompat-resources
-        displayName: Android Resources Library
-        url: https://developer.android.com/jetpack/androidx
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
     androidx.arch.core:
       - key: core-common
         displayName: Android Arch-Common
@@ -449,12 +434,12 @@ yellowBlueRelease:
         licenses: []
     io.github.jmatsu:
       - key: license-list-schema
-        displayName: license-list-schema
-        url: null
+        displayName: license-list-schema-modified
+        url: https://github.com/jmatsu/license-list-plugin
         copyrightHolders:
           - Jumpei Matsuda
         licenses:
-          - sample license
+          - z-special-license for test
     org.antlr:
       - key: antlr4
         displayName: ANTLR 4 Tool
@@ -471,6 +456,12 @@ yellowBlueRelease:
           - Suzanne Millstein
         licenses:
           - mit
+    org.codehaus.mojo:
+      - key: animal-sniffer-annotations
+        displayName: Animal Sniffer Annotations
+        url: null
+        copyrightHolders: []
+        licenses: []
     org.jetbrains:
       - key: annotations
         displayName: IntelliJ IDEA Annotations
@@ -550,13 +541,6 @@ androidTest:
           - The Android Open Source Project
         licenses:
           - apache-2.0
-      - key: runner
-        displayName: Android Testing Support Library
-        url: https://developer.android.com/testing
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
     com.android.support.test.espresso:
       - key: espresso-core
         displayName: Android Testing Support Library
@@ -593,3 +577,23 @@ androidTest:
         copyrightHolders: []
         licenses:
           - apache-2.0
+    net.sf.kxml:
+      - key: kxml2
+        displayName: kXML 2 is a small XML pull parser based on the common XML pull
+            API
+        url: http://kxml.sourceforge.net/
+        copyrightHolders: []
+        licenses:
+          - BSD style@73
+          - Public Domain@48
+    org.hamcrest:
+      - key: hamcrest-integration
+        displayName: Hamcrest Integration
+        url: null
+        copyrightHolders: []
+        licenses: []
+      - key: hamcrest-library
+        displayName: Hamcrest library
+        url: null
+        copyrightHolders: []
+        licenses: []

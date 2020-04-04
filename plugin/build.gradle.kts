@@ -7,14 +7,14 @@ import shared.Version
 import java.time.Instant
 
 plugins {
-    `java-gradle-plugin`
-    `kotlin-dsl`
-    kotlin("plugin.serialization") version shared.Version.kotlin
-    id("org.jmailen.kotlinter") version shared.Version.kotlinter
+    id("org.gradle.java-gradle-plugin")
+    id("org.gradle.kotlin.kotlin-dsl")
+    kotlin("plugin.serialization")
+    id("org.jmailen.kotlinter")
 
     // release stuff
     maven
-    id("com.jfrog.bintray") version shared.Version.bintray
+    id("com.jfrog.bintray")
 }
 
 repositories {
