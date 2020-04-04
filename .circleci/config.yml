@@ -66,7 +66,7 @@ jobs:
       - run: 
           name: check if validate action does not fail and does not produce any diff
           command: |
-            ./gradlew validateLicenseList
+            ./gradlew clean validateLicenseList --rerun-tasks
 
             if ! [[ -z "$(git diff --name-only -- app)" ]]; then
               echo "diff has been generated. validate logic must not generate any diff."
@@ -76,7 +76,7 @@ jobs:
       - run: 
           name: check if init action does not fail and does not produce any diff
           command: |
-            ./gradlew initLicenseList -Poverwrite=true
+            ./gradlew clean initLicenseList -Poverwrite=true --rerun-tasks
 
             if ! [[ -z "$(git diff --name-only -- app)" ]]; then
               echo "diff has been generated. assemble logic might be changed and it would be a breaking change."
@@ -87,12 +87,12 @@ jobs:
           command: |
             echo > app/.customartifactignore
 
-            if ./gradlew validateLicenseList; then
+            if ./gradlew validateLicenseList --rerun-tasks; then
               echo "validate should not succeed"
               exit 1
             fi
 
-            ./gradlew initLicenseList -Poverwrite=true
+            ./gradlew clean initLicenseList -Poverwrite=true --rerun-tasks
             if ! diff app/artifact-definition.yml fixtures/nothing-ignored-artifact-definition.yml; then
               echo "diff has not been generated. .customartifactignore might be wrong or artifact-definition is wrong"
               exit 1
@@ -102,44 +102,55 @@ jobs:
       - run: 
           name: check if merge action does not fail and revert changes propery
           command: |
-            if diff fixtures/merge-artifact-definition.yml fixtures/artifact-definition.yml >/dev/null 2>&1; then
-              echo "merge-artifact-definition.yml must be modified to test"
+            if diff fixtures/changed-and-removed-artifact-definition.yml fixtures/artifact-definition.yml >/dev/null 2>&1; then
+              echo "changed-and-removed-artifact-definition.yml must be modified to test"
               exit 1
             fi
 
-            if diff fixtures/merge-license-catalog.yml fixtures/license-catalog.yml >/dev/null 2>&1; then
-              echo "merge-license-catalog.yml must be modified to test"
+            if diff fixtures/changed-and-removed-license-catalog.yml fixtures/license-catalog.yml >/dev/null 2>&1; then
+              echo "changed-and-removed-license-catalog.yml must be modified to test"
               exit 1
             fi
 
+            # Create a patch to see how manual modification happens on fixtures/artifact-definition.yml
+            if diff -u fixtures/changed-artifact-definition.yml fixtures/changed-and-removed-artifact-definition.yml > fixtures/artifact-definition.patch; then
+              echo "diff could not be generated : artifact-definition"
+              exit 1
+            fi
             # Create a patch to see how manual modification happens on fixtures/license-catalog.yml
-            if diff -u fixtures/artifact-definition.yml fixtures/merge-artifact-definition.yml > fixtures/current-state-base.patch; then
-              echo "diff could not be generated"
+            if diff -u fixtures/changed-license-catalog.yml fixtures/changed-and-removed-license-catalog.yml > fixtures/license-catalog.patch; then
+              echo "diff could not be generated : license-catalog"
               exit 1
             fi
 
-            cp -f fixtures/merge-artifact-definition.yml app/artifact-definition.yml
-            cp -f fixtures/merge-license-catalog.yml app/license-catalog.yml
+            cp -f fixtures/changed-and-removed-artifact-definition.yml app/artifact-definition.yml
+            cp -f fixtures/changed-and-removed-license-catalog.yml app/license-catalog.yml
 
-            ./gradlew mergeLicenseList
-
-            if ! diff app/license-catalog.yml fixtures/merge-license-catalog.yml; then
-              echo "merge process could not preserve license-catalog"
-              exit 1
-            fi
+            ./gradlew clean mergeLicenseList --rerun-tasks
 
             # As for artifact-definition.yml, removed artifacts should be reverted so diff must be generated
-            if diff app/artifact-definition.yml fixtures/merge-artifact-definition.yml; then
-              echo "No diff is available. merge process should revert changes so diff is expected."
+            if diff app/artifact-definition.yml fixtures/changed-and-removed-artifact-definition.yml; then
+              echo "No diff is available in artifact-definition. merge process should revert changes so diff is expected."
+              exit 1
+            fi
+            # As for license-catalog.yml, removed licenses should be reverted so diff must be generated
+            if diff app/license-catalog.yml fixtures/changed-and-removed-license-catalog.yml; then
+              echo "No diff is available in license-catalog. merge process should revert changes so diff is expected."
               exit 1
             fi
 
             # Generated diff should be same to the merge result above
-            patch -fu app/artifact-definition.yml < fixtures/current-state-base.patch
+            patch -fu app/artifact-definition.yml < fixtures/artifact-definition.patch
+            patch -fu app/license-catalog.yml < fixtures/license-catalog.patch
 
-            # Should be reverted to fixtures/merge-artifact-definition.yml
-            if ! diff fixtures/merge-artifact-definition.yml app/artifact-definition.yml; then
-              echo "diff hapenned. no diff is expected"
+            # Should be reverted to fixtures/changed-and-removed-artifact-definition.yml
+            if ! diff fixtures/changed-and-removed-artifact-definition.yml app/artifact-definition.yml; then
+              echo "diff hapenned. no diff is expected : artifact-definition"
+              exit 1
+            fi
+            # Should be reverted to fixtures/changed-and-removed-license-catalog.yml
+            if ! diff fixtures/changed-and-removed-license-catalog.yml app/license-catalog.yml; then
+              echo "diff hapenned. no diff is expected : license-catalog"
               exit 1
             fi
       # TODO snapshot tests provided by espresso

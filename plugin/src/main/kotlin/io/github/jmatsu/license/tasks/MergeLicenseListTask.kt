@@ -13,9 +13,9 @@ import io.github.jmatsu.license.presentation.Disassembler
 import io.github.jmatsu.license.presentation.MergerableAssembler
 import io.github.jmatsu.license.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.license.tasks.internal.VariantAwareTask
-import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
+import javax.inject.Inject
 
 abstract class MergeLicenseListTask
 @Inject constructor(

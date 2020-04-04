@@ -9,7 +9,7 @@
     url: http://creativecommons.org/licenses/publicdomain
   - key: apache-2.0
     name: Apache License 2.0
-    url: https://api.github.com/licenses/apache-2.0
+    url: https://example.com/changed
   - key: epl-1.0
     name: Eclipse Public License 1.0
     url: https://opensource.org/licenses/EPL-1.0

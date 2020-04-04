@@ -434,10 +434,12 @@ yellowBlueRelease:
         licenses: []
     io.github.jmatsu:
       - key: license-list-schema
-        displayName: license-list-schema
-        url: null
-        copyrightHolders: []
-        licenses: []
+        displayName: license-list-schema-modified
+        url: https://github.com/jmatsu/license-list-plugin
+        copyrightHolders:
+          - Jumpei Matsuda
+        licenses:
+          - z-special-license for test
     org.antlr:
       - key: antlr4
         displayName: ANTLR 4 Tool
