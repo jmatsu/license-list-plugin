@@ -35,7 +35,7 @@ class AssemblyOptionsImplTest {
                     "androidTest"
                 ), additionalScopes
             )
-            assertNull(exclusionFile)
+            assertNull(ignoreFile)
         }
     }
 

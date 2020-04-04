@@ -27,7 +27,7 @@ abstract class MergeLicenseListTask
         val args = Args(project, extension, variant)
 
         val artifactIgnoreParser = ArtifactIgnoreParser(
-            exclusionFile = args.exclusionFile
+            ignoreFile = args.ignoreFile
         )
 
         val artifactManagement = ArtifactManagement(

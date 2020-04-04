@@ -76,7 +76,7 @@ interface AssemblyOptions : Named {
      */
     @get:InputFile
     @get:Optional
-    var exclusionFile: File?
+    var ignoreFile: File?
 }
 
 class AssemblyOptionsImpl(private val name: String) : AssemblyOptions, HasPublicType {
@@ -122,5 +122,5 @@ class AssemblyOptionsImpl(private val name: String) : AssemblyOptions, HasPublic
             field = value
         }
 
-    override var exclusionFile: File? = null
+    override var ignoreFile: File? = null
 }

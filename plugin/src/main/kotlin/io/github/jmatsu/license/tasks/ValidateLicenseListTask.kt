@@ -35,7 +35,7 @@ abstract class ValidateLicenseListTask
         }
 
         val artifactIgnoreParser = ArtifactIgnoreParser(
-            exclusionFile = args.exclusionFile
+            ignoreFile = args.ignoreFile
         )
 
         val artifactManagement = ArtifactManagement(

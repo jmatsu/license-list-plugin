@@ -82,7 +82,7 @@ abstract class ReadWriteLicenseTaskArgs(
     val assembledLicenseCatalogFile: File
         get() = File(assembleOutputDir, "license-catalog.yml")
 
-    val exclusionFile: File by lazy {
-        variantAwareOptions.assembly.exclusionFile ?: File(assembleOutputDir, ".artifactignore")
+    val ignoreFile: File by lazy {
+        variantAwareOptions.assembly.ignoreFile ?: File(assembleOutputDir, ".artifactignore")
     }
 }

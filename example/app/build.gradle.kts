@@ -74,7 +74,7 @@ dependencies {
     // sampleConfiguration is included by `implementation` so this plugin will collect sampleConfiguration as well without any setup
     sampleConfiguration("io.github.jmatsu:license-list-schema:+")
     // orphanConfiguration is not included by any other configurations, so you need to add this to targetConfigurations. See licenseList block.
-    orphanConfiguration("")
+//    orphanConfiguration("")
 
     testImplementation("junit:junit:4.12")
     androidTestImplementation("com.android.support.test:runner:1.0.2")
@@ -104,6 +104,8 @@ licenseList {
 
                 // if you would like to add wearApp
                 targetConfigurations += "wearApp"
+
+                ignoreFile = file(".customartifactignore")
             }
 
             visualization {
