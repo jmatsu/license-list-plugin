@@ -74,7 +74,13 @@ jobs:
           command: |
             ./gradlew initLicenseList -Poverwrite=true
             [[ -z "$(git diff --name-only -- app)" ]]
-
+      - run:
+          name: check if ignore file works
+          command: |
+            echo > app/.customartifactignore
+            ./gradlew initLicenseList -Poverwrite=true
+            diff app/artifact-definition.yml fixtures/nothing-ignored-artifact-definition.yml
+            git checkout -- app
       - run: 
           name: check if merge action does not fail and revert changes propery
           command: |
