@@ -70,8 +70,8 @@ abstract class VisualizeLicenseListTask
         extension = extension,
         variant = variant
     ) {
-        val visualizeOutputDir: File =
-            extension.outputDir ?: let {
+        val visualizeOutputDir: File by lazy {
+            variantAwareOptions.visualization.outputDir ?: let {
                 // find first strategy
                 variant.sourceSets.flatMap {
                     it.assetsDirectories
@@ -79,24 +79,31 @@ abstract class VisualizeLicenseListTask
                     it.absolutePath.endsWith("/${variant.name}/assets")
                 }
             } ?: project.projectDir
-
-        val visualizedFileExt: String = when (extension.visualizeFormat) {
-            JsonFormat -> "json"
-            HtmlFormat -> "html"
-            else -> error("nothing has come")
         }
 
-        val visualizeFormat: StringFormat = when (extension.visualizeFormat) {
-            JsonFormat -> Convention.Json.Visualization
-            HtmlFormat -> Convention.Html.Visualization(
-                htmlConfiguration = HtmlConfiguration(
-                    version = extension.internalFreeMakerVersion ?: Version("2.3.28"),
-                    templateDir = extension.htmlTemplateDir
+        val visualizedFileExt: String by lazy {
+            when (variantAwareOptions.visualization.format) {
+                JsonFormat -> "json"
+                HtmlFormat -> "html"
+                else -> error("nothing has come")
+            }
+        }
+
+        val visualizeFormat: StringFormat by lazy {
+            when (variantAwareOptions.visualization.format) {
+                JsonFormat -> Convention.Json.Visualization
+                HtmlFormat -> Convention.Html.Visualization(
+                    htmlConfiguration = HtmlConfiguration(
+                        version = Version(variantAwareOptions.visualization.freeMakerVersion ?: "2.3.28"),
+                        templateDir = variantAwareOptions.visualization.htmlTemplateDir
+                    )
                 )
-            )
-            else -> throw IllegalArgumentException("Only one of $JsonFormat or $HtmlFormat are allowed.")
+                else -> throw IllegalArgumentException("Only one of $JsonFormat or $HtmlFormat are allowed.")
+            }
         }
 
-        val visualizedFilename: String = "${extension.visualizedFileBasename}.$visualizedFileExt"
+        val visualizedFilename: String by lazy {
+            "${variantAwareOptions.visualization.fileBasename}.$visualizedFileExt"
+        }
     }
 }

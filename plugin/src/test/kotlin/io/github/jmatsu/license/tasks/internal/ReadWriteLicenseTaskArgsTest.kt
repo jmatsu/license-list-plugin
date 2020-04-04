@@ -12,6 +12,7 @@ import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 import org.gradle.api.Project
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.kotlin.dsl.findByType
@@ -31,6 +32,7 @@ class ReadWriteLicenseTaskArgsTest {
     lateinit var project: ProjectInternal
     lateinit var extension: LicenseListExtension
     lateinit var variant: ApplicationVariant
+    lateinit var args: ReadWriteLicenseTaskArgs
 
     @BeforeTest
     fun before() {
@@ -40,12 +42,11 @@ class ReadWriteLicenseTaskArgsTest {
         variant = mockk {
             every { name } returns "featureRelease"
         }
+        args = TestArgs(project, extension, variant)
     }
 
     @Test
     fun `build default args`() {
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
-
         with(args) {
             assertEquals(Assembler.Style.StructuredWithScope, assemblyStyle)
             assertEquals(Convention.Yaml.Assembly, assemblyFormat)
@@ -67,10 +68,17 @@ class ReadWriteLicenseTaskArgsTest {
     }
 
     @Test
-    fun `withScope is false`() {
-        extension.groupByScopes = false
+    fun `variantAwareOptions check`() {
+        val variantSpecificInstance = extension.variants.create("featureRelease")
 
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
+        args = TestArgs(project, extension, variant)
+
+        assertSame(variantSpecificInstance, args.variantAwareOptions)
+    }
+
+    @Test
+    fun `assembly#groupByScopes is false`() {
+        args.variantAwareOptions.assembly.groupByScopes = false
 
         with(args) {
             assertEquals(Assembler.Style.StructuredWithoutScope, assemblyStyle)
@@ -78,10 +86,8 @@ class ReadWriteLicenseTaskArgsTest {
     }
 
     @Test
-    fun `assembleStyle is flatten`() {
-        extension.assembleStyle = "flatten"
-
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
+    fun `assembly#style is flatten`() {
+        args.variantAwareOptions.assembly.style = "flatten"
 
         with(args) {
             assertEquals(Assembler.Style.Flatten, assemblyStyle)
@@ -89,10 +95,8 @@ class ReadWriteLicenseTaskArgsTest {
     }
 
     @Test
-    fun `assembleFormat is json`() {
-        extension.assembleFormat = "json"
-
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
+    fun `assembly#format is json`() {
+        args.variantAwareOptions.assembly.format = "json"
 
         with(args) {
             assertEquals(Convention.Json.Assembly, assemblyFormat)
@@ -103,10 +107,8 @@ class ReadWriteLicenseTaskArgsTest {
     }
 
     @Test
-    fun `targetVariant is modifiable but no impact`() {
-        extension.targetVariant = "debug"
-
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
+    fun `defaultVariant is modifiable but no impact`() {
+        extension.defaultVariant = "debug"
 
         with(args) {
             assertEquals(Assembler.Style.StructuredWithScope, assemblyStyle)
@@ -125,135 +127,6 @@ class ReadWriteLicenseTaskArgsTest {
             assertEquals(File(project.projectDir, "license-catalog.yml"), assembledLicenseCatalogFile)
             assertEquals(emptySet(), excludeGroups)
             assertEquals(emptySet(), excludeArtifacts)
-        }
-    }
-
-    @Test
-    fun `additionalScopes is appendable`() {
-        extension.additionalScopes += setOf("abc", "xyz")
-
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
-
-        with(args) {
-            assertEquals(
-                setOf(
-                    ResolveScope.Addition("test"),
-                    ResolveScope.Addition("androidTest"),
-                    ResolveScope.Addition("abc"),
-                    ResolveScope.Addition("xyz")
-                ), additionalScopes
-            )
-        }
-    }
-
-    @Test
-    fun `additionalScopes is removable`() {
-        extension.additionalScopes -= setOf("test")
-
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
-
-        with(args) {
-            assertEquals(
-                setOf(
-                    ResolveScope.Addition("androidTest")
-                ), additionalScopes
-            )
-        }
-    }
-
-    @Test
-    fun `targetConfigurations is appendable`() {
-        extension.targetConfigurations += setOf("abc", "xyz")
-
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
-
-        with(args) {
-            assertEquals(
-                ArtifactManagement.CommonConfigurationNames +
-                    setOf(
-                        "abc",
-                        "xyz"
-                    ), configurationNames
-            )
-        }
-    }
-
-    @Test
-    fun `targetConfigurations is removable`() {
-        extension.targetConfigurations -= setOf("api", "compile")
-
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
-
-        with(args) {
-            assertEquals(
-                setOf(
-                    "compileOnly",
-                    "implementation",
-                    "annotationProcessor",
-                    "kapt"
-                ), configurationNames
-            )
-        }
-    }
-
-    @Test
-    fun `excludeGroups is appendable`() {
-        extension.excludeGroups += setOf("abc", "xyz")
-
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
-
-        with(args) {
-            assertEquals(
-                setOf(
-                    "abc",
-                    "xyz"
-                ), excludeGroups
-            )
-        }
-    }
-
-    @Test
-    fun `excludeGroups is removable`() {
-        extension.excludeGroups += setOf("abc", "xyz")
-        extension.excludeGroups -= setOf("xyz")
-
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
-
-        with(args) {
-            assertEquals(
-                setOf(
-                    "abc"
-                ), excludeGroups
-            )
-        }
-    }
-
-    @Test
-    fun `excludeArtifacts is appendable`() {
-        extension.excludeArtifacts += setOf("abc:xyz")
-
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
-
-        with(args) {
-            assertEquals(
-                setOf(
-                    "abc:xyz"
-                ), excludeArtifacts
-            )
-        }
-    }
-
-    @Test
-    fun `excludeArtifacts is removable`() {
-        extension.excludeArtifacts += setOf("abc:xyz")
-        extension.excludeArtifacts -= setOf("abc:xyz")
-
-        val args: ReadWriteLicenseTaskArgs = TestArgs(project, extension, variant)
-
-        with(args) {
-            assertEquals(
-                emptySet(), excludeArtifacts
-            )
         }
     }
 }

@@ -1,7 +1,11 @@
 package io.github.jmatsu.license.tasks.internal
 
 import com.android.build.gradle.api.ApplicationVariant
+import io.github.jmatsu.license.AssemblyOptionsImpl
 import io.github.jmatsu.license.LicenseListExtension
+import io.github.jmatsu.license.VariantAwareOptions
+import io.github.jmatsu.license.VariantAwareOptionsImpl
+import io.github.jmatsu.license.VisualizationOptionsImpl
 import io.github.jmatsu.license.dsl.FlattenStyle
 import io.github.jmatsu.license.dsl.JsonFormat
 import io.github.jmatsu.license.dsl.StructuredStyle
@@ -14,48 +18,74 @@ import kotlinx.serialization.StringFormat
 import org.gradle.api.Project
 
 abstract class ReadWriteLicenseTaskArgs(
-    project: Project,
+    private val project: Project,
     extension: LicenseListExtension,
     variant: ApplicationVariant
 ) {
-    val assemblyFormat: StringFormat = when (extension.assembleFormat) {
-        JsonFormat -> Convention.Json.Assembly
-        YamlFormat -> Convention.Yaml.Assembly
-        else -> throw IllegalArgumentException("Only one of $FlattenStyle or $StructuredStyle are allowed.")
+    // only this variable should be resolved on initialization
+    internal val variantAwareOptions: VariantAwareOptions =
+        extension.variants.findByName(variant.name)
+            ?: VariantAwareOptionsImpl(
+                name = variant.name,
+                assembly = AssemblyOptionsImpl(
+                    name = variant.name
+                ),
+                visualization = VisualizationOptionsImpl(
+                    name = variant.name
+                )
+            )
+
+    val assemblyFormat: StringFormat by lazy {
+        when (variantAwareOptions.assembly.format) {
+            JsonFormat -> Convention.Json.Assembly
+            YamlFormat -> Convention.Yaml.Assembly
+            else -> throw IllegalArgumentException("Only one of $FlattenStyle or $StructuredStyle are allowed.")
+        }
     }
 
-    val assemblyStyle: Assembler.Style = when (extension.assembleStyle) {
-        FlattenStyle -> Assembler.Style.Flatten
-        StructuredStyle -> {
-            if (extension.groupByScopes) {
-                Assembler.Style.StructuredWithScope
-            } else {
-                Assembler.Style.StructuredWithoutScope
+    val assemblyStyle: Assembler.Style by lazy {
+        when (variantAwareOptions.assembly.style) {
+            FlattenStyle -> Assembler.Style.Flatten
+            StructuredStyle -> {
+                if (variantAwareOptions.assembly.groupByScopes) {
+                    Assembler.Style.StructuredWithScope
+                } else {
+                    Assembler.Style.StructuredWithoutScope
+                }
             }
+            else -> throw IllegalArgumentException("Only one of $FlattenStyle or $StructuredStyle are allowed.")
         }
-        else -> throw IllegalArgumentException("Only one of $FlattenStyle or $StructuredStyle are allowed.")
     }
 
-    val assembledFileExt: String = when (extension.assembleFormat) {
-        JsonFormat -> "json"
-        YamlFormat -> "yml"
-        else -> error("nothing has come")
+    val assembledFileExt: String by lazy {
+        when (variantAwareOptions.assembly.format) {
+            JsonFormat -> "json"
+            YamlFormat -> "yml"
+            else -> error("nothing has come")
+        }
     }
 
-    val configurationNames: Set<String> = HashSet(extension.targetConfigurations).apply {
-        require(isNotEmpty()) {
-            "targetConfigurations must has at least one element"
-        }
+    val configurationNames: Set<String> by lazy {
+        HashSet(variantAwareOptions.assembly.targetConfigurations)
     }
 
     val variantScope: ResolveScope.Variant = ResolveScope.Variant(variant.name)
 
-    val additionalScopes: Set<ResolveScope.Addition> = extension.additionalScopes.map { ResolveScope.Addition(it) }.toSet()
+    val additionalScopes: Set<ResolveScope.Addition> by lazy {
+        variantAwareOptions.assembly.additionalScopes.map { ResolveScope.Addition(it) }.toSet()
+    }
 
-    val assembleOutputDir: File = extension.artifactDefinitionFile ?: project.projectDir
-    val assembledArtifactsFile: File = File(assembleOutputDir, "artifact-definition.$assembledFileExt")
-    val assembledLicenseCatalogFile: File = File(assembleOutputDir, "license-catalog.yml")
+    val assembleOutputDir: File
+        get() = variantAwareOptions.artifactDefinitionFile ?: project.projectDir
+    val assembledArtifactsFile: File
+        get() = File(assembleOutputDir, "artifact-definition.$assembledFileExt")
+    val assembledLicenseCatalogFile: File
+        get() = File(assembleOutputDir, "license-catalog.yml")
 
-    val excludeGroups: Set<String> = HashSet(extension.excludeGroups)
-    val excludeArtifacts: Set<String> = HashSet(extension.excludeArtifacts)
+    val excludeGroups: Set<String> by lazy {
+        HashSet(variantAwareOptions.assembly.excludeGroups)
+    }
+    val excludeArtifacts: Set<String> by lazy {
+        HashSet(variantAwareOptions.assembly.excludeArtifacts)
+    }
 }

@@ -9,6 +9,9 @@ import io.github.jmatsu.license.tasks.VisualizeLicenseListTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
+import org.gradle.kotlin.dsl.container
+import org.gradle.kotlin.dsl.findByType
+import org.gradle.kotlin.dsl.getByType
 
 class LicenseListPlugin : Plugin<Project> {
     companion object {
@@ -18,16 +21,35 @@ class LicenseListPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         logger = project.logger
 
-        project.extensions.add("licenseList", LicenseListExtension::class.java)
+        val assemblyOptionsContainer = project.container(AssemblyOptions::class) { name ->
+            AssemblyOptionsImpl(name)
+        }
+
+        val visualizationOptionsContainer = project.container(VisualizationOptions::class) { name ->
+            VisualizationOptionsImpl(name)
+        }
+
+        val variantAwareOptionsContainer = project.container(VariantAwareOptions::class) { name ->
+            val assemblyOptions = assemblyOptionsContainer.create(name)
+            val visualizationOptions = visualizationOptionsContainer.create(name)
+
+            VariantAwareOptionsImpl(name, assemblyOptions, visualizationOptions)
+        }
+
+        project.extensions.create("licenseList", LicenseListExtension::class.java, variantAwareOptionsContainer)
 
         project.plugins.withType(AppPlugin::class.java) {
-            val extension = requireNotNull(project.extensions.getByType(LicenseListExtension::class.java))
-            val androidExtension = requireNotNull(project.extensions.findByType(AppExtension::class.java))
+            val extension = requireNotNull(project.extensions.getByType(LicenseListExtension::class))
+            val androidExtension = requireNotNull(project.extensions.findByType(AppExtension::class))
 
             // Do not read values of the extension because it may not be reflected yet
 
             androidExtension.applicationVariants.whenObjectAdded {
                 val variantName = name
+
+                if (extension.variants.findByName(variantName) == null) {
+                    logger?.info("VariantAwareOptions($variantName) is missing")
+                }
 
                 project.tasks.register("init${variantName.capitalize()}LicenseList", InitLicenseListTask::class.java, extension, this).configure {
                     description = """
@@ -53,7 +75,7 @@ class LicenseListPlugin : Plugin<Project> {
                     """.trimMargin()
                 }
 
-                if (extension.targetVariant == variantName) {
+                if (extension.defaultVariant == variantName) {
                     project.logger.info("$variantName has been matched to targetVariant.")
 
                     project.tasks.register("initLicenseList") {

@@ -6,11 +6,11 @@ import shared.Version
 import java.time.Instant
 
 plugins {
-    `kotlin-dsl`
-    id("org.jmailen.kotlinter") version shared.Version.kotlinter
+    id("org.gradle.kotlin.kotlin-dsl")
+    id("org.jmailen.kotlinter")
 
     maven
-    id("com.jfrog.bintray") version shared.Version.bintray
+    id("com.jfrog.bintray")
 }
 
 repositories {

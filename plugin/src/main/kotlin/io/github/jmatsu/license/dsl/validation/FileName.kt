@@ -16,7 +16,7 @@ fun optionalFileNameProperty(defaultValue: String? = null): ReadWriteProperty<An
     }
 }
 
-fun fileNameProperty(defaultValue: String): ReadWriteProperty<Any, String> {
+fun fileBasenameProperty(defaultValue: String): ReadWriteProperty<Any, String> {
     return object : ReadWriteProperty<Any, String> {
         var value: String = defaultValue
 
