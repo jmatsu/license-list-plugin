@@ -4,9 +4,9 @@ import io.github.jmatsu.license.poko.DisplayArtifact
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.serialization.StringFormat
 import kotlin.test.Test
 import kotlin.test.assertSame
+import kotlinx.serialization.StringFormat
 
 class VisualizerTest {
 
