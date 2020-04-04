@@ -102,7 +102,7 @@ jobs:
             fi
 
             # Create a patch to see how manual modification happens on fixtures/license-catalog.yml
-            diff -u fixtures/license-catalog.yml fixtures/merge-artifact-definition.yml > fixtures/current-state-base.patch
+            diff -u fixtures/artifact-definition.yml fixtures/merge-artifact-definition.yml > fixtures/current-state-base.patch
 
             cp -f fixtures/merge-artifact-definition.yml app/artifact-definition.yml
             cp -f fixtures/merge-license-catalog.yml app/license-catalog.yml
@@ -113,7 +113,7 @@ jobs:
             diff app/license-catalog.yml fixtures/merge-license-catalog.yml
 
             # As for artifact-definition.yml, removed artifacts should be reverted so diff must be generated
-            ! diff artifact-definition.yml fixtures/merge-artifact-definition.yml
+            ! diff app/artifact-definition.yml fixtures/merge-artifact-definition.yml
 
             # Generated diff should be same to the merge result above
             patch -fu app/artifact-definition.yml < fixtures/current-state-base.patch
