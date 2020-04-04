@@ -13,18 +13,17 @@ import io.github.jmatsu.license.presentation.Visualizer
 import io.github.jmatsu.license.presentation.encoder.HtmlConfiguration
 import io.github.jmatsu.license.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.license.tasks.internal.VariantAwareTask
+import java.io.File
+import javax.inject.Inject
 import kotlinx.serialization.StringFormat
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
-import java.io.File
-import javax.inject.Inject
 
 abstract class VisualizeLicenseListTask
 @Inject constructor(
     extension: LicenseListExtension,
     variant: ApplicationVariant
 ) : VariantAwareTask(extension, variant) {
-
 
     @VisibleForTesting
     internal object Executor {
@@ -56,10 +55,10 @@ abstract class VisualizeLicenseListTask
                 displayArtifacts = displayArtifacts
             )
 
-            val text = visualizer.visualizeArtifacts(args.visualizeFormat)
+            val text = visualizer.visualizeArtifacts(args.visualizationFormat)
 
             args.visualizeOutputDir.mkdirs()
-            File(args.visualizeOutputDir, "license-list.${args.visualizedFileExt}").writeText(text)
+            args.visualizedFile.writeText(text)
         }
     }
 
@@ -100,7 +99,7 @@ abstract class VisualizeLicenseListTask
             }
         }
 
-        val visualizeFormat: StringFormat by lazy {
+        val visualizationFormat: StringFormat by lazy {
             when (variantAwareOptions.visualization.format) {
                 JsonFormat -> Convention.Json.Visualization
                 HtmlFormat -> Convention.Html.Visualization(
@@ -112,5 +111,7 @@ abstract class VisualizeLicenseListTask
                 else -> throw IllegalArgumentException("Only one of $JsonFormat or $HtmlFormat are allowed.")
             }
         }
+        val visualizedFile: File
+            get() = File(visualizeOutputDir, "license-list.$visualizedFileExt")
     }
 }

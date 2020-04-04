@@ -35,7 +35,6 @@ abstract class InitLicenseListTask
             val artifactIgnoreParser = ArtifactIgnoreParser(
                 ignoreFile = args.ignoreFile
             )
-
             val artifactManagement = ArtifactManagement(
                 project = project,
                 configurationNames = args.configurationNames,

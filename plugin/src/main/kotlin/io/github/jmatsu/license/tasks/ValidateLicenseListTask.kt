@@ -11,11 +11,11 @@ import io.github.jmatsu.license.presentation.Disassembler
 import io.github.jmatsu.license.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.license.tasks.internal.TaskException
 import io.github.jmatsu.license.tasks.internal.VariantAwareTask
+import java.io.FileNotFoundException
+import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.api.tasks.TaskAction
-import java.io.FileNotFoundException
-import javax.inject.Inject
 
 abstract class ValidateLicenseListTask
 @Inject constructor(
