@@ -1,6 +1,7 @@
 package io.github.jmatsu.license.tasks
 
 import com.android.build.gradle.api.ApplicationVariant
+import com.google.common.annotations.VisibleForTesting
 import freemarker.template.Version
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.dsl.HtmlFormat
@@ -12,11 +13,11 @@ import io.github.jmatsu.license.presentation.Visualizer
 import io.github.jmatsu.license.presentation.encoder.HtmlConfiguration
 import io.github.jmatsu.license.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.license.tasks.internal.VariantAwareTask
-import java.io.File
-import javax.inject.Inject
 import kotlinx.serialization.StringFormat
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
+import java.io.File
+import javax.inject.Inject
 
 abstract class VisualizeLicenseListTask
 @Inject constructor(
@@ -24,41 +25,51 @@ abstract class VisualizeLicenseListTask
     variant: ApplicationVariant
 ) : VariantAwareTask(extension, variant) {
 
+
+    @VisibleForTesting
+    internal object Executor {
+        operator fun invoke(args: Args) {
+            val disassembler = Disassembler(
+                style = args.assemblyStyle,
+                format = args.assemblyFormat
+            )
+
+            val artifactsText = args.assembledArtifactsFile.readText()
+            val catalogText = args.assembledLicenseCatalogFile.readText()
+
+            val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).toSet()
+            val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
+
+            val displayArtifacts = recordedArtifacts.map { artifact ->
+                DisplayArtifact(
+                    key = artifact.key,
+                    displayName = artifact.displayName,
+                    url = artifact.url,
+                    copyrightHolders = artifact.copyrightHolders,
+                    licenses = artifact.licenses.map { key ->
+                        recordedLicenses.first { it.key == key }
+                    }
+                )
+            }
+
+            val visualizer = Visualizer(
+                displayArtifacts = displayArtifacts
+            )
+
+            val text = visualizer.visualizeArtifacts(args.visualizeFormat)
+
+            args.visualizeOutputDir.mkdirs()
+            File(args.visualizeOutputDir, "license-list.${args.visualizedFileExt}").writeText(text)
+        }
+    }
+
     @TaskAction
     fun execute() {
         val args = Args(project, extension, variant)
 
-        val disassembler = Disassembler(
-            style = args.assemblyStyle,
-            format = args.assemblyFormat
+        Executor(
+            args = args
         )
-
-        val artifactsText = args.assembledArtifactsFile.readText()
-        val catalogText = args.assembledLicenseCatalogFile.readText()
-
-        val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).toSet()
-        val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
-
-        val displayArtifacts = recordedArtifacts.map { artifact ->
-            DisplayArtifact(
-                key = artifact.key,
-                displayName = artifact.displayName,
-                url = artifact.url,
-                copyrightHolders = artifact.copyrightHolders,
-                licenses = artifact.licenses.map { key ->
-                    recordedLicenses.first { it.key == key }
-                }
-            )
-        }
-
-        val visualizer = Visualizer(
-            displayArtifacts = displayArtifacts
-        )
-
-        val text = visualizer.visualizeArtifacts(args.visualizeFormat)
-
-        args.visualizeOutputDir.mkdirs()
-        File(args.visualizeOutputDir, "license-list.${args.visualizedFileExt}").writeText(text)
     }
 
     class Args(
