@@ -3,6 +3,7 @@ package io.github.jmatsu.license.tasks
 import com.android.build.gradle.api.ApplicationVariant
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.ext.xor2
+import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.presentation.Assembler
 import io.github.jmatsu.license.presentation.Disassembler
@@ -33,11 +34,14 @@ abstract class ValidateLicenseListTask
             throw FileNotFoundException("${args.assembledLicenseCatalogFile.absolutePath} is not found")
         }
 
+        val artifactIgnoreParser = ArtifactIgnoreParser(
+            exclusionFile = args.exclusionFile
+        )
+
         val artifactManagement = ArtifactManagement(
             project = project,
             configurationNames = args.configurationNames,
-            excludeGroups = args.excludeGroups,
-            excludeArtifacts = args.excludeArtifacts
+            exclusionRegex = artifactIgnoreParser.parse()
         )
         val scopedResolvedArtifacts = artifactManagement.analyze(
             variantScope = args.variantScope,

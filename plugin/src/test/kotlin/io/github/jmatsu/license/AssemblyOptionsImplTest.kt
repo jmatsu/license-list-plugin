@@ -5,6 +5,7 @@ import io.github.jmatsu.license.dsl.YamlFormat
 import io.github.jmatsu.license.internal.ArtifactManagement
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -34,8 +35,7 @@ class AssemblyOptionsImplTest {
                     "androidTest"
                 ), additionalScopes
             )
-            assertEquals(emptySet(), excludeGroups)
-            assertEquals(emptySet(), excludeArtifacts)
+            assertNull(exclusionFile)
         }
     }
 
@@ -137,59 +137,6 @@ class AssemblyOptionsImplTest {
                         "annotationProcessor",
                         "kapt"
                     ), targetConfigurations
-            )
-        }
-    }
-
-    @Test
-    fun `excludeGroups is appendable`() {
-        options.excludeGroups += setOf("abc", "xyz")
-
-        with(options) {
-            assertEquals(
-                setOf(
-                    "abc",
-                    "xyz"
-                ), excludeGroups
-            )
-        }
-    }
-
-    @Test
-    fun `excludeGroups is removable`() {
-        options.excludeGroups += setOf("abc", "xyz")
-        options.excludeGroups -= setOf("xyz")
-
-        with(options) {
-            assertEquals(
-                setOf(
-                    "abc"
-                ), excludeGroups
-            )
-        }
-    }
-
-    @Test
-    fun `excludeArtifacts is appendable`() {
-        options.excludeArtifacts += setOf("abc:xyz")
-
-        with(options) {
-            assertEquals(
-                setOf(
-                    "abc:xyz"
-                ), excludeArtifacts
-            )
-        }
-    }
-
-    @Test
-    fun `excludeArtifacts is removable`() {
-        options.excludeArtifacts += setOf("abc:xyz")
-        options.excludeArtifacts -= setOf("abc:xyz")
-
-        with(options) {
-            assertEquals(
-                emptySet(), excludeArtifacts
             )
         }
     }

@@ -4,7 +4,6 @@ import freemarker.template.Version
 import io.github.jmatsu.license.dsl.HtmlFormat
 import io.github.jmatsu.license.dsl.VisualizeFormat
 import io.github.jmatsu.license.dsl.isVisualizeFormat
-import io.github.jmatsu.license.dsl.validation.fileBasenameProperty
 import io.github.jmatsu.license.dsl.validation.optionalDirectoryProperty
 import java.io.File
 import org.gradle.api.Named
@@ -53,12 +52,6 @@ interface VisualizationOptions : Named {
     @get:OutputDirectory
     @get:Optional
     var outputDir: File?
-
-    /**
-     * A basename of a visualized licenses' file
-     */
-    @get:Input
-    var fileBasename: String
 }
 
 class VisualizationOptionsImpl(
@@ -90,6 +83,4 @@ class VisualizationOptionsImpl(
         }
 
     override var outputDir: File? by optionalDirectoryProperty()
-
-    override var fileBasename: String by fileBasenameProperty("license-list")
 }

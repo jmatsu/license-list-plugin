@@ -8,10 +8,13 @@ import io.github.jmatsu.license.dsl.isAssembleFormat
 import io.github.jmatsu.license.dsl.isAssembleStyle
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.model.ResolveScope
+import java.io.File
 import org.gradle.api.Named
 import org.gradle.api.reflect.HasPublicType
 import org.gradle.api.reflect.TypeOf
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
 import org.gradle.kotlin.dsl.typeOf
 
 interface AssemblyOptions : Named {
@@ -69,17 +72,11 @@ interface AssemblyOptions : Named {
     var targetConfigurations: Set<String>
 
     /**
-     * Group names to exclude.
+     * A file of artifact ignore.
      */
-    @get:Input
-    var excludeGroups: Set<String>
-
-    /**
-     * Artifact names to exclude.
-     * The format is "<group>:<name>". e.g. "io.github.jmatsu:example" is it
-     */
-    @get:Input
-    var excludeArtifacts: Set<String>
+    @get:InputFile
+    @get:Optional
+    var exclusionFile: File?
 }
 
 class AssemblyOptionsImpl(private val name: String) : AssemblyOptions, HasPublicType {
@@ -125,7 +122,5 @@ class AssemblyOptionsImpl(private val name: String) : AssemblyOptions, HasPublic
             field = value
         }
 
-    override var excludeGroups: Set<String> = setOf()
-
-    override var excludeArtifacts: Set<String> = setOf()
+    override var exclusionFile: File? = null
 }

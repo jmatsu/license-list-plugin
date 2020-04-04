@@ -3,6 +3,7 @@ package io.github.jmatsu.license.tasks
 import com.android.build.gradle.api.ApplicationVariant
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.ext.xor2
+import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.poko.PlainLicense
 import io.github.jmatsu.license.presentation.Assembler
@@ -25,11 +26,14 @@ abstract class MergeLicenseListTask
     fun execute() {
         val args = Args(project, extension, variant)
 
+        val artifactIgnoreParser = ArtifactIgnoreParser(
+            exclusionFile = args.exclusionFile
+        )
+
         val artifactManagement = ArtifactManagement(
             project = project,
             configurationNames = args.configurationNames,
-            excludeGroups = args.excludeGroups,
-            excludeArtifacts = args.excludeArtifacts
+            exclusionRegex = artifactIgnoreParser.parse()
         )
         val scopedResolvedArtifacts = artifactManagement.analyze(
             variantScope = args.variantScope,

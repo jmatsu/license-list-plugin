@@ -4,6 +4,7 @@ import kotlinx.serialization.Decoder
 import kotlinx.serialization.Encoder
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.PrimitiveKind
+import kotlinx.serialization.Required
 import kotlinx.serialization.SerialDescriptor
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Serializer
@@ -32,6 +33,8 @@ data class LicenseKey(
 
 @Serializable
 data class PlainLicense(
+
+    @Required
     override val key: LicenseKey,
     override val name: String,
     override val url: String

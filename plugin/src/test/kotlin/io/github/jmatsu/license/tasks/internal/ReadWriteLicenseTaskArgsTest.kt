@@ -62,8 +62,7 @@ class ReadWriteLicenseTaskArgsTest {
             assertEquals(File(project.projectDir, "artifact-definition.yml"), assembledArtifactsFile)
             assertEquals(project.projectDir, assembleOutputDir)
             assertEquals(File(project.projectDir, "license-catalog.yml"), assembledLicenseCatalogFile)
-            assertEquals(emptySet(), excludeGroups)
-            assertEquals(emptySet(), excludeArtifacts)
+            assertEquals(File(project.projectDir, ".artifactignore"), exclusionFile)
         }
     }
 
@@ -125,8 +124,7 @@ class ReadWriteLicenseTaskArgsTest {
             assertEquals(File(project.projectDir, "artifact-definition.yml"), assembledArtifactsFile)
             assertEquals(project.projectDir, assembleOutputDir)
             assertEquals(File(project.projectDir, "license-catalog.yml"), assembledLicenseCatalogFile)
-            assertEquals(emptySet(), excludeGroups)
-            assertEquals(emptySet(), excludeArtifacts)
+            assertEquals(File(project.projectDir, ".artifactignore"), exclusionFile)
         }
     }
 }

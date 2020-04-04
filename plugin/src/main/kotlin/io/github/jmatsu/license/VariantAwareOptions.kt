@@ -6,10 +6,10 @@ import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.reflect.HasPublicType
 import org.gradle.api.reflect.TypeOf
-import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.kotlin.dsl.typeOf
@@ -19,10 +19,10 @@ interface VariantAwareOptions : Named {
      * A parent directory of an artifact definition file.
      */
     @get:PathSensitive(PathSensitivity.RELATIVE)
-    @get:InputFile
-    @get:OutputFile
+    @get:InputDirectory
+    @get:OutputDirectory
     @get:Optional
-    var artifactDefinitionFile: File?
+    var artifactDefinitionDirectory: File?
 
     @get:Nested
     val assembly: AssemblyOptions
@@ -41,7 +41,7 @@ class VariantAwareOptionsImpl(
     override val visualization: VisualizationOptions
 ) : VariantAwareOptions, HasPublicType {
 
-    override var artifactDefinitionFile: File? by optionalDirectoryProperty()
+    override var artifactDefinitionDirectory: File? by optionalDirectoryProperty()
 
     override fun assembly(action: Action<AssemblyOptions>) {
         action.execute(assembly)

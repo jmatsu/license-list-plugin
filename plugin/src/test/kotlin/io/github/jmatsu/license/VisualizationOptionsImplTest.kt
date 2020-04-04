@@ -1,7 +1,6 @@
 package io.github.jmatsu.license
 
 import io.github.jmatsu.license.dsl.HtmlFormat
-import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -27,7 +26,6 @@ class VisualizationOptionsImplTest {
             assertNull(htmlTemplateDir)
             assertNull(freeMakerVersion)
             assertNull(outputDir)
-            assertEquals("license-list", fileBasename)
         }
     }
 
@@ -54,21 +52,6 @@ class VisualizationOptionsImplTest {
         assertEquals("2.8.30", options.freeMakerVersion)
         assertThrows<IllegalArgumentException> {
             options.freeMakerVersion = "not a version"
-        }
-    }
-
-    @Test
-    fun `fileBasename validation`() {
-        assertDoesNotThrow {
-            options.fileBasename = "basename"
-        }
-        assertEquals("basename", options.fileBasename)
-        assertDoesNotThrow {
-            options.fileBasename = "ext.is.okay"
-        }
-        assertEquals("ext.is.okay", options.fileBasename)
-        assertThrows<IllegalStateException> {
-            options.fileBasename = "path${File.pathSeparator}is_not_allowed"
         }
     }
 }

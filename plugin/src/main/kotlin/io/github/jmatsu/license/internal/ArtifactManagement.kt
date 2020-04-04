@@ -7,6 +7,45 @@ import io.github.jmatsu.license.model.ResolvedArtifact
 import io.github.jmatsu.license.model.ResolvedModuleIdentifier
 import io.github.jmatsu.license.model.VersionString
 import java.util.SortedMap
+import kotlin.Comparator
+import kotlin.Pair
+import kotlin.String
+import kotlin.also
+import kotlin.arrayOf
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.Set
+import kotlin.collections.asSequence
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.component3
+import kotlin.collections.contains
+import kotlin.collections.distinctBy
+import kotlin.collections.filter
+import kotlin.collections.filterNot
+import kotlin.collections.flatMap
+import kotlin.collections.getValue
+import kotlin.collections.groupBy
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.mapKeys
+import kotlin.collections.mapNotNull
+import kotlin.collections.mapValues
+import kotlin.collections.max
+import kotlin.collections.orEmpty
+import kotlin.collections.plus
+import kotlin.collections.plusAssign
+import kotlin.collections.reduce
+import kotlin.collections.setOf
+import kotlin.collections.toMap
+import kotlin.collections.toSet
+import kotlin.collections.toSortedMap
+import kotlin.let
+import kotlin.requireNotNull
+import kotlin.run
+import kotlin.takeIf
+import kotlin.to
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ComponentIdentifier
@@ -18,8 +57,7 @@ import org.gradle.maven.MavenPomArtifact
 class ArtifactManagement(
     private val project: Project,
     private val configurationNames: Set<String>,
-    private val excludeGroups: Set<String> = emptySet(),
-    private val excludeArtifacts: Set<String> = emptySet()
+    private val exclusionRegex: Regex? = null
 ) {
     companion object {
         /**
@@ -184,8 +222,15 @@ class ArtifactManagement(
     internal fun Configuration.toResolvedModuleIdentifiers(): List<ResolvedModuleIdentifier> {
         return lenientConfiguration()?.run {
             artifacts.filter { it.type == "aar" || it.type == "jar" }
-                .filterNot { it.moduleVersion.id.group in excludeGroups }
-                .filterNot { "${it.moduleVersion.id.group}:${it.moduleVersion.id.name}" in excludeArtifacts }
+                .let {
+                    if (exclusionRegex != null) {
+                        it.filterNot { artifact ->
+                            exclusionRegex.matches("${artifact.moduleVersion.id.group}:${artifact.moduleVersion.id.name}")
+                        }
+                    } else {
+                        it
+                    }
+                }
                 .map { artifact ->
                     ResolvedModuleIdentifier(
                         name = artifact.moduleVersion.id.name,

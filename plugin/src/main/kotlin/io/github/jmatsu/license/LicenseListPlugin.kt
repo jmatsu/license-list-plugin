@@ -12,6 +12,7 @@ import org.gradle.api.logging.Logger
 import org.gradle.kotlin.dsl.container
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.hasPlugin
 
 class LicenseListPlugin : Plugin<Project> {
     companion object {
@@ -20,6 +21,11 @@ class LicenseListPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         logger = project.logger
+
+        if (project.plugins.hasPlugin(this::class)) {
+            logger?.warn("LicenseList plugin is applied multiple times so ignored the 2nd application")
+            return
+        }
 
         val assemblyOptionsContainer = project.container(AssemblyOptions::class) { name ->
             AssemblyOptionsImpl(name)

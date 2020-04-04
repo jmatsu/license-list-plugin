@@ -58,7 +58,7 @@ abstract class VisualizeLicenseListTask
         val text = visualizer.visualizeArtifacts(args.visualizeFormat)
 
         args.visualizeOutputDir.mkdirs()
-        File(args.visualizeOutputDir, args.visualizedFilename).writeText(text)
+        File(args.visualizeOutputDir, "license-list.${args.visualizedFileExt}").writeText(text)
     }
 
     class Args(
@@ -100,10 +100,6 @@ abstract class VisualizeLicenseListTask
                 )
                 else -> throw IllegalArgumentException("Only one of $JsonFormat or $HtmlFormat are allowed.")
             }
-        }
-
-        val visualizedFilename: String by lazy {
-            "${variantAwareOptions.visualization.fileBasename}.$visualizedFileExt"
         }
     }
 }
