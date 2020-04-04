@@ -83,15 +83,22 @@ kapt {
 
 licenseList {
     // <action>LicenseList will execute <action><targetVariant>LicenseList if specified
-    targetVariant = "yellowBlueRelease"
+    defaultVariant = "yellowBlueRelease"
 
-    // flatten is enough to show licenses.
-    // structured is probably useful for the management.
-    assembleStyle = "structured"
+    variants {
+        create("yellowBlueRelease") {
+            assembly {
+                // flatten is enough to show licenses but structured could be probably useful for the management.
+                style = "structured"
 
-    // it's useful for those who want to customize the appearance of the license viewer
-    visualizeFormat = "json"
+                // if you would like to add wearApp
+                targetConfigurations += "wearApp"
+            }
 
-    // if you would like to add wearApp
-    targetConfigurations += "wearApp"
+            visualization {
+                // it's useful for those who want to customize the appearance of the license viewer
+                format = "json"
+            }
+        }
+    }
 }
