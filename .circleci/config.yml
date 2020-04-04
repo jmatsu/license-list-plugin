@@ -78,25 +78,48 @@ jobs:
           name: check if ignore file works
           command: |
             echo > app/.customartifactignore
+
+            if ./gradlew validateLicenseList; then
+              echo "validate should not succeed"
+              exit 1
+            fi
+
             ./gradlew initLicenseList -Poverwrite=true
             diff app/artifact-definition.yml fixtures/nothing-ignored-artifact-definition.yml
+
             git checkout -- app
       - run: 
           name: check if merge action does not fail and revert changes propery
           command: |
-            cp -f fixtures/* app/
-            git config --global user.email "noreply@example.com"
-            git config --global user.name "jmatsu"
-            git add .
-            git commit -m "Save dirty diff"
+            if diff fixtures/merged-artifact-definition.yml fixtures/artifact-definition.yml >/dev/null 2>&1; then
+              echo "merged-artifact-definition.yml must be modified to test"
+              exit 1
+            fi
+
+            if diff fixtures/merged-license-catalog.yml fixtures/license-catalog.yml >/dev/null 2>&1; then
+              echo "merged-license-catalog.yml must be modified to test"
+              exit 1
+            fi
+
+            # Create a patch to see how manual modification happens on fixtures/license-catalog.yml
+            diff -u fixtures/license-catalog.yml fixtures/merged-artifact-definition.yml > fixtures/current-state-base.patch
+
+            cp -f fixtures/merged-artifact-definition.yml app/artifact-definition.yml
+            cp -f fixtures/merged-license-catalog.yml app/license-catalog.yml
+
             ./gradlew mergeLicenseList
-            # preserve samplelicense and the order
-            [[ -z "$(git diff --name-only -- app/license-catalog.yml)" ]]
-            # revert removed artifacts so diff is available
-            [[ -n "$(git diff --name-only -- app/artifact-definition.yml)" ]]
-            # generated diff should be same to the merge result above
-            patch -fu app/artifact-definition.yml < fixtures/artifact-definition.patch
-            [[ -z "$(git diff --name-only -- app/artifact-definition.yml)" ]]
+
+            # Check if merge process could preserve license-catalog.yml
+            diff app/license-catalog.yml fixtures/merged-license-catalog.yml
+
+            # As for artifact-definition.yml, removed artifacts should be reverted so diff must be generated
+            ! diff artifact-definition.yml fixtures/merged-artifact-definition.yml
+
+            # Generated diff should be same to the merge result above
+            patch -fu app/artifact-definition.yml < fixtures/current-state-base.patch
+
+            # Should be reverted to fixtures/merged-artifact-definition.yml
+            diff fixtures/merged-artifact-definition.yml app/artifact-definition.yml
       # TODO snapshot tests provided by espresso
       - save_gradle_cache:
           cache_name: example
