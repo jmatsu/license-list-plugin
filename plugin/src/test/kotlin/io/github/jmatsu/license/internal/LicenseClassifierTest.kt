@@ -317,6 +317,21 @@ class LicenseClassifierTest {
     @ParameterizedTest
     @ValueSource(
         strings = [
+            "Bouncy Castle Licence",
+            "bcl"
+        ]
+    )
+    fun `bcl`(name: String) {
+        val licenseClassifier = LicenseClassifier(name)
+
+        expect(LicenseClassifier.GuessedLicense.Bcl) {
+            licenseClassifier.guess()
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = [
             ""
         ]
     )

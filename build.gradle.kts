@@ -9,7 +9,7 @@ plugins {
 
 subprojects {
     group = shared.Definition.group
-    version = "0.0.1"
+    version = rootProject.file("VERSION").readText().trim()
 
     tasks.withType(Test::class) {
         useJUnitPlatform()
