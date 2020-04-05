@@ -37,7 +37,7 @@ class ReadWriteLicenseTaskArgsTest {
     @BeforeTest
     fun before() {
         project = ProjectBuilder.builder().build() as ProjectInternal
-        project.plugins.apply("license-list")
+        project.plugins.apply("io.github.jmatsu.license-list")
         extension = requireNotNull(project.extensions.findByType(LicenseListExtension::class))
         variant = mockk {
             every { name } returns "featureRelease"

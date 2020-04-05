@@ -24,7 +24,7 @@ class LicenseListPluginTest {
     fun `plugin create an extension`() {
         val project = ProjectBuilder.builder().build()
         project.plugins.apply("com.android.application")
-        project.plugins.apply("license-list")
+        project.plugins.apply("io.github.jmatsu.license-list")
 
         val extension = project.extensions.findByType(LicenseListExtension::class)
 

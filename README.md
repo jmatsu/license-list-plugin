@@ -15,10 +15,11 @@ License List Plugin is a Gradle plugin to manage artifacts' licenses that your A
 4. [Extension](#extension)
 5. [Tips](#tips)
     1. [license-tools-plugin migration](#for-license-tools-plugin-users)
-    2. [Add other configurations like WearApp](#additional-configurations-like-wearapp)
-    3. [Custom variant-aware configurations](#custom-variant-aware-configurations)
-    4. [Html template customization](#html-customization)
-    5. [Render Json output](#render-json)
+    2. [Exclude specific groups/artifacts](#exclude-specific-groupsartifacts)
+    3. [Add other configurations like WearApp](#additional-configurations-like-wearapp)
+    4. [Custom variant-aware configurations](#custom-variant-aware-configurations)
+    5. [Html template customization](#html-customization)
+    6. [Render Json output](#render-json)
 6. [Known limitation](#limitations)
 7. [LICENSE](#license)
 
@@ -217,7 +218,7 @@ Those who are from license-tools-plugin can migrate their yml file to the format
 ```kotlin
 plugins {
   id("com.cookpad.android.licensetools") // A migration task is available only when the plugin is applied
-  id("license-list")
+  id("io.github.jmatsu.license-list")
 }
 
 licenseTools {
@@ -245,6 +246,21 @@ Please move them to the directory where you would like to use for the management
 
 - Only v1.7.0 is tested. Please feel free to open issues if you have any problems.
 - `licenseTools.ignoreProjects` is not supported. Because I couldn't imagine the usecase that we really want to ignore *projects*. The group/artifact ignore feature is enough.
+
+#### Exclude specific groups/artifacts
+
+You can exclude specific groups and/or artifacts through `.artifactignore` file. `.artifactignore` file is a list of Regexp that matches with `<group>:<name>`.
+
+Let's say you want to exclude `com.example` group and `io.github.jmatsu:example` artifact. Your ignore file should be like the following.
+
+```
+com.example:.*
+io.github.jmatsu:example
+```
+
+Please note that this plugin will automatically add `^` and `$` to each lines, so you must not add it in this ignore file.
+
+For the more details, see [example/app/.artifactignore](example/app/.artifactignore).
 
 #### Additional configurations like WearApp
 
