@@ -12,7 +12,7 @@
     url: https://example.com/changed
   - key: mit
     name: MIT License
-    url: https://api.github.com/licenses/mit
+    url: https://github.com/jmatsu/license-list-plugin/blob/master/license-files/mit.txt
   - key: z-special-license for test
     name: Special License for merge test
     url: http://example.com

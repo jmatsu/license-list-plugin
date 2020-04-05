@@ -58,7 +58,7 @@ class LicenseClassifier(
 
         abstract class GitHubAPICompatibleLicense : GuessedLicense() {
             override val url: String
-                get() = "https://api.github.com/licenses/$key"
+                get() = "https://github.com/jmatsu/license-list-plugin/blob/master/license-files/$key.txt"
         }
 
         object AGPL30 : GitHubAPICompatibleLicense() {
@@ -208,6 +208,8 @@ class LicenseClassifier(
         val isFacebookSDK = wordMatch("facebook")
         val isMoPubSDK = wordMatch("mopub")
         val isAndroidSDK = wordMatch("android")
+        val isBCL = wordMatch("bouncy\\b.*castle")
+        val isBCL_2nd = wordMatch("bcl")
 
         private fun wordMatch(word: String): Regex {
             return "\\b$word\\b".toRegex()
@@ -289,6 +291,7 @@ class LicenseClassifier(
                     else -> GuessedLicense.CC010
                 }
             }
+            in isBCL, in isBCL_2nd -> GuessedLicense.Bcl
             "" -> GuessedLicense.Unlicense
             else -> fallbackLicense
         }

@@ -3,13 +3,16 @@
 import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
 import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
 import shared.Version
+import java.time.format.DateTimeFormatter
 import java.time.Instant
+import java.time.ZoneId
 
 plugins {
     id("org.gradle.kotlin.kotlin-dsl")
     id("org.jmailen.kotlinter")
 
     maven
+    `maven-publish`
     id("com.jfrog.bintray")
 }
 
@@ -43,22 +46,72 @@ kotlinter {
 
 bintray {
     user = System.getenv("BINTRAY_USER")
-    key = System.getenv("BINTRAY_KEY")
-    pkg(closureOf<PackageConfig> {
+    key = System.getenv("BINTRAY_API_KEY")
+    pkg(delegateClosureOf<PackageConfig> {
         repo = "maven"
         name = shared.Definition.schemaName
         userOrg = "jmatsu"
         setLicenses("MIT")
         websiteUrl = "https://github.com/jmatsu/license-list-plugin"
         issueTrackerUrl = "https://github.com/jmatsu/license-list-plugin/issues"
-        vcsUrl = "https://github.com/jmatsu/license-list-plugin/issues.git"
-        githubRepo = "jmatsu/license-list-plugin"
-        version(closureOf<VersionConfig> {
+        vcsUrl = "https://github.com/jmatsu/license-list-plugin.git"
+        // FIXME out-in after opening a repository
+//        githubRepo = "jmatsu/license-list-plugin"
+//        githubReleaseNotesFile = "CHANGELOG.md"
+        version(delegateClosureOf<VersionConfig> {
             name = project.version as String
-            released = Instant.now().toString()
+            released = DateTimeFormatter
+                .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
+                .withZone(ZoneId.of("UTC"))
+                .format(Instant.now())
         })
     })
 
-    setConfigurations("archives")
+    dryRun = properties["dryRun"]?.toString()?.toBoolean() ?: true
+
+    setPublications("schemaPublish")
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        create("schemaPublish", MavenPublication::class) {
+            from(components.getByName("java"))
+            groupId = shared.Definition.group
+            artifactId = shared.Definition.schemaName
+            version = project.version as String
+
+            pom {
+                name.set(shared.Definition.schemaDisplayName)
+                description.set(shared.Definition.schemaDescription)
+                url.set(shared.Definition.webUrl)
+
+                licenses {
+                    license {
+                        name.set("The MIT License (MIT)")
+                        url.set("https://github.com/jmatsu/license-list-plugin/tree/master/license-files/mit.txt")
+                        distribution.set("repo")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("jmatsu")
+                        name.set("Jumpei Matsuda")
+                    }
+                }
+
+                scm {
+                    connection.set("scm:git@github.com:jmatsu/license-list-plugin.git")
+                    developerConnection.set("scm:git@github.com:jmatsu/license-list-plugin.git")
+                    url.set("https://github.com/jmatsu/license-list-plugin")
+                }
+            }
+        }
+    }
 }
 

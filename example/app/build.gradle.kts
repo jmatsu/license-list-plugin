@@ -110,7 +110,7 @@ licenseList {
 
             visualization {
                 // it's useful for those who want to customize the appearance of the license viewer
-                format = "json"
+                format = "html"
             }
         }
     }

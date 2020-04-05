@@ -1,6 +1,6 @@
 # License List Plugin
 
-License List Plugin is a management plugin for artifacts' licenses that your Android project uses. It can generate the data source as human readable or handy format.
+License List Plugin is a Gradle plugin to manage artifacts' licenses that your Android project uses. It can generate the data source as human readable or handy format.
 
 ## Introduction
 
@@ -277,22 +277,10 @@ TBW
 
 ## License
 
-Under Apache 2.0 LICENSE.
+Under MIT License.
 
 ```
  Copyright 2020 Jumpei Matsuda (jmatsu)
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
 ```
 
 - This plugin partially uses [cookpad/license-tools-plugin](https://github.com/cookpad/license-tools-plugin/blob/master/LICENSE.md)'s source code to support migration.

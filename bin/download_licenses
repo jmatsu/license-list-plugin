@@ -3,5 +3,5 @@
 set -euo pipefail
 
 while read key; do
-  curl -X GET -Lf -o "license-files/$key.txt" "https://api.github.com/licenses/$key"
+  curl -X GET -Lf "https://api.github.com/licenses/$key" | jq -r '.body' > "license-files/$key.txt"
 done < <(curl -X GET -Lf 'https://api.github.com/licenses' | jq -r '.[] | .key')

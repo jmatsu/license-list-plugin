@@ -4,7 +4,9 @@ import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
 import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
 import shared.Definition
 import shared.Version
+import java.time.format.DateTimeFormatter
 import java.time.Instant
+import java.time.ZoneId
 
 plugins {
     id("org.gradle.java-gradle-plugin")
@@ -14,7 +16,9 @@ plugins {
 
     // release stuff
     maven
+    `maven-publish`
     id("com.jfrog.bintray")
+    id("com.gradle.plugin-publish") version "0.11.0"
 }
 
 repositories {
@@ -80,6 +84,8 @@ gradlePlugin {
     val `license-list-gradle` by plugins.creating {
         id = Definition.pluginId
         implementationClass = "io.github.jmatsu.license.LicenseListPlugin"
+        displayName = Definition.pluginDisplayName
+        description = Definition.pluginDescription
     }
 }
 
@@ -101,22 +107,78 @@ kotlinter {
 
 bintray {
     user = System.getenv("BINTRAY_USER")
-    key = System.getenv("BINTRAY_KEY")
+    key = System.getenv("BINTRAY_API_KEY")
     pkg(closureOf<PackageConfig> {
         repo = "maven"
         name = Definition.pluginName
         userOrg = "jmatsu"
         setLicenses("MIT")
-        websiteUrl = "https://github.com/jmatsu/license-list-plugin"
-        issueTrackerUrl = "https://github.com/jmatsu/license-list-plugin/issues"
-        vcsUrl = "https://github.com/jmatsu/license-list-plugin/issues.git"
-        githubRepo = "jmatsu/license-list-plugin"
+        websiteUrl = Definition.webUrl
+        issueTrackerUrl = "${Definition.webUrl}/issues"
+        vcsUrl = Definition.vcsUrl
+        // FIXME out-in after opening a repository
+//        githubRepo = "jmatsu/license-list-plugin"
+//        githubReleaseNotesFile = "CHANGELOG.md"
         version(closureOf<VersionConfig> {
             name = project.version as String
-            released = Instant.now().toString()
+
+            released = DateTimeFormatter
+                .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
+                .withZone(ZoneId.of("UTC"))
+                .format(Instant.now())
         })
     })
 
-    setConfigurations("archives")
+    dryRun = properties["dryRun"]?.toString()?.toBoolean() ?: true
+
+    setPublications("pluginMaven")
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+pluginBundle {
+    website = Definition.webUrl
+    vcsUrl = Definition.vcsUrl
+    tags = listOf("android", "gradle")
+
+    mavenCoordinates {
+        groupId = project.group as String
+        artifactId = Definition.pluginName
+    }
+}
+
+afterEvaluate {
+    publishing.publications.named<MavenPublication>("pluginMaven") {
+        artifactId = Definition.pluginName
+
+        pom {
+            name.set(Definition.pluginDisplayName)
+            description.set(Definition.pluginDescription)
+            url.set(Definition.webUrl)
+
+            licenses {
+                license {
+                    name.set("The MIT License (MIT)")
+                    url.set("https://github.com/jmatsu/license-list-plugin/tree/master/license-files/mit.txt")
+                    distribution.set("repo")
+                }
+            }
+
+            developers {
+                developer {
+                    id.set("jmatsu")
+                    name.set("Jumpei Matsuda")
+                }
+            }
+
+            scm {
+                connection.set("scm:git@github.com:jmatsu/license-list-plugin.git")
+                developerConnection.set("scm:git@github.com:jmatsu/license-list-plugin.git")
+                url.set("https://github.com/jmatsu/license-list-plugin")
+            }
+        }
+    }
+}

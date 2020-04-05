@@ -8,7 +8,7 @@ object Version {
     const val snakeyaml = "1.26"
 
     const val kotlinter = "2.3.2"
-    const val bintray = "1.7.3"
+    const val bintray = "1.8.4"
     const val agp = "3.6.1"
 
     const val junit5 = "5.6.1"
