@@ -2,6 +2,25 @@
 
 License List Plugin is a Gradle plugin to manage artifacts' licenses that your Android project uses. It can generate the data source as human readable or handy format.
 
+## Guide
+
+1. [Introduction](#introduction)
+2. [Getting Started](#getting-started)
+    1. [Installation](#installation)
+3. [Tasks](#tasks)
+    1. [Initialize](#initialize)
+    2. [Validate](#validate)
+    3. [Merge/Update](#mergeupdate)
+    4. [Visualize](#visualize)
+4. [Extension](#extension)
+5. [Tips](#tips)
+    1. [license-tools-plugin migration](#for-license-tools-plugin-users)
+    2. [Add other configurations like WearApp](#additional-configurations-like-wearapp)
+    3. [Custom variant-aware configurations](#custom-variant-aware-configurations)
+    4. [Html template customization](#html-customization)
+6. [Known limitation](#limitations)
+7. [LICENSE](#license)
+
 ## Introduction
 
 The goals of this plugin are the following
@@ -37,7 +56,7 @@ FIXME: TBW about classpath
 
 ### Installation
 
-### Configure your project
+#### Configure your project
 
 Apply the plugin to "com.android.application" modules.
 
@@ -94,7 +113,9 @@ You can generate a management file based on the current dependencies.
 
 This plugin follows the naming strategy of Android Gradle Plugin does as much as possible. i.e. `<actionName><Variant>LicenseList` is it.
 
-#### `init<Variant>LicenseList`
+#### Initialize
+
+`init<Variant>LicenseList`
 
 This is the entrypoint of this plugin. It generates the base definition file and the license catalog file that you will manage.
 
@@ -102,17 +123,23 @@ This is the entrypoint of this plugin. It generates the base definition file and
 
 If you would like to re-initialize the definition files, then please pass `-Poverwrite=true` when running this task. 
 
-#### `validate<Variant>LicenseList`
+#### Validate 
+
+`validate<Variant>LicenseList`
 
 This checks if the current definition files and the current project dependencies differ.
 
-#### `merge<Variant>LicenseList`
+#### Merge/Update 
+
+`merge<Variant>LicenseList`
 
 Merge the current project dependencies into the current definition files with respecting the current definition files.
 
 The strategy is defensive to preserve your changes in the definition files.
 
-#### `visualize<Variant>LicenseList`
+#### Visualize
+
+`visualize<Variant>LicenseList`
 
 It will create a HTML file or JSON file based on the plugin configuration. 
 
@@ -123,7 +150,7 @@ NOTE: [example](./example) renders its licenses based on the both of json and ht
 ```kotlin
 licenseList {
     // initLicenseList will be kinda alias of `initFreeReleaseLicenseList`
-    defaultTarget = <variant name like freeRelease>
+    defaultTarget = "<variant name like freeRelease>"
 
     variants {
         // you can declare the configuration for each variants
@@ -170,6 +197,7 @@ licenseList {
 
                 // `<variant>/assets` is the default location
                 outputDir = file("</where/plugin/generate/file/to>")
+            }
         }
     }
 }
@@ -219,7 +247,7 @@ Please move them to the directory where you would like to use for the management
 
 #### Additional configurations like WearApp
 
-Add `wearApp` to configurations that will be discovered.
+For example `wearApp` is an independent from `implementation` etc. This plugin allows you to add such independent configurations to discovery targets. (No action is required if the variant's configurations extend the custom configurations.)
 
 ```kotlin
 assembly {
@@ -227,27 +255,15 @@ assembly {
 }
 ```
 
-#### Custom configurations
+#### Custom variant aware configurations
 
-No action is required if the variant's configurations extend the custom configurations. 
-
-Let's say you have created a `functionalTestImplementation` configuration and tweaked it like the following.
-
-```kotlin
-configurations.getByName("functionalTestImplementation").extendsFrom(configurations.getByName("testImplementation"))
-```
-
-`functionalTestImplementation` is a root configuration. Other configurations do not include it. It means `functionalTestImplementation` is not a discovery target.
-
-This plugin supports such an independent configuration as well. There are two patterns to resolve `functionalTestImplementation`.
+If you have created `functionalImplementation` and `<variant>FunctionalImplementation` for each variants, `additionalScopes` will be your help.
 
 ```kotlin
 assembly {
     // Elements in additionalScopes will be used to build dynamic configurations with using targetConfigurations
     // e.g. `functional` will be used to build `functionalImplementation`, `functionalTestImplementation` and so on
     additionalScopes += "functional"
-    // or add functionalTestImplementation as one of configurations
-    targetConfigurations += "functionalTestImplementation"
 }
 ```
 
@@ -270,10 +286,6 @@ Please check the original `ftl` file for variables that you can use.
     - I think Java project support should also be supported but not yet planned.
 - Sharing configuration between variants
 - Modification detection
-
-## Contributing
-
-TBW
 
 ## License
 
