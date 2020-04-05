@@ -125,7 +125,7 @@ abstract class MigrateLicenseToolsDefinitionTask
         val fields = toolsExtension::javaClass.get().fields
 
         val toolsLicenseFile = fields.first { it.name == "licensesYaml" }.get(toolsExtension) as File
-        val ignoredGroups = fields.first { it.name == "ignoredGroups" }.get(toolsExtension) as Set<String>
+        @Suppress("UNCHECKED_CAST") val ignoredGroups = fields.first { it.name == "ignoredGroups" }.get(toolsExtension) as Set<String>
 
         Executor(
             targetVariant = extension.defaultVariant, // only this value is delivered from my extension

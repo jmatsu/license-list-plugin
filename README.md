@@ -266,8 +266,10 @@ Please check the original `ftl` file for variables that you can use.
 
 ## Limitations
 
-- Only for Android application projects. I think Java project support should also be supported but not yet planned.
-- Sharing configuration between variants is not supported.
+- Only for Android application projects.
+    - I think Java project support should also be supported but not yet planned.
+- Sharing configuration between variants
+- Modification detection
 
 ## Contributing
 
