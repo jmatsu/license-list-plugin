@@ -434,12 +434,10 @@ yellowBlueRelease:
         licenses: []
     io.github.jmatsu:
       - key: license-list-schema
-        displayName: Schema of License List Gradle Plugin
-        url: https://github.com/jmatsu/license-list-plugin
-        copyrightHolders:
-          - Jumpei Matsuda
-        licenses:
-          - mit
+        displayName: license-list-schema
+        url: null
+        copyrightHolders: []
+        licenses: []
     org.antlr:
       - key: antlr4
         displayName: ANTLR 4 Tool
