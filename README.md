@@ -18,6 +18,7 @@ License List Plugin is a Gradle plugin to manage artifacts' licenses that your A
     2. [Add other configurations like WearApp](#additional-configurations-like-wearapp)
     3. [Custom variant-aware configurations](#custom-variant-aware-configurations)
     4. [Html template customization](#html-customization)
+    5. [Render Json output](#render-json)
 6. [Known limitation](#limitations)
 7. [LICENSE](#license)
 
@@ -279,6 +280,10 @@ visualization {
 ```
 
 Please check the original `ftl` file for variables that you can use.
+
+#### Render Json
+
+The schema of json objects are defined in `schema` module published to jcetner. You can chose any serialization method, custom attribute transformation, and so on.
 
 ## Limitations
 
