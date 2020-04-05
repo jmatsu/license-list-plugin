@@ -2,6 +2,7 @@ package io.github.jmatsu.license
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
+import io.github.jmatsu.license.migration.MigrateLicenseToolsDefinitionTask
 import io.github.jmatsu.license.tasks.InitLicenseListTask
 import io.github.jmatsu.license.tasks.MergeLicenseListTask
 import io.github.jmatsu.license.tasks.ValidateLicenseListTask
@@ -43,6 +44,21 @@ class LicenseListPlugin : Plugin<Project> {
         }
 
         project.extensions.create("licenseList", LicenseListExtension::class.java, variantAwareOptionsContainer)
+
+        project.plugins.withId("com.cookpad.android.licensetools") {
+            val toolsExtension = requireNotNull(project.extensions.findByName("licenseTools"))
+
+            project.tasks.register(
+                "migrateLicenseToolsDefinition",
+                MigrateLicenseToolsDefinitionTask::class.java,
+                requireNotNull(project.extensions.getByType(LicenseListExtension::class)),
+                toolsExtension
+            ).configure {
+                description = """
+                |Migrate license-tools-plugin configuration to this plugin's configuration
+            """.trimMargin()
+            }
+        }
 
         project.plugins.withType(AppPlugin::class.java) {
             val extension = requireNotNull(project.extensions.getByType(LicenseListExtension::class))

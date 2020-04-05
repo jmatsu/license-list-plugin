@@ -22,6 +22,19 @@ repositories {
     jcenter()
 }
 
+// Add a source set for the functional test suite
+val functionalTestSourceSet = sourceSets.create("functionalTest") {
+    resources.srcDirs(File(project.buildDir, "functionalTest"))
+}
+
+gradlePlugin.testSourceSets(functionalTestSourceSet)
+
+configurations {
+    getByName("functionalTestImplementation").extendsFrom(configurations.getByName("testImplementation"))
+    getByName("functionalTestRuntimeOnly").extendsFrom(configurations.getByName("testRuntimeOnly"))
+}
+
+
 configurations.configureEach {
     resolutionStrategy {
         eachDependency {
@@ -69,15 +82,6 @@ gradlePlugin {
         implementationClass = "io.github.jmatsu.license.LicenseListPlugin"
     }
 }
-
-// Add a source set for the functional test suite
-val functionalTestSourceSet = sourceSets.create("functionalTest") {
-    resources.srcDirs(File(project.buildDir, "functionalTest"))
-}
-
-gradlePlugin.testSourceSets(functionalTestSourceSet)
-configurations.getByName("functionalTestImplementation").extendsFrom(configurations.getByName("testImplementation"))
-configurations.getByName("functionalTestRuntimeOnly").extendsFrom(configurations.getByName("testRuntimeOnly"))
 
 val functionalTest by tasks.creating(Test::class) {
     testClassesDirs = functionalTestSourceSet.output.classesDirs
