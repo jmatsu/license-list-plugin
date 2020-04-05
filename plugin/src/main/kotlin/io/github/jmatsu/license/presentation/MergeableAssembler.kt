@@ -11,24 +11,29 @@ import kotlinx.serialization.StringFormat
 import kotlinx.serialization.builtins.list
 
 class MergeableAssembler(
-    private val scopedResolvedArtifacts: SortedMap<ResolveScope, List<ResolvedArtifact>>,
+    scopedResolvedArtifacts: SortedMap<ResolveScope, List<ResolvedArtifact>>,
     private val baseLicenses: Set<PlainLicense>,
     private val scopedBaseArtifacts: Map<Scope, List<ArtifactDefinition>>
 ) : MergeStrategy {
     private val licenseCapture: MutableSet<PlainLicense> = HashSet()
-    private val baseArtifacts: Set<ArtifactDefinition> = scopedBaseArtifacts.flatMap { (_, xs) -> xs }.toSet()
-
-    fun assembleArtifacts(style: Assembler.Style, format: StringFormat): String {
-        val scopedArtifacts = scopedResolvedArtifacts.mapValues { (_, artifacts) ->
+    private val baseArtifacts: Set<ArtifactDefinition> by lazy {
+        scopedBaseArtifacts.flatMap { (_, xs) -> xs }.toSet()
+    }
+    private val scopedArtifacts by lazy {
+        scopedResolvedArtifacts.mapValues { (_, artifacts) ->
             artifacts.map { Assembler.assembleArtifact(it, licenseCapture = licenseCapture) }
         }
+    }
+    private val artifactDiff: Diff.DiffResult by lazy {
+        Diff.calculateForArtifact(baseArtifacts, newer = scopedArtifacts.values.flatten())
+    }
 
-        // TODO support changed artifacts? : what's the usecase?
+    // TODO support changed artifacts? : what's the usecase?
+    private val willBeSavedArtifacts: List<ArtifactDefinition> by lazy {
+        baseArtifacts.filter { it.key !in artifactDiff.willBeRemovedKeys }.reverseMerge(scopedArtifacts.values.flatten().toSet()) { it.key }
+    }
 
-        val artifactDiff = Diff.calculateForArtifact(baseArtifacts, newer = scopedArtifacts.values.flatten())
-
-        val willBeSavedArtifacts = baseArtifacts.filter { it.key !in artifactDiff.willBeRemovedKeys }.reverseMerge(scopedArtifacts.values.flatten().toSet()) { it.key }
-
+    fun assembleArtifacts(style: Assembler.Style, format: StringFormat): String {
         return when (style) {
             Assembler.Style.Flatten -> {
                 Assembler.assembleFlatten(
@@ -69,10 +74,8 @@ class MergeableAssembler(
     }
 
     fun assemblePlainLicenses(format: StringFormat): String {
-        // assemble must be called in advance
-
-        val licenseDiff = Diff.calculateForLicense(baseLicenses.map { it.key }, newer = licenseCapture.map { it.key })
-        val willBeSavedLicenses = baseLicenses.filter { it.key.value !in licenseDiff.willBeRemovedKeys }.reverseMerge(licenseCapture) { it.key }
+        val willBeSavedLicenseKeys = willBeSavedArtifacts.flatMap { it.licenses.map { it.value } }
+        val willBeSavedLicenses = baseLicenses.filter { it.key.value in willBeSavedLicenseKeys }.reverseMerge(licenseCapture) { it.key }
 
         return format.stringify(PlainLicense.serializer().list, willBeSavedLicenses.distinctBy { it.key }.sortedBy { it.key.value })
     }
