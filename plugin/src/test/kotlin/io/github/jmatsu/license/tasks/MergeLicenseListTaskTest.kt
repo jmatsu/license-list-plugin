@@ -9,7 +9,7 @@ import io.github.jmatsu.license.model.ResolvedArtifact
 import io.github.jmatsu.license.presentation.Assembler
 import io.github.jmatsu.license.presentation.Convention
 import io.github.jmatsu.license.presentation.Disassembler
-import io.github.jmatsu.license.presentation.MergerableAssembler
+import io.github.jmatsu.license.presentation.MergeableAssembler
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -49,7 +49,7 @@ class MergeLicenseListTaskTest {
 
     @Test
     fun `verify method calls`() {
-        mockkConstructor(ArtifactIgnoreParser::class, ArtifactManagement::class, MergerableAssembler::class, Disassembler::class)
+        mockkConstructor(ArtifactIgnoreParser::class, ArtifactManagement::class, MergeableAssembler::class, Disassembler::class)
         mockkStatic("kotlin.io.FilesKt__FileReadWriteKt")
 
         val additionalScopes: Set<ResolveScope.Addition> = mockk()
@@ -85,7 +85,7 @@ class MergeLicenseListTaskTest {
 
         every {
             anyConstructed<Disassembler>().disassembleArtifacts(any())
-        } returns listOf()
+        } returns mapOf()
         every {
             anyConstructed<Disassembler>().disassemblePlainLicenses(any())
         } returns listOf()
@@ -98,14 +98,14 @@ class MergeLicenseListTaskTest {
         } returns analyzedResult
 
         every {
-            anyConstructed<MergerableAssembler>().assembleArtifacts(
+            anyConstructed<MergeableAssembler>().assembleArtifacts(
                 format = any(),
                 style = any()
             )
         } returns assembledArtifacts
 
         every {
-            anyConstructed<MergerableAssembler>().assemblePlainLicenses(
+            anyConstructed<MergeableAssembler>().assemblePlainLicenses(
                 format = any()
             )
         } returns assembledLicenses
@@ -129,11 +129,11 @@ class MergeLicenseListTaskTest {
             )
             anyConstructed<Disassembler>().disassembleArtifacts(artifactsText)
             anyConstructed<Disassembler>().disassemblePlainLicenses(catalogText)
-            anyConstructed<MergerableAssembler>().assembleArtifacts(
+            anyConstructed<MergeableAssembler>().assembleArtifacts(
                 format = assemblyFormat,
                 style = assemblyStyle
             )
-            anyConstructed<MergerableAssembler>().assemblePlainLicenses(
+            anyConstructed<MergeableAssembler>().assemblePlainLicenses(
                 format = Convention.Yaml.Assembly
             )
 

@@ -6,4 +6,5 @@ interface ArtifactDefinition<T : License> {
     val url: String?
     val copyrightHolders: List<String>
     val licenses: List<T>
+    val keep: Boolean
 }

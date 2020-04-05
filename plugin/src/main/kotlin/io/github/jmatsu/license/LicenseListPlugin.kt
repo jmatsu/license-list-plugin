@@ -23,7 +23,7 @@ class LicenseListPlugin : Plugin<Project> {
         logger = project.logger
 
         if (project.plugins.hasPlugin(this::class)) {
-            logger?.warn("LicenseList plugin is applied multiple times so ignored the 2nd application")
+            project.logger.warn("LicenseList plugin is applied multiple times so ignored the 2nd application")
             return
         }
 
@@ -54,7 +54,7 @@ class LicenseListPlugin : Plugin<Project> {
                 val variantName = name
 
                 if (extension.variants.findByName(variantName) == null) {
-                    logger?.info("VariantAwareOptions($variantName) is missing")
+                    project.logger.info("VariantAwareOptions($variantName) is missing")
                 }
 
                 project.tasks.register("init${variantName.capitalize()}LicenseList", InitLicenseListTask::class.java, extension, this).configure {

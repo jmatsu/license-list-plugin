@@ -12,26 +12,29 @@ class Disassembler(
     private val style: Assembler.Style,
     private val format: StringFormat
 ) {
-    fun disassembleArtifacts(text: String): List<ArtifactDefinition> {
+    fun disassembleArtifacts(text: String): Map<Scope, List<ArtifactDefinition>> {
         return when (style) {
             Assembler.Style.Flatten -> {
-                format.parse(ArtifactDefinition.serializer().list, text)
+                mapOf(
+                    Scope.StubScope to format.parse(ArtifactDefinition.serializer().list, text)
+                )
             }
             Assembler.Style.StructuredWithoutScope -> {
                 val serializer = MapSerializer(String.serializer(), ArtifactDefinition.serializer().list)
-                format.parse(serializer, text).flatMap { (group, artifacts) ->
-                    artifacts.map { it.copy(key = "$group:${it.key}") }
-                }
+                mapOf(
+                    Scope.StubScope to format.parse(serializer, text).flatMap { (group, artifacts) ->
+                        artifacts.map { it.copy(key = "$group:${it.key}") }
+                    }
+                )
             }
             Assembler.Style.StructuredWithScope -> {
                 val serializer = MapSerializer(Scope.serializer(), MapSerializer(String.serializer(), ArtifactDefinition.serializer().list))
                 format.parse(serializer, text)
-                    .map { (_, m) ->
+                    .mapValues { (_, m) ->
                         m.flatMap { (group, artifacts) ->
                             artifacts.map { it.copy(key = "$group:${it.key}") }
                         }
                     }
-                    .flatten()
             }
         }
     }

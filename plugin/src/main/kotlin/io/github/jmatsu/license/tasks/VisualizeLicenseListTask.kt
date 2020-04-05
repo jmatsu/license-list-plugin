@@ -36,7 +36,7 @@ abstract class VisualizeLicenseListTask
             val artifactsText = args.assembledArtifactsFile.readText()
             val catalogText = args.assembledLicenseCatalogFile.readText()
 
-            val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).toSet()
+            val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).values.flatten()
             val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
 
             val displayArtifacts = recordedArtifacts.map { artifact ->

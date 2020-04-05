@@ -26,5 +26,7 @@ data class Scope(
         override fun serialize(encoder: Encoder, value: Scope) {
             encoder.encodeString(value.name)
         }
+
+        val StubScope: Scope = Scope("stub")
     }
 }
