@@ -104,8 +104,6 @@ licenseList {
 
                 // if you would like to add wearApp
                 targetConfigurations += "wearApp"
-
-                ignoreFile = file(".customartifactignore")
             }
 
             visualization {

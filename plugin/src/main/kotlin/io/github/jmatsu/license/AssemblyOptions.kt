@@ -8,13 +8,10 @@ import io.github.jmatsu.license.dsl.isAssembleFormat
 import io.github.jmatsu.license.dsl.isAssembleStyle
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.model.ResolveScope
-import java.io.File
 import org.gradle.api.Named
 import org.gradle.api.reflect.HasPublicType
 import org.gradle.api.reflect.TypeOf
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.Optional
 import org.gradle.kotlin.dsl.typeOf
 
 interface AssemblyOptions : Named {
@@ -70,13 +67,6 @@ interface AssemblyOptions : Named {
      */
     @get:Input
     var targetConfigurations: Set<String>
-
-    /**
-     * A file of artifact ignore.
-     */
-    @get:InputFile
-    @get:Optional
-    var ignoreFile: File?
 }
 
 class AssemblyOptionsImpl(private val name: String) : AssemblyOptions, HasPublicType {
@@ -121,6 +111,4 @@ class AssemblyOptionsImpl(private val name: String) : AssemblyOptions, HasPublic
 
             field = value
         }
-
-    override var ignoreFile: File? = null
 }
