@@ -5,7 +5,6 @@ import io.github.jmatsu.license.dsl.YamlFormat
 import io.github.jmatsu.license.internal.ArtifactManagement
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -35,7 +34,6 @@ class AssemblyOptionsImplTest {
                     "androidTest"
                 ), additionalScopes
             )
-            assertNull(ignoreFile)
         }
     }
 

@@ -85,7 +85,7 @@ jobs:
       - run:
           name: check if ignore file works
           command: |
-            echo > app/.customartifactignore
+            echo > app/.artifactignore
 
             if ./gradlew validateLicenseList --rerun-tasks; then
               echo "validate should not succeed"

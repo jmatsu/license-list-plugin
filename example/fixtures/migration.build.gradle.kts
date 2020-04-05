@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    id("license-list")
+    id("com.cookpad.android.licensetools")
 }
 
 android {
@@ -74,7 +74,7 @@ dependencies {
     // sampleConfiguration is included by `implementation` so this plugin will collect sampleConfiguration as well without any setup
     sampleConfiguration("io.github.jmatsu:license-list-schema:+")
     // orphanConfiguration is not included by any other configurations, so you need to add this to targetConfigurations. See licenseList block.
-    orphanConfiguration("com.android.support.test:runner:1.0.2")
+//    orphanConfiguration("")
 
     testImplementation("junit:junit:4.12")
     androidTestImplementation("com.android.support.test:runner:1.0.2")
@@ -89,29 +89,9 @@ kapt {
     }
 }
 
-licenseList {
-    // <action>LicenseList will execute <action><targetVariant>LicenseList if specified
-    defaultVariant = "yellowBlueRelease"
-
-    variants {
-        create("yellowBlueRelease") {
-            assembly {
-                // flatten is enough to show licenses but structured could be probably useful for the management.
-                style = "structured"
-
-                // Group artifacts by scopes like `test`, `androidTest` for the management
-                groupByScopes = true
-
-                // if you would like to add wearApp
-                targetConfigurations += "wearApp"
-                // orphanConfiguration is not visible unless specified
-//                targetConfigurations += "orphanConfiguration"
-            }
-
-            visualization {
-                // it's useful for those who want to customize the appearance of the license viewer
-                format = "json"
-            }
-        }
-    }
+licenseTools {
+    licensesYaml = project.file("tools-licenses.yml")
+    ignoredGroups = setOf(
+        "androidx.recyclerview"
+    )
 }
