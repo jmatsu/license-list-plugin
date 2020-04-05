@@ -1,5 +1,6 @@
 package io.github.jmatsu.license.poko
 
+import io.github.jmatsu.license.Factory.provideArtifact
 import java.util.stream.Stream
 import kotlin.test.BeforeTest
 import kotlin.test.assertFalse
@@ -26,18 +27,7 @@ class ArtifactDefinitionTest {
 
     @Test
     fun `serialize ArtifactDefinition with keep`() {
-        val artifactDefinition = ArtifactDefinition(
-            key = "key",
-            displayName = "displayName",
-            url = "url",
-            licenses = listOf(
-                LicenseKey("license")
-            ),
-            copyrightHolders = listOf(
-                "copyrightHolder"
-            ),
-            keep = true
-        )
+        val artifactDefinition = provideArtifact(key = "key").copy(keep = true)
 
         val serialized = json.stringify(ArtifactDefinition.serializer(), artifactDefinition)
 
@@ -46,18 +36,7 @@ class ArtifactDefinitionTest {
 
     @Test
     fun `serialize ArtifactDefinition without keep`() {
-        val artifactDefinition = ArtifactDefinition(
-            key = "key",
-            displayName = "displayName",
-            url = "url",
-            licenses = listOf(
-                LicenseKey("license")
-            ),
-            copyrightHolders = listOf(
-                "copyrightHolder"
-            ),
-            keep = false
-        )
+        val artifactDefinition = provideArtifact(key = "key")
 
         val serialized = json.stringify(ArtifactDefinition.serializer(), artifactDefinition)
 
@@ -70,16 +49,11 @@ class ArtifactDefinitionTest {
     )
     @ParameterizedTest
     fun `deserialize ArtifactDefinition`(keep: Boolean) {
-        val artifactDefinition = ArtifactDefinition(
-            key = "key",
+        val artifactDefinition = provideArtifact(key = "key").copy(
             displayName = "displayName",
             url = "url",
-            licenses = listOf(
-                LicenseKey("license")
-            ),
-            copyrightHolders = listOf(
-                "copyrightHolder"
-            ),
+            licenses = listOf(LicenseKey("license")),
+            copyrightHolders = listOf("copyrightHolder"),
             keep = keep
         )
 
@@ -102,13 +76,7 @@ class ArtifactDefinitionTest {
     // to ensure total order
     @RepeatedTest(value = 10)
     fun `comparator`() {
-        val definition = ArtifactDefinition(
-            key = "key",
-            displayName = "displayName",
-            url = null,
-            licenses = listOf(),
-            copyrightHolders = listOf()
-        )
+        val definition = provideArtifact(key = "key")
 
         expect(listOf("a:a", "b:b", "c:c", "com.example:xyz", "com.example.abc:xyz", "com.example0:xyz")) {
             listOf(
@@ -139,49 +107,19 @@ class ArtifactDefinitionTest {
         @JvmStatic
         fun provideArtifactDefinitions(): Stream<ArtifactDefinition> {
             return Stream.of(
-                ArtifactDefinition(
-                    key = "key",
-                    displayName = "displayName",
-                    url = "url",
-                    licenses = listOf(
-                        LicenseKey("license")
-                    ),
-                    copyrightHolders = listOf(
-                        "copyrightHolder"
-                    ),
-                    keep = true
+                provideArtifact(key = "key").copy(keep = true),
+                provideArtifact(key = "key").copy(
+                    keep = false,
+                    displayName = "any"
                 ),
-                ArtifactDefinition(
-                    key = "key",
-                    displayName = "displayName",
-                    url = "url",
-                    licenses = listOf(
-                        LicenseKey("license")
-                    ),
-                    copyrightHolders = listOf(
-                        "copyrightHolder"
-                    ),
-                    keep = false
+                provideArtifact(key = "key").copy(
+                    keep = true,
+                    url = null
                 ),
-                ArtifactDefinition(
-                    key = "key",
-                    displayName = "displayName",
-                    url = null,
-                    licenses = listOf(
-                        LicenseKey("license")
-                    ),
-                    copyrightHolders = listOf(
-                        "copyrightHolder"
-                    ),
-                    keep = true
-                ),
-                ArtifactDefinition(
-                    key = "key",
-                    displayName = "displayName",
-                    url = "url",
+                provideArtifact(key = "key").copy(
+                    keep = true,
                     licenses = listOf(),
-                    copyrightHolders = listOf(),
-                    keep = true
+                    copyrightHolders = listOf()
                 )
             )
         }

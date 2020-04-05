@@ -1,7 +1,6 @@
 package io.github.jmatsu.license.presentation
 
-import io.github.jmatsu.license.poko.ArtifactDefinition
-import io.github.jmatsu.license.poko.LicenseKey
+import io.github.jmatsu.license.Factory.provideArtifact
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -51,19 +50,5 @@ class MergeableAssemblerTest : MergeStrategy {
                 provideArtifact(key = "safe-group")
             )
         ))
-    }
-
-    private fun provideArtifact(key: String): ArtifactDefinition {
-        return ArtifactDefinition(
-            key = key,
-            displayName = "displayName",
-            url = "url",
-            licenses = listOf(
-                LicenseKey("license")
-            ),
-            copyrightHolders = listOf(
-                "copyrightHolder"
-            )
-        )
     }
 }
