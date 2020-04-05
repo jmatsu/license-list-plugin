@@ -10,7 +10,9 @@ data class DisplayArtifact(
     override val displayName: String,
     override val url: String?,
     override val copyrightHolders: List<String>,
-    override val licenses: List<PlainLicense>
+    override val licenses: List<PlainLicense>,
+    @Transient
+    override val keep: Boolean = true
 ) : io.github.jmatsu.license.schema.DisplayArtifact {
 
     @Required
