@@ -65,7 +65,7 @@ Apply the plugin to "com.android.application" modules.
 ```kotlin
 plugins {
   id("com.android.application")
-  id("license-list") version ("<version}>")
+  id("io.github.jmatsu.license-list") version ("<version}>")
 }
 ```
 
@@ -78,7 +78,7 @@ Other setup is in the following fold.
 ```groovy
 plugins {
   id "com.android.application"
-  id "license-list" version "<version}>"
+  id "io.github.jmatsu.license-list" version "<version}>"
 }
 ```
 
@@ -88,14 +88,14 @@ plugins {
 
 ```kotlin
 // after applying "com.android.application"
-apply(plugin = "license-list")
+apply(plugin = "io.github.jmatsu.license-list")
 ```
 
 **Groovy**
 
 ```groovy
 // after applying "com.android.application"
-apply id: "license-list"
+apply id: "io.github.jmatsu.license-list"
 ```
 
 </details>

@@ -51,7 +51,7 @@
     <#list artifacts as artifact>
         <div class="card">
             <p class="name">${artifact.displayName}</p>
-            <p class="copyright">Copyright :  ${artifact.copyrightHolders?join(", ")}</p>
+            <#if artifact.copyrightHolders?has_content><p class="copyright">Copyright :  ${artifact.copyrightHolders?join(", ")}</p></#if>
             <p class="artifact"><#if artifact.url??><a href="${artifact.url}">${artifact.key}</a><#else>${artifact.key}</#if></p>
             <#if artifact.licenses?size != 0 >
             <ul class="licenses">
