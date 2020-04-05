@@ -1,7 +1,7 @@
 package shared
 
 object Definition {
-    const val pluginId = "license-list"
+    const val pluginId = "io.github.jmatsu.license-list"
     const val group = "io.github.jmatsu"
 
     const val pluginName = "license-list-gradle"
