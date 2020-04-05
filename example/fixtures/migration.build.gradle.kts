@@ -91,7 +91,7 @@ kapt {
 
 licenseTools {
     licensesYaml = project.file("tools-licenses.yml")
-    ignoredGroups = arrayOf(
+    ignoredGroups = setOf(
         "androidx.recyclerview"
     )
 }
