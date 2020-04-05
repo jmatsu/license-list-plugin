@@ -440,6 +440,13 @@ yellowBlueRelease:
           - Jumpei Matsuda
         licenses:
           - z-special-license for test
+      - key: license-list-schema-should-be-kept
+        displayName: license-list-schema-modified
+        url: https://github.com/jmatsu/license-list-plugin
+        copyrightHolders:
+          - Jumpei Matsuda
+        licenses: []
+        keep: true
     org.antlr:
       - key: antlr4
         displayName: ANTLR 4 Tool
