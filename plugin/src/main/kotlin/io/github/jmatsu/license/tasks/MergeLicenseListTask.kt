@@ -44,12 +44,12 @@ abstract class MergeLicenseListTask
             val artifactsText = args.assembledArtifactsFile.readText()
             val catalogText = args.assembledLicenseCatalogFile.readText()
 
-            val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).toSet()
+            val scopedBaseArtifacts = disassembler.disassembleArtifacts(artifactsText)
             val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
 
             val assembler = MergeableAssembler(
                 scopedResolvedArtifacts = scopedResolvedArtifacts,
-                baseArtifacts = recordedArtifacts,
+                scopedBaseArtifacts = scopedBaseArtifacts,
                 baseLicenses = recordedLicenses
             )
 

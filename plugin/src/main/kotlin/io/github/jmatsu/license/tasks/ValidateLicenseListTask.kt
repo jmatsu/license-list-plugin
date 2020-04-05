@@ -3,10 +3,10 @@ package io.github.jmatsu.license.tasks
 import com.android.build.gradle.api.ApplicationVariant
 import com.google.common.annotations.VisibleForTesting
 import io.github.jmatsu.license.LicenseListExtension
-import io.github.jmatsu.license.ext.xor2
 import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.presentation.Assembler
+import io.github.jmatsu.license.presentation.Diff
 import io.github.jmatsu.license.presentation.Disassembler
 import io.github.jmatsu.license.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.license.tasks.internal.TaskException
@@ -61,52 +61,63 @@ abstract class ValidateLicenseListTask
             val catalogText = args.assembledLicenseCatalogFile.readText()
 
             val currentArtifacts = assembler.transformForFlatten()
+            val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).flatMap { (_, xs) -> xs }
 
-            val recordedArtifactKeys = disassembler.disassembleArtifacts(artifactsText).map { it.key }
-            val currentArtifactKeys = currentArtifacts.map { it.key }
+            val artifactDiff = Diff.calculateForArtifact(recordedArtifacts, newer = currentArtifacts)
 
-            val (addedArtifactKeys, removedArtifactKeys) = currentArtifactKeys.xor2(recordedArtifactKeys)
-
-            val recordedLicenseKeys = disassembler.disassemblePlainLicenses(catalogText).map { it.key }
             val currentLicenseKeys = currentArtifacts.flatMap { it.licenses }
+            val recordedLicenseKeys = disassembler.disassemblePlainLicenses(catalogText).map { it.key }
 
-            val (addedLicenseKeys, removedLicenseKeys) = currentLicenseKeys.xor2(recordedLicenseKeys)
+            val licenseKeyDiff = Diff.calculateForLicense(recordedLicenseKeys, newer = currentLicenseKeys)
 
-            if (removedArtifactKeys.isNotEmpty() || removedLicenseKeys.isNotEmpty()) {
-                logger.warn("You can remove the following artifacts and licenses.\n")
+            logger.warn("You can remove the following artifacts and licenses.\n")
 
+            if (artifactDiff.willBeRemovedKeys.isNotEmpty() || licenseKeyDiff.willBeRemovedKeys.isNotEmpty()) {
                 logger.warn("--- artifacts ---")
 
-                removedArtifactKeys.forEach { key ->
+                artifactDiff.willBeRemovedKeys.forEach { key ->
                     logger.warn(key)
                 }
 
                 logger.warn("--- licenses ---")
 
-                removedLicenseKeys.forEach { key ->
-                    logger.warn(key.value)
+                licenseKeyDiff.willBeRemovedKeys.forEach { key ->
+                    logger.warn(key)
                 }
 
-                logger.warn("\n")
+                logger.warn("")
             }
 
-            if (addedArtifactKeys.isNotEmpty() || addedLicenseKeys.isNotEmpty()) {
-                logger.warn("You need to handle the following that the current license file does not contain.\n")
+            logger.warn("The following artifacts will be kept.\n")
 
+            artifactDiff.keepKeys.forEach { key ->
+                logger.warn(key)
+            }
+
+            logger.warn("You need to handle the following that the current license file does not contain.\n")
+
+            if (artifactDiff.missingKeys.isNotEmpty() || licenseKeyDiff.missingKeys.isNotEmpty()) {
                 logger.warn("--- artifacts ---")
 
-                addedArtifactKeys.forEach { key ->
+                artifactDiff.missingKeys.forEach { key ->
                     logger.warn(key)
                 }
 
                 logger.warn("--- licenses ---")
 
-                addedLicenseKeys.forEach { key ->
-                    logger.warn(key.value)
+                licenseKeyDiff.missingKeys.forEach { key ->
+                    logger.warn(key)
                 }
+            }
+
+            if (artifactDiff.hasDiff() || licenseKeyDiff.hasDiff()) {
+                fun Diff.DiffResult.toText(label: String) = "${missingKeys.size} ${label}s are missing and ${willBeRemovedKeys.size} ${label}s can be removed."
 
                 throw InvalidLicenseException(
-                    "${addedArtifactKeys.size} artifacts and ${addedLicenseKeys.size} licenses must be added"
+                    arrayOf(
+                        artifactDiff.toText("artifact"),
+                        licenseKeyDiff.toText("license")
+                    ).joinToString(" ")
                 )
             }
         }

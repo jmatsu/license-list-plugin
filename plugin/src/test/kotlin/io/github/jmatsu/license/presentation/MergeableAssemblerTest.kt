@@ -4,12 +4,11 @@ import io.github.jmatsu.license.poko.ArtifactDefinition
 import io.github.jmatsu.license.poko.LicenseKey
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 
 class MergeableAssemblerTest : MergeStrategy {
 
     @Test
-    fun `mergeAll should append or update based on the given definitions`() {
+    fun `reverseMerge should not update the existing values and append unless exists`() {
         val definitions = listOf(
             provideArtifact(key = "key1"),
             provideArtifact(key = "key2").copy(
@@ -22,7 +21,7 @@ class MergeableAssemblerTest : MergeStrategy {
             provideArtifact(key = "key3")
         )
 
-        val mergedResult = definitions mergeAll others
+        val mergedResult = definitions.reverseMerge(others) { it.key }
 
         // preserve key1 in definitions
         assertEquals(definitions.first { it.key == "key1" }, mergedResult.first { it.key == "key1" })
@@ -33,30 +32,6 @@ class MergeableAssemblerTest : MergeStrategy {
 
         // use key3 in others
         assertEquals(others.first { it.key == "key3" }, mergedResult.first { it.key == "key3" })
-    }
-
-    @Test
-    fun `excludeAll should reject based on the given definitions but remain kept artifacts`() {
-        val definitions = listOf(
-            provideArtifact(key = "key1"),
-            provideArtifact(key = "key2").copy(
-                displayName = "kept",
-                keep = true
-            )
-        )
-
-        val others = setOf(
-            provideArtifact(key = "key1"),
-            provideArtifact(key = "key2")
-        )
-
-        val excludeResult = definitions excludeAll others
-
-        // delete key1
-        assertFalse(excludeResult.any { it.key == "key1" })
-
-        // Keep key2 in definitions and don't use key2 in others
-        assertEquals(definitions.first { it.key == "key2" }, excludeResult.first { it.key == "key2" })
     }
 
     @Test

@@ -85,7 +85,7 @@ class MergeLicenseListTaskTest {
 
         every {
             anyConstructed<Disassembler>().disassembleArtifacts(any())
-        } returns listOf()
+        } returns mapOf()
         every {
             anyConstructed<Disassembler>().disassemblePlainLicenses(any())
         } returns listOf()

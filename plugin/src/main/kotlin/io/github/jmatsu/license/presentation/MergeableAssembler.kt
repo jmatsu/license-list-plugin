@@ -1,48 +1,46 @@
 package io.github.jmatsu.license.presentation
 
 import io.github.jmatsu.license.ext.collectToMap
-import io.github.jmatsu.license.ext.xor2
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.model.ResolvedArtifact
 import io.github.jmatsu.license.poko.ArtifactDefinition
 import io.github.jmatsu.license.poko.PlainLicense
 import io.github.jmatsu.license.poko.Scope
-import java.util.SortedMap
 import kotlinx.serialization.StringFormat
 import kotlinx.serialization.builtins.list
+import java.util.SortedMap
 
 class MergeableAssembler(
     private val scopedResolvedArtifacts: SortedMap<ResolveScope, List<ResolvedArtifact>>,
-    private val baseArtifacts: Set<ArtifactDefinition>,
-    private val baseLicenses: Set<PlainLicense>
+    private val baseLicenses: Set<PlainLicense>,
+    private val scopedBaseArtifacts: Map<Scope, List<ArtifactDefinition>>
 ) : MergeStrategy {
     private val licenseCapture: MutableSet<PlainLicense> = HashSet()
+    private val baseArtifacts: Set<ArtifactDefinition> = scopedBaseArtifacts.flatMap { (_, xs) -> xs }.toSet()
 
     fun assembleArtifacts(style: Assembler.Style, format: StringFormat): String {
         val scopedArtifacts = scopedResolvedArtifacts.mapValues { (_, artifacts) ->
             artifacts.map { Assembler.assembleArtifact(it, licenseCapture = licenseCapture) }
         }
 
-        val scopedArtifactKeys: Map<ResolveScope, List<String>> = scopedArtifacts.mapValues { (_, artifacts) -> artifacts.map { it.key } }
+        // TODO support changed artifacts? : what's the usecase?
 
-        // TODO support changed artifacts : what's the usecase?
-        val xorResult = scopedArtifacts.values.flatten().xor2(old = baseArtifacts) { it.key }
+        val artifactDiff = Diff.calculateForArtifact(baseArtifacts, newer = scopedArtifacts.values.flatten())
 
-        val missingArtifacts: Set<ArtifactDefinition> = xorResult.added
-        val restArtifacts: Set<ArtifactDefinition> = xorResult.removed
+        val willBeSavedArtifacts = baseArtifacts.filter { it.key !in artifactDiff.willBeRemovedKeys }.reverseMerge(scopedArtifacts.values.flatten().toSet()) { it.key }
 
         return when (style) {
             Assembler.Style.Flatten -> {
                 Assembler.assembleFlatten(
                     format = format,
-                    definitions = ((baseArtifacts.toList() mergeAll missingArtifacts) excludeAll restArtifacts).sorted()
+                    definitions = willBeSavedArtifacts.sorted()
                 )
             }
             Assembler.Style.StructuredWithoutScope -> {
-                val assemblee = scopedArtifactKeys
-                    .map { (_, keys) ->
-                        ((baseArtifacts.filter { it.key in keys } mergeAll missingArtifacts) excludeAll restArtifacts).collectToMapByArtifactGroup()
-                    }.reduce { acc, map -> acc + map }.toSortedMap()
+                assert(scopedBaseArtifacts.keys.size == 1)
+                assert(scopedBaseArtifacts.keys.first() === Scope.StubScope)
+
+                val assemblee = willBeSavedArtifacts.collectToMapByArtifactGroup()
 
                 Assembler.assembleStructuredWithoutScope(
                     format = format,
@@ -50,9 +48,16 @@ class MergeableAssembler(
                 )
             }
             Assembler.Style.StructuredWithScope -> {
+                val scopedArtifactKeys: Map<ResolveScope, List<String>> = scopedArtifacts.mapValues { (_, artifacts) -> artifacts.map { it.key } }
+
                 val assemblee = scopedArtifactKeys
                     .map { (scope, keys) ->
-                        Scope(scope.name) to ((baseArtifacts.filter { it.key in keys } mergeAll missingArtifacts) excludeAll restArtifacts).collectToMapByArtifactGroup()
+                        val newScope = Scope(scope.name)
+
+                        newScope to (
+                            willBeSavedArtifacts.filter { it.key in keys } +
+                                scopedBaseArtifacts[newScope].orEmpty().filter { it.key in artifactDiff.keepKeys }
+                            ).collectToMapByArtifactGroup()
                     }.toMap()
 
                 Assembler.assembleStructuredWithScope(
@@ -65,28 +70,20 @@ class MergeableAssembler(
 
     fun assemblePlainLicenses(format: StringFormat): String {
         // assemble must be called in advance
-        val baseLicenseMap = baseLicenses.groupBy { it.key }
-        val newLicenses = licenseCapture.map { newLicense ->
-            baseLicenseMap[newLicense.key]?.first() ?: newLicense
-        }
-        val preservedLicenses = baseLicenseMap.filterKeys { licenseKey -> baseArtifacts.any { licenseKey in it.licenses } }.flatMap { it.value }
 
-        return format.stringify(PlainLicense.serializer().list, (newLicenses + preservedLicenses).distinctBy { it.key }.sortedBy { it.key.value })
+        val licenseDiff = Diff.calculateForLicense(baseLicenses.map { it.key }, newer = licenseCapture.map { it.key })
+        val willBeSavedLicenses = baseLicenses.filter { it.key.value !in licenseDiff.willBeRemovedKeys }.reverseMerge(licenseCapture) { it.key }
+
+        return format.stringify(PlainLicense.serializer().list, willBeSavedLicenses.distinctBy { it.key }.sortedBy { it.key.value })
     }
 }
 
 interface MergeStrategy {
 
-    infix fun List<ArtifactDefinition>.mergeAll(definitions: Set<ArtifactDefinition>): List<ArtifactDefinition> {
-        val keysToPreserve = map { it.key }
+    fun <T, R> List<T>.reverseMerge(definitions: Set<T>, keyExtractor: (T) -> R): List<T> {
+        val keysToPreserve = map(keyExtractor)
 
-        return toList() + definitions.filterNot { it.key in keysToPreserve }
-    }
-
-    infix fun List<ArtifactDefinition>.excludeAll(definitions: Set<ArtifactDefinition>): List<ArtifactDefinition> {
-        val keysToExclude = definitions.map { it.key }
-
-        return filterNot { it.key in keysToExclude && !it.keep }
+        return toList() + definitions.filterNot { keyExtractor(it) in keysToPreserve }
     }
 
     fun List<ArtifactDefinition>.collectToMapByArtifactGroup(): Map<String, List<ArtifactDefinition>> {

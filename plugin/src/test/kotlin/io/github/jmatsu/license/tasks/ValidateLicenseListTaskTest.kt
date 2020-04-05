@@ -68,8 +68,6 @@ class ValidateLicenseListTaskTest {
 
         val regex: Regex = mockk()
         val analyzedResult: SortedMap<ResolveScope, List<ResolvedArtifact>> = mockk()
-        val assembledArtifacts = "assembledArtifacts"
-        val assembledLicenses = "assembledLicenses"
 
         every {
             anyConstructed<ArtifactIgnoreParser>().parse()
@@ -81,7 +79,7 @@ class ValidateLicenseListTaskTest {
 
         every {
             anyConstructed<Disassembler>().disassembleArtifacts(any())
-        } returns listOf()
+        } returns mapOf()
         every {
             anyConstructed<Disassembler>().disassemblePlainLicenses(any())
         } returns listOf()
