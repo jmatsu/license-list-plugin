@@ -35,14 +35,14 @@ fun <A> Collection<A>.xor2(other: Collection<A>): DiffResult2<A> {
 }
 
 // FIXME better to use Myers algorithm because of time-complexity and interfaces
-fun <A, B> Collection<A>.xor2(other: Collection<A>, keyExtractor: (A) -> B): DiffResult3<A> {
+fun <A, B> Collection<A>.xor2(old: Collection<A>, keyExtractor: (A) -> B): DiffResult3<A> {
     val added = HashSet<A>()
     val changed = HashSet<A>()
     val removed = HashSet<A>()
 
     DiffUtil.diff(
         this.groupBy(keyExtractor).mapValues { (_, vs) -> vs.first() },
-        other.groupBy(keyExtractor).mapValues { (_, vs) -> vs.first() },
+        old.groupBy(keyExtractor).mapValues { (_, vs) -> vs.first() },
         object : ChangeListener<Map.Entry<B, A>> {
             override fun added(element: Map.Entry<B, A>) {
                 added += element.value

@@ -3,14 +3,11 @@ package io.github.jmatsu.license.tasks
 import com.android.build.gradle.api.ApplicationVariant
 import com.google.common.annotations.VisibleForTesting
 import io.github.jmatsu.license.LicenseListExtension
-import io.github.jmatsu.license.ext.xor2
 import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.internal.ArtifactManagement
-import io.github.jmatsu.license.poko.PlainLicense
-import io.github.jmatsu.license.presentation.Assembler
 import io.github.jmatsu.license.presentation.Convention
 import io.github.jmatsu.license.presentation.Disassembler
-import io.github.jmatsu.license.presentation.MergerableAssembler
+import io.github.jmatsu.license.presentation.MergeableAssembler
 import io.github.jmatsu.license.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.license.tasks.internal.VariantAwareTask
 import javax.inject.Inject
@@ -50,22 +47,9 @@ abstract class MergeLicenseListTask
             val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).toSet()
             val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
 
-            val currentArtifacts = run {
-                val fake = HashSet<PlainLicense>()
-
-                scopedResolvedArtifacts.flatMap { (_, artifacts) ->
-                    artifacts.map { Assembler.assembleArtifact(it, licenseCapture = fake) }
-                }
-            }
-
-            // TODO support changed artifacts : what's the usecase?
-            val (newArtifacts, _, removedArtifacts) = currentArtifacts.xor2(recordedArtifacts) { it.key }
-
-            val assembler = MergerableAssembler(
+            val assembler = MergeableAssembler(
                 scopedResolvedArtifacts = scopedResolvedArtifacts,
                 baseArtifacts = recordedArtifacts,
-                newArtifacts = newArtifacts,
-                removedArtifacts = removedArtifacts,
                 baseLicenses = recordedLicenses
             )
 
