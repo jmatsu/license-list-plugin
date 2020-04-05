@@ -1,12 +1,7 @@
 @file:Suppress("RemoveRedundantQualifierName")
 
-import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
-import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
 import shared.Definition
 import shared.Version
-import java.time.format.DateTimeFormatter
-import java.time.Instant
-import java.time.ZoneId
 
 plugins {
     id("org.gradle.java-gradle-plugin")
@@ -17,7 +12,6 @@ plugins {
     // release stuff
     maven
     `maven-publish`
-    id("com.jfrog.bintray")
     id("com.gradle.plugin-publish") version "0.11.0"
 }
 
@@ -103,35 +97,6 @@ kotlinter {
     reporters = arrayOf("checkstyle", "html")
     experimentalRules = false
     fileBatchSize = 30
-}
-
-bintray {
-    user = System.getenv("BINTRAY_USER")
-    key = System.getenv("BINTRAY_API_KEY")
-    pkg(closureOf<PackageConfig> {
-        repo = "maven"
-        name = Definition.pluginName
-        userOrg = "jmatsu"
-        setLicenses("MIT")
-        websiteUrl = Definition.webUrl
-        issueTrackerUrl = "${Definition.webUrl}/issues"
-        vcsUrl = Definition.vcsUrl
-        // FIXME out-in after opening a repository
-//        githubRepo = "jmatsu/license-list-plugin"
-//        githubReleaseNotesFile = "CHANGELOG.md"
-        version(closureOf<VersionConfig> {
-            name = project.version as String
-
-            released = DateTimeFormatter
-                .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
-                .withZone(ZoneId.of("UTC"))
-                .format(Instant.now())
-        })
-    })
-
-    dryRun = properties["dryRun"]?.toString()?.toBoolean() ?: true
-
-    setPublications("pluginMaven")
 }
 
 java {

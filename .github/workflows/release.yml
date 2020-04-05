@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: "[[ refs/tags/$(cat VERSION) == $GITHUB_REF ]]"
       - uses: actions/setup-java@v1
         with:
           java-version: '8.0.x'
@@ -25,6 +26,12 @@ jobs:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
       - name: Publish plugin
-        run: ./gradlew publishPlugins
+        run: ./gradlew publishPlugins -Dgradle.publish.key=$GRADLE_PORTAL_PUBLISH_KEY -Dgradle.publish.secret=$GRADLE_PORTAL_PUBLISH_SECRET
+        env:
+          GRADLE_PORTAL_PUBLISH_KEY: ${{ secrets.GRADLE_PORTAL_PUBLISH_KEY }}
+          GRADLE_PORTAL_PUBLISH_SECRET: ${{ secrets.GRADLE_PORTAL_PUBLISH_SECRET }}
       - name: Publish schema
         run: ./gradlew :license-list-schema:bintrayUpload -PdryRun=false
+        env:
+          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
+          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}

@@ -16,7 +16,7 @@ class BaseTaskTest {
     @BeforeTest
     fun before() {
         project = ProjectBuilder.builder().build()
-        project.plugins.apply("license-list")
+        project.plugins.apply("io.github.jmatsu.license-list")
         extension = requireNotNull(project.extensions.findByType(LicenseListExtension::class))
     }
 
