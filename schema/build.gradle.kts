@@ -2,9 +2,10 @@
 
 import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
 import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
-import org.jetbrains.kotlin.cli.common.toBooleanLenient
 import shared.Version
+import java.time.format.DateTimeFormatter
 import java.time.Instant
+import java.time.ZoneId
 
 plugins {
     id("org.gradle.kotlin.kotlin-dsl")
@@ -46,7 +47,7 @@ kotlinter {
 bintray {
     user = System.getenv("BINTRAY_USER")
     key = System.getenv("BINTRAY_API_KEY")
-    pkg(closureOf<PackageConfig> {
+    pkg(delegateClosureOf<PackageConfig> {
         repo = "maven"
         name = shared.Definition.schemaName
         userOrg = "jmatsu"
@@ -54,11 +55,15 @@ bintray {
         websiteUrl = "https://github.com/jmatsu/license-list-plugin"
         issueTrackerUrl = "https://github.com/jmatsu/license-list-plugin/issues"
         vcsUrl = "https://github.com/jmatsu/license-list-plugin.git"
-        githubRepo = "jmatsu/license-list-plugin"
-        githubReleaseNotesFile = "CHANGELOG.md"
-        version(closureOf<VersionConfig> {
+        // FIXME out-in after opening a repository
+//        githubRepo = "jmatsu/license-list-plugin"
+//        githubReleaseNotesFile = "CHANGELOG.md"
+        version(delegateClosureOf<VersionConfig> {
             name = project.version as String
-            released = Instant.now().toString()
+            released = DateTimeFormatter
+                .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
+                .withZone(ZoneId.of("UTC"))
+                .format(Instant.now())
         })
     })
 

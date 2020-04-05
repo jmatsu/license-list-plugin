@@ -4,7 +4,9 @@ import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
 import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
 import shared.Definition
 import shared.Version
+import java.time.format.DateTimeFormatter
 import java.time.Instant
+import java.time.ZoneId
 
 plugins {
     id("org.gradle.java-gradle-plugin")
@@ -114,11 +116,16 @@ bintray {
         websiteUrl = Definition.webUrl
         issueTrackerUrl = "${Definition.webUrl}/issues"
         vcsUrl = Definition.vcsUrl
-        githubRepo = "jmatsu/license-list-plugin"
-        githubReleaseNotesFile = "CHANGELOG.md"
+        // FIXME out-in after opening a repository
+//        githubRepo = "jmatsu/license-list-plugin"
+//        githubReleaseNotesFile = "CHANGELOG.md"
         version(closureOf<VersionConfig> {
             name = project.version as String
-            released = Instant.now().toString()
+
+            released = DateTimeFormatter
+                .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
+                .withZone(ZoneId.of("UTC"))
+                .format(Instant.now())
         })
     })
 

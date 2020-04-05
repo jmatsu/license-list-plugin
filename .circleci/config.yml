@@ -153,6 +153,12 @@ jobs:
               echo "diff hapenned. no diff is expected : license-catalog"
               exit 1
             fi
+
+            git checkout -- app
+      - run: ./gradlew visualizeLicenseList
+      - store_artifacts:
+          path: app/src/yellowBlueRelease/assets
+          destination: assets
       # TODO snapshot tests provided by espresso
       - save_gradle_cache:
           cache_name: example
