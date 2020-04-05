@@ -208,7 +208,7 @@ class LicenseClassifier(
         val isFacebookSDK = wordMatch("facebook")
         val isMoPubSDK = wordMatch("mopub")
         val isAndroidSDK = wordMatch("android")
-        val isBCL = wordMatch("bouncy castle licence")
+        val isBCL = wordMatch("bouncy\\b.*castle")
         val isBCL_2nd = wordMatch("bcl")
 
         private fun wordMatch(word: String): Regex {
