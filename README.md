@@ -2,7 +2,7 @@
 
 [![jmatsu](https://circleci.com/gh/jmatsu/license-list-plugin.svg?style=svg)](https://circleci.com/gh/jmatsu/license-list-plugin) ![master](https://github.com/jmatsu/license-list-plugin/workflows/Run%20build%20and%20test/badge.svg?branch=master)
 
-Plugin : TBA
+Plugin : [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/io/github/jmatsu/license-list-gradle/maven-metadata.xml.svg?colorB=007ec6&label=gradle)](https://plugins.gradle.org/plugin/io.github.jmatsu.license-list)
 Schema lib : [ ![Download](https://api.bintray.com/packages/jmatsu/maven/license-list-schema/images/download.svg?version=latest) ](https://bintray.com/jmatsu/maven/license-list-schema/latest/link)
 
 License List Plugin is a Gradle plugin to manage artifacts' licenses that your Android project uses. It can generate the data source as human readable or handy format.
@@ -58,17 +58,15 @@ Sample view using json | The default html layout
 
 ## Getting Started
 
-NOTE: a sample project is [available](./example).
-
-FIXME: TBW about classpath
-
 ### Installation
 
 #### Configure your project
 
 Apply the plugin to "com.android.application" modules.
 
-**Kotlin**
+**For example, plugins block in Kotlin**
+
+ref: https://plugins.gradle.org/plugin/io.github.jmatsu.license-list#kotlin-usage
 
 ```kotlin
 plugins {
@@ -77,33 +75,28 @@ plugins {
 }
 ```
 
-Other setup is in the following fold.
-
 <details>
 
 **Groovy**
 
+ref: https://plugins.gradle.org/plugin/io.github.jmatsu.license-list#groovy-usage
+
 ```groovy
-plugins {
-  id "com.android.application"
-  id "io.github.jmatsu.license-list" version "<version}>"
+// Legacy groovy example.
+
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "io.github.jmatsu:license-list-gradle:<version>"
+  }
 }
-```
 
-**Non plugins block**
-
-**Kotlin**
-
-```kotlin
-// after applying "com.android.application"
-apply(plugin = "io.github.jmatsu.license-list")
-```
-
-**Groovy**
-
-```groovy
-// after applying "com.android.application"
-apply id: "io.github.jmatsu.license-list"
+apply plugin: "com.android.application"
+apply plugin: "io.github.jmatsu.license-list"
 ```
 
 </details>
