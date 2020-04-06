@@ -49,9 +49,11 @@ android {
 }
 
 repositories {
+    if (System.getenv("CI") == "true") {
+        mavenLocal()
+    }
     google()
     jcenter()
-    mavenLocal()
 }
 
 val sampleConfiguration = configurations.create("sample")
