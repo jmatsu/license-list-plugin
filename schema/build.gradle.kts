@@ -11,7 +11,6 @@ plugins {
     id("org.gradle.kotlin.kotlin-dsl")
     id("org.jmailen.kotlinter")
 
-    maven
     `maven-publish`
     id("com.jfrog.bintray")
 }

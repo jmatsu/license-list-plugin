@@ -10,7 +10,6 @@ plugins {
     id("org.jmailen.kotlinter")
 
     // release stuff
-    maven
     `maven-publish`
     id("com.gradle.plugin-publish") version "0.11.0"
 }

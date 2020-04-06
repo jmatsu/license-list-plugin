@@ -49,7 +49,7 @@ jobs:
       - setup_workspace
       - restore_gradle_cache:
           cache_name: plugin
-      - run: ./gradlew install
+      - run: ./gradlew publishToMavenLocal
       - persist_to_workspace:
           root: ~/.m2
           paths:
