@@ -2,7 +2,7 @@
 
 [![jmatsu](https://circleci.com/gh/jmatsu/license-list-plugin.svg?style=svg)](https://circleci.com/gh/jmatsu/license-list-plugin) ![master](https://github.com/jmatsu/license-list-plugin/workflows/Run%20build%20and%20test/badge.svg?branch=master)
 
-Plugin : [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/io/github/jmatsu/license-list-gradle/maven-metadata.xml.svg?colorB=007ec6&label=gradle)](https://plugins.gradle.org/plugin/io.github.jmatsu.license-list)
+Plugin : [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v?label=Gradle%20Plugin&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fio%2Fgithub%2Fjmatsu%2Flicense-list-gradle%2Fmaven-metadata.xml)](https://plugins.gradle.org/plugin/io.github.jmatsu.license-list)
 Schema lib : [ ![Download](https://api.bintray.com/packages/jmatsu/maven/license-list-schema/images/download.svg?version=latest) ](https://bintray.com/jmatsu/maven/license-list-schema/latest/link)
 
 License List Plugin is a Gradle plugin to manage artifacts' licenses that your Android project uses. It can generate the data source as human readable or handy format.
