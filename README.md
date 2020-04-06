@@ -1,5 +1,10 @@
 # License List Plugin
 
+[![jmatsu](https://circleci.com/gh/jmatsu/license-list-plugin.svg?style=svg)](https://circleci.com/gh/jmatsu/license-list-plugin) ![master](https://github.com/jmatsu/license-list-plugin/workflows/Run%20build%20and%20test/badge.svg?branch=master)
+
+Plugin : TBA
+Schema lib : [ ![Download](https://api.bintray.com/packages/jmatsu/maven/license-list-schema/images/download.svg?version=latest) ](https://bintray.com/jmatsu/maven/license-list-schema/latest/link)
+
 License List Plugin is a Gradle plugin to manage artifacts' licenses that your Android project uses. It can generate the data source as human readable or handy format.
 
 ## Guide
@@ -7,6 +12,7 @@ License List Plugin is a Gradle plugin to manage artifacts' licenses that your A
 1. [Introduction](#introduction)
 2. [Getting Started](#getting-started)
     1. [Installation](#installation)
+    2. [Continuous Management](#continuous-management)
 3. [Tasks](#tasks)
     1. [Initialize](#initialize)
     2. [Validate](#validate)
@@ -102,20 +108,53 @@ apply id: "io.github.jmatsu.license-list"
 
 </details>
 
-#### Create a management file
+#### Create management files
 
 You can generate a management file based on the current dependencies.
 
-```bash
-./gradlew init<Variant>LicenseList
+If you need to manage only one variant, then it's better to configure this plugin first. For example, `freeRelease` is the variant to be managed.
+
+```kotlin
+licenseList {
+    defaultVariant = "freeRelease"
+}
 ```
 
+And then, run `./gradlew initLicenseList`. It's kinda alias of `initFreeReleaseLicenseList`. For those who need to manage multiple variants, `init<Variant>LicenseList` is available for each variants by default so please use the proper task.
 
-### Tasks
+#### Tweak the generated files
+
+After runnning `initLicenseList`, you can get the management files below.
+
+File | Description
+:---|:----
+`artifact-definition.yml` | Define artifacts and license *keys* to manage
+`license-catalog.yml` | A list of licenses that artifacts contain
+`.artifactignore` | A list of Regex to exclude artifacts from the management
+
+- Modify the generated `artifact-definition.yml` 
+    - Some of artifacts do not have enough information in their pom files.
+- You may need to modify `.artifactignore` to exclude several dependencies
+- You need to modify `license-catalog.yml`
+    - It may contain several unsatisfactory licenses because their original definitions in the pom files are partially lacked.
+
+#### Generate a license viewer or its resource 
+
+Genereate the file for your license viewer by running `./gradlew visualize<Variant>LicenseList` and embed it into your application.
+
+This plugin supports `html` and `json` as the resource format.
+
+## Continuous management
+
+1. Run `./gradlew validate<Variant>LicenseList` before release or on every pull requests.
+2. If the validation above fails, please update `artifact-definition.yml` manually or use `./gradlew merge<Variant>LicenseList` until the validation succeeds. 
+3. Regenerate the resource of your license viewer through `visualize<Variant>LicenseList`
+
+## Tasks
 
 This plugin follows the naming strategy of Android Gradle Plugin does as much as possible. i.e. `<actionName><Variant>LicenseList` is it.
 
-#### Initialize
+### Initialize
 
 `init<Variant>LicenseList`
 
@@ -125,21 +164,23 @@ This is the entrypoint of this plugin. It generates the base definition file and
 
 If you would like to re-initialize the definition files, then please pass `-Poverwrite=true` when running this task. 
 
-#### Validate 
+### Validate 
 
 `validate<Variant>LicenseList`
 
-This checks if the current definition files and the current project dependencies differ.
+This checks if the current definition files and the current project dependencies differ. 
 
-#### Merge/Update 
+NOTE: This doesn't mean your definition file *satisfy* license usages. It's your responsibility, not of this plugin.
+
+### Merge/Update 
 
 `merge<Variant>LicenseList`
 
 Merge the current project dependencies into the current definition files with respecting the current definition files.
 
-The strategy is defensive to preserve your changes in the definition files.
+The strategy is *defensive*. This task will preserve your changes in the definition files.
 
-#### Visualize
+### Visualize
 
 `visualize<Variant>LicenseList`
 
@@ -147,7 +188,7 @@ It will create a HTML file or JSON file based on the plugin configuration.
 
 NOTE: [example](./example) renders its licenses based on the both of json and html.
 
-### Extension
+## Extension
 
 ```kotlin
 licenseList {
@@ -205,9 +246,9 @@ licenseList {
 }
 ```
 
-### Tips
+## Tips
 
-#### For license-tools-plugin users
+### For license-tools-plugin users
 
 ref: [cookpad/license-tools-plugin](https://github.com/cookpad/license-tools-plugin/blob/master/LICENSE.md)
 
@@ -247,7 +288,7 @@ Please move them to the directory where you would like to use for the management
 - Only v1.7.0 is tested. Please feel free to open issues if you have any problems.
 - `licenseTools.ignoreProjects` is not supported. Because I couldn't imagine the usecase that we really want to ignore *projects*. The group/artifact ignore feature is enough.
 
-#### Exclude specific groups/artifacts
+### Exclude specific groups/artifacts
 
 You can exclude specific groups and/or artifacts through `.artifactignore` file. `.artifactignore` file is a list of Regexp that matches with `<group>:<name>`.
 
@@ -272,7 +313,7 @@ assembly {
 }
 ```
 
-#### Custom variant aware configurations
+### Custom variant aware configurations
 
 If you have created `functionalImplementation` and `<variant>FunctionalImplementation` for each variants, `additionalScopes` will be your help.
 
@@ -284,7 +325,7 @@ assembly {
 }
 ```
 
-#### Html Customization
+### Html Customization
 
 This plugin uses FreeMaker to generate HTML files and can accept an user-defined template like the following.
 
@@ -297,7 +338,7 @@ visualization {
 
 Please check the original `ftl` file for variables that you can use.
 
-#### Render Json
+### Render Json
 
 The schema of json objects are defined in `schema` module published to jcetner. You can chose any serialization method, custom attribute transformation, and so on.
 
