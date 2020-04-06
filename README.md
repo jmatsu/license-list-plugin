@@ -45,7 +45,8 @@ release:
       - key: activity
         displayName: Activity
         url: https://developer.android.com/jetpack/androidx
-        copyrightHolders: []
+        copyrightHolders:
+          - The Android Open Source Project
         licenses:
           - apache-2.0
 ```

@@ -2,7 +2,13 @@ buildscript {
     repositories {
         google()
         jcenter()
-        mavenLocal()
+        if (System.getenv("CI") == "true") {
+            mavenLocal()
+        } else {
+            maven {
+                url = uri("https://plugins.gradle.org/m2/")
+            }
+        }
     }
     dependencies {
         classpath("com.android.tools.build:gradle:3.6.1")

@@ -36,6 +36,7 @@ android {
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
@@ -48,9 +49,11 @@ android {
 }
 
 repositories {
+    if (System.getenv("CI") == "true") {
+        mavenLocal()
+    }
     google()
     jcenter()
-    mavenLocal()
 }
 
 val sampleConfiguration = configurations.create("sample")
@@ -110,7 +113,7 @@ licenseList {
 
             visualization {
                 // it's useful for those who want to customize the appearance of the license viewer
-                format = "html"
+                format = properties["visualizationFormat"] as? String ?: "html"
             }
         }
     }

@@ -49,11 +49,21 @@ jobs:
       - setup_workspace
       - restore_gradle_cache:
           cache_name: plugin
-      - run: ./gradlew install
+      - run: ./gradlew publishToMavenLocal
       - persist_to_workspace:
           root: ~/.m2
           paths:
             - repository
+
+  schema_test:
+    executor: android
+    steps:
+      - setup_workspace
+      - restore_gradle_cache:
+          cache_name: example
+      - attach_workspace:
+          at: ~/.m2
+      - run: ./gradlew assembleYellowBlueRelease # it's okay if succeed
 
   acceptance_test:
     executor: android
@@ -155,7 +165,8 @@ jobs:
             fi
 
             git checkout -- app
-      - run: ./gradlew visualizeLicenseList
+      - run: ./gradlew visualizeLicenseList -PvisualizationFormat=html
+      - run: ./gradlew visualizeLicenseList -PvisualizationFormat=json
       - store_artifacts:
           path: app/src/yellowBlueRelease/assets
           destination: assets
@@ -169,5 +180,8 @@ workflows:
     jobs:
       - install_plugin_jars
       - acceptance_test:
+          requires:
+            - install_plugin_jars
+      - schema_test:
           requires:
             - install_plugin_jars
