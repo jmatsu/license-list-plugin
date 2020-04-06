@@ -434,7 +434,7 @@ yellowBlueRelease:
         licenses: []
     io.github.jmatsu:
       - key: license-list-schema
-        displayName: Schema of License List Gradle Plugin
+        displayName: Schema of License List Gradle Plugin (modified)
         url: https://github.com/jmatsu/license-list-plugin
         copyrightHolders:
           - Jumpei Matsuda
