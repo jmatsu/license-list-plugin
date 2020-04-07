@@ -1,5 +1,6 @@
 package io.github.jmatsu.license
 
+import groovy.lang.Closure
 import io.github.jmatsu.license.dsl.validation.optionalDirectoryProperty
 import java.io.File
 import org.gradle.api.Action
@@ -53,6 +54,24 @@ class VariantAwareOptionsImpl(
 
     override fun getPublicType(): TypeOf<VariantAwareOptions> {
         return typeOf()
+    }
+
+    /**
+     * HACK: For Groovy
+     */
+    fun assembly(action: Closure<AssemblyOptions>) {
+        action.delegate = assembly
+        action.resolveStrategy = Closure.DELEGATE_FIRST
+        action.call()
+    }
+
+    /**
+     * HACK: For Groovy
+     */
+    fun visualization(action: Closure<VisualizationOptions>) {
+        action.delegate = visualization
+        action.resolveStrategy = Closure.DELEGATE_FIRST
+        action.call()
     }
 
     override fun getName(): String = name
