@@ -37,6 +37,8 @@ private fun requireDirectoryFile(value: File?): File? {
         if (!value.isDirectory) {
             error("${value.absolutePath} is not a directory")
         }
+    } else {
+        value.mkdirs()
     }
 
     return value
