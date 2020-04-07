@@ -186,13 +186,13 @@ NOTE: [example](./example) renders its licenses based on the both of json and ht
 
 ```kotlin
 licenseList {
-    // initLicenseList will be kinda alias of `initFreeReleaseLicenseList`
+    // Make initLicenseList an alias of `initFreeReleaseLicenseList`
     defaultTarget = "<variant name like freeRelease>"
 
     variants {
         // you can declare the configuration for each variants
         create("freeRelease") {
-            // A directory that contains artifact-definitions.yml and license-catalog.yml
+            // A directory that contains artifact-definitions.yml, license-catalog.yml and .artifactignore
             artifactDefinitionDirectory = file("license-list")
 
             // options for the management file
@@ -216,10 +216,6 @@ licenseList {
                 // Rarely used. See Tips/WearApp
                 // optional
                 targetConfigurations += setOf("wearApp")
-
-                // A path to ignore file.
-                // optional: project.file(".artifactignore") by default
-                ignoreFile = file(".customartifactignore")
             }
 
             // options for the report file
