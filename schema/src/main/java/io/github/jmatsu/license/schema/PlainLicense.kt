@@ -4,4 +4,6 @@ interface PlainLicense : License {
     val key: LicenseKey
     val name: String
     val url: String
+
+    fun hasActiveUrl(): Boolean = url == "none"
 }

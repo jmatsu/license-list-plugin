@@ -44,13 +44,14 @@ abstract class InspectLicenseListTask
 
             val inspectedArtifacts = inspector.inspectArtifacts()
             val inspectedLicenses = inspector.inspectLicenses()
+            val inspectedAssociations = inspector.inspectAssociations()
 
             inspectedArtifacts.forEach { (artifact, results) ->
                 if (ArtifactInspector.Result.NoCopyrightHolders in results) {
                     logger.error("${artifact.key} does not have copyright holders. Only unlicense is allowed to have no copyright holders.")
                 }
-                if (ArtifactInspector.Result.NoLicenses in results) {
-                    logger.error("${artifact.key} does not have licenses. Use unlicense if this has no license and/or policy.")
+                if (ArtifactInspector.Result.InactiveLicense in results) {
+                    logger.error("${artifact.key} has no licenses or contain *undetermined* license. Use unlicense if this has no license and/or policy.")
                 }
                 if (ArtifactInspector.Result.NoUrl in results) {
                     logger.error("${artifact.key} does not have url. Use `none` if no project url needs to be displayed.")
@@ -59,14 +60,19 @@ abstract class InspectLicenseListTask
 
             inspectedLicenses.forEach { (license, results) ->
                 if (LicenseInspector.Result.NoUrl in results) {
-                    logger.error("${license.key.value} does not have url. Use `none` if no license url needs to be displayed.")
+                    logger.error("${license.key} does not have url. Use `none` if no license url needs to be displayed.")
                 }
                 if (LicenseInspector.Result.NoName in results) {
-                    logger.error("${license.key.value} does not have name. Use proper display name.")
+                    logger.error("${license.key} does not have name. Use proper display name.")
                 }
-                if (LicenseInspector.Result.Undetermined in results) {
-                    logger.error("${license.key.value} couldn't be determined its licenses. Use unlicense if this has no license and/or policy.")
-                }
+            }
+
+            inspectedAssociations.missingKeys.forEach {
+                logger.error("$it is required but not found in your catalog")
+            }
+
+            inspectedAssociations.restKeys.forEach {
+                logger.warn("$it can be removed from your catalog")
             }
         }
     }
