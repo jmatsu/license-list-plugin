@@ -75,7 +75,7 @@ dependencies {
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.9.2")
 
     // sampleConfiguration is included by `implementation` so this plugin will collect sampleConfiguration as well without any setup
-    sampleConfiguration("io.github.jmatsu:license-list-schema:0.1")
+    sampleConfiguration("io.github.jmatsu:license-list-schema:${rootProject.file("../VERSION").readText().trim()}")
     // orphanConfiguration is not included by any other configurations, so you need to add this to targetConfigurations. See licenseList block.
     orphanConfiguration("com.android.support.test:runner:1.0.2")
 
