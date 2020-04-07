@@ -2,14 +2,18 @@ package io.github.jmatsu.license
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.api.ApplicationVariant
 import io.github.jmatsu.license.migration.MigrateLicenseToolsDefinitionTask
 import io.github.jmatsu.license.tasks.InitLicenseListTask
+import io.github.jmatsu.license.tasks.InspectLicenseListTask
 import io.github.jmatsu.license.tasks.MergeLicenseListTask
 import io.github.jmatsu.license.tasks.ValidateLicenseListTask
 import io.github.jmatsu.license.tasks.VisualizeLicenseListTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.logging.Logger
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.container
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getByType
@@ -67,53 +71,59 @@ class LicenseListPlugin : Plugin<Project> {
             // Do not read values of the extension because it may not be reflected yet
 
             androidExtension.applicationVariants.whenObjectAdded {
-                val variantName = name
+                val variant = this
+                val variantName = variant.name
 
                 if (extension.variants.findByName(variantName) == null) {
                     project.logger.info("VariantAwareOptions($variantName) is missing")
                 }
 
-                project.tasks.register("init${variantName.capitalize()}LicenseList", InitLicenseListTask::class.java, extension, this).configure {
+                project.registerTask<InitLicenseListTask>("init", variant = variant, extension = extension).configure {
                     description = """
                         |Initialize a license list based on the configuration for $variantName
                     """.trimMargin()
                 }
 
-                project.tasks.register("validate${variantName.capitalize()}LicenseList", ValidateLicenseListTask::class.java, extension, this).configure {
+                project.registerTask<ValidateLicenseListTask>("validate", variant = variant, extension = extension).configure {
                     description = """
                         |Validate the existing license list based on the configuration for $variantName
                     """.trimMargin()
                 }
 
-                project.tasks.register("merge${variantName.capitalize()}LicenseList", MergeLicenseListTask::class.java, extension, this).configure {
+                project.registerTask<MergeLicenseListTask>("merge", variant = variant, extension = extension).configure {
                     description = """
                         |Merge the existing license list and the current license list that are retrieved from pom files based on the configuration for $variantName
                     """.trimMargin()
                 }
-
-                project.tasks.register("visualize${variantName.capitalize()}LicenseList", VisualizeLicenseListTask::class.java, extension, this).configure {
+                project.registerTask<VisualizeLicenseListTask>("visualize", variant = variant, extension = extension).configure {
                     description = """
                         |Visualize the existing license list of $variantName as the given style
+                    """.trimMargin()
+                }
+
+                project.registerTask<InspectLicenseListTask>("inspect", variant = variant, extension = extension).configure {
+                    description = """
+                        |Inspect the existing license list of $variantName and report missing and/or unsatisfied attributes.
                     """.trimMargin()
                 }
 
                 if (extension.defaultVariant == variantName) {
                     project.logger.info("$variantName has been matched to targetVariant.")
 
-                    project.tasks.register("initLicenseList") {
-                        dependsOn(project.tasks.findByName("init${variantName.capitalize()}LicenseList"))
+                    fun alias(project: Project, action: String, variant: ApplicationVariant) {
+                        project.tasks.register("${action.decapitalize()}LicenseList") {
+                            dependsOn(project.tasks.findByName("${action.decapitalize()}${variant.name.capitalize()}LicenseList"))
+                        }
                     }
 
-                    project.tasks.register("validateLicenseList") {
-                        dependsOn(project.tasks.findByName("validate${variantName.capitalize()}LicenseList"))
-                    }
-
-                    project.tasks.register("mergeLicenseList") {
-                        dependsOn(project.tasks.findByName("merge${variantName.capitalize()}LicenseList"))
-                    }
-
-                    project.tasks.register("visualizeLicenseList") {
-                        dependsOn(project.tasks.findByName("visualize${variantName.capitalize()}LicenseList"))
+                    arrayOf(
+                        "init",
+                        "validate",
+                        "merge",
+                        "visualize",
+                        "inspect"
+                    ).forEach { action ->
+                        alias(project, action, variant)
                     }
                 }
             }
@@ -124,5 +134,9 @@ class LicenseListPlugin : Plugin<Project> {
                 error("license-list plugin requires android plugin")
             }
         }
+    }
+
+    private inline fun <reified T : Task> Project.registerTask(action: String, variant: ApplicationVariant, extension: LicenseListExtension): TaskProvider<T> {
+        return project.tasks.register("${action.decapitalize()}${variant.name.capitalize()}LicenseList", T::class.java, extension, variant)
     }
 }
