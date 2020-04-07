@@ -9,9 +9,11 @@
         * {
             box-sizing: border-box;
             background-color: #ffffff;
+            padding: 0;
+            margin: 0;
         }
         .container {
-            padding: 2px 2px;
+            padding: 4px 4px;
         }
         .card {
             background-color: #fefefe;
@@ -22,6 +24,7 @@
         p {
             margin: 4px;
             padding: 0;
+            word-break: break-all;
         }
         p.name {
             font-size: 18px;
@@ -34,8 +37,6 @@
         }
         ul {
             list-style-type: none;
-            margin: 0;
-            padding: 0;
         }
         ul.licenses {
             margin: 6px;
