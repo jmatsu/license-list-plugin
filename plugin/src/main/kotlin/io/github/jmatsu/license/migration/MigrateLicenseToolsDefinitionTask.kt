@@ -124,8 +124,14 @@ abstract class MigrateLicenseToolsDefinitionTask
 
         val fields = toolsExtension::javaClass.get().fields
 
-        val toolsLicenseFile = fields.first { it.name == "licensesYaml" }.get(toolsExtension) as File
+        var toolsLicenseFile = fields.first { it.name == "licensesYaml" }.get(toolsExtension) as File
         @Suppress("UNCHECKED_CAST") val ignoredGroups = fields.first { it.name == "ignoredGroups" }.get(toolsExtension) as Set<String>
+
+        if (!toolsLicenseFile.exists()) {
+            error("${toolsLicenseFile.absolutePath} is not found. Please specify the filepath in licenseTools extension properly.")
+        }
+
+        logger.warn("The target license tools' file ${toolsLicenseFile.path}")
 
         Executor(
             targetVariant = extension.defaultVariant, // only this value is delivered from my extension

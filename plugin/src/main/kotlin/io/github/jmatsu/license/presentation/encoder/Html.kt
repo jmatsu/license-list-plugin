@@ -39,7 +39,7 @@ class Html(
         configuration.templateExceptionHandler = TemplateExceptionHandler.RETHROW_HANDLER
 
         val input = mapOf(
-            "title" to "title",
+            "title" to "License List",
             "artifacts" to value
         )
 
