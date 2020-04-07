@@ -66,6 +66,10 @@ interface LicenseInspector {
     }
 
     fun PlainLicense.inspect(): List<Result> {
+        if (!isDetermined()) {
+            return listOf(Result.Undetermined)
+        }
+
         val results: MutableList<Result> = mutableListOf()
 
         if (!hasUrl()) {
@@ -74,9 +78,7 @@ interface LicenseInspector {
         if (!hasName()) {
             results.add(Result.NoName)
         }
-        if (!isDetermined()) {
-            results.add(Result.Undetermined)
-        }
+
         return results.takeIf { it.isNotEmpty() } ?: listOf(Result.Success)
     }
 
