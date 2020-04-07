@@ -46,33 +46,59 @@ abstract class InspectLicenseListTask
             val inspectedLicenses = inspector.inspectLicenses()
             val inspectedAssociations = inspector.inspectAssociations()
 
-            inspectedArtifacts.forEach { (artifact, results) ->
+            var hasFailure = false
+
+            inspectedArtifacts.filterNot { (_, results) ->
+                ArtifactInspector.Result.Success in results
+            }.forEach { (artifact, results) ->
+                hasFailure = true
+
+                logger.error(artifact.key)
+
                 if (ArtifactInspector.Result.NoCopyrightHolders in results) {
-                    logger.error("${artifact.key} does not have copyright holders. Only unlicense is allowed to have no copyright holders.")
+                    logger.error("\t does not have copyright holders. Only unlicense is allowed to have no copyright holders.")
                 }
                 if (ArtifactInspector.Result.InactiveLicense in results) {
-                    logger.error("${artifact.key} has no licenses or contain *undetermined* license. Use unlicense if this has no license and/or policy.")
+                    logger.error("\t has no licenses or contain *undetermined* license. Use unlicense if this has no license and/or policy.")
                 }
                 if (ArtifactInspector.Result.NoUrl in results) {
-                    logger.error("${artifact.key} does not have url. Use `none` if no project url needs to be displayed.")
+                    logger.error("\t does not have url. Use `none` if no project url needs to be displayed.")
                 }
+
+                logger.error("")
             }
 
-            inspectedLicenses.forEach { (license, results) ->
+            inspectedLicenses.filterNot { (_, results) ->
+                LicenseInspector.Result.Success in results
+            }.forEach { (license, results) ->
+                hasFailure = true
+
+                logger.error("${license.key}")
+
                 if (LicenseInspector.Result.NoUrl in results) {
-                    logger.error("${license.key} does not have url. Use `none` if no license url needs to be displayed.")
+                    logger.error("\t does not have url. Use `none` if no license url needs to be displayed.")
                 }
                 if (LicenseInspector.Result.NoName in results) {
-                    logger.error("${license.key} does not have name. Use proper display name.")
+                    logger.error("\t does not have name. Use proper display name.")
                 }
+
+                logger.error("")
             }
 
             inspectedAssociations.missingKeys.forEach {
+                hasFailure = true
+
                 logger.error("$it is required but not found in your catalog")
             }
 
             inspectedAssociations.restKeys.forEach {
+                hasFailure = true
+
                 logger.warn("$it can be removed from your catalog")
+            }
+
+            if (hasFailure) {
+                error("inspection detected invalid state")
             }
         }
     }
