@@ -44,25 +44,27 @@
             font-size: 14px;
         }
     </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
 
 <div class="container">
-    <#list artifacts as artifact>
-        <div class="card">
-            <p class="name">${artifact.displayName}</p>
-            <#if artifact.copyrightHolders?has_content><p class="copyright">Copyright :  ${artifact.copyrightHolders?join(", ")}</p></#if>
-            <p class="artifact"><#if artifact.url??><a href="${artifact.url}">${artifact.key}</a><#else>${artifact.key}</#if></p>
-            <#if artifact.licenses?size != 0 >
-            <ul class="licenses">
-                <#list artifact.licenses as license>
-                    <li class="license">
-                        - Under <a href="${license.url}">${license.name}</a>
-                    </li>
-                </#list>
-            </ul>
-            </#if>
-        </div>
-    </#list>
+<#list artifacts as artifact>
+    <div class="card">
+        <p class="name">${artifact.displayName}</p>
+        <#if artifact.copyrightHolders?has_content><p class="copyright">Copyright :  ${artifact.copyrightHolders?join(", ")}</p></#if>
+        <p class="artifact"><#if artifact.url??><a href="${artifact.url}">${artifact.key}</a><#else>${artifact.key}</#if></p>
+        <#if artifact.licenses?size != 0 >
+        <ul class="licenses">
+            <#list artifact.licenses as license>
+                <li class="license">
+                    - Under <a href="${license.url}">${license.name}</a>
+                </li>
+            </#list>
+        </ul>
+        </#if>
+    </div>
+</#list>
 </div>
+</body>
 </html>
