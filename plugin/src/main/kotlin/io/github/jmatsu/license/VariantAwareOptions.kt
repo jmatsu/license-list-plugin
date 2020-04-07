@@ -17,13 +17,19 @@ import org.gradle.kotlin.dsl.typeOf
 
 interface VariantAwareOptions : Named {
     /**
+     * @see dataDir
+     */
+    @Deprecated("the name has been changed", replaceWith = ReplaceWith("baseDir"))
+    var artifactDefinitionDirectory: File?
+
+    /**
      * A parent directory of an artifact definition file.
      */
     @get:PathSensitive(PathSensitivity.RELATIVE)
     @get:InputDirectory
     @get:OutputDirectory
     @get:Optional
-    var artifactDefinitionDirectory: File?
+    var dataDir: File?
 
     @get:Nested
     val assembly: AssemblyOptions
@@ -42,7 +48,11 @@ class VariantAwareOptionsImpl(
     override val visualization: VisualizationOptions
 ) : VariantAwareOptions, HasPublicType {
 
-    override var artifactDefinitionDirectory: File? by optionalDirectoryProperty()
+    override var artifactDefinitionDirectory: File?
+        set(value) { dataDir = value }
+        get() = dataDir
+
+    override var dataDir: File? by optionalDirectoryProperty()
 
     override fun assembly(action: Action<AssemblyOptions>) {
         action.execute(assembly)
