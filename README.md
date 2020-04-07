@@ -257,7 +257,7 @@ plugins {
 }
 
 licenseTools {
-  licensesYaml = ... // this propery is supported
+  licensesYaml = ... // this property is supported
   ignoreGroups = [...] // this property is also supported
 }
 
@@ -334,7 +334,33 @@ Please check the original `ftl` file for variables that you can use.
 
 ### Render Json
 
-The schema of json objects are defined in `schema` module published to jcetner. You can chose any serialization method, custom attribute transformation, and so on.
+You can generate resources in json format.
+
+```kotlin
+licenseList {
+  variants {
+    freeRelease {
+            visualization {
+                format = "json"
+            }
+        }
+    }
+}
+```
+
+The schema of the json resources are defined in `schema` module, which is published to jcenter.
+
+```kotlin
+repositories {
+  jcenter()
+}
+
+dependencies {
+  implementation("io.github.jmatsu:license-list-schema:<version>")
+}
+```
+
+They are just *interfaces* in pure Kotlin (== Java fully-compatible classes). So you can chose any serialization method, custom attribute transformation, and so on in the both of Java and Kotlin.
 
 ## Limitations
 
