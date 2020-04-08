@@ -7,17 +7,28 @@ Schema lib : [ ![Download](https://api.bintray.com/packages/jmatsu/maven/license
 
 License List Plugin is a Gradle plugin to manage artifacts' licenses that your Android project uses. It can generate the data source as human readable or handy format.
 
+*This plugin is still under development. Breaking changes may be introduced until 1.0.0.*
+
+For those who have been using `0.3` or lower, version `0.4` has breaking changes. Please read [0.4 breaking changes](#04-breaking-changes)
+
 ## Guide
 
 1. [Introduction](#introduction)
 2. [Getting Started](#getting-started)
     1. [Installation](#installation)
-    2. [Continuous Management](#continuous-management)
+    2. [About management files and syntax](#about-management-files-and-syntax)
+        1. [artifact-definition.yml](#artifact-definitionyml)
+        2. [license-catalog.yml](#license-catalogyml)
+        3. [.artifactignore](#artifactignore)
+    2. [Manage files](#manage-files)
+        1. [The basic management cycle](#the-basic-management-cycle)
+        2. [Generate a license viewer or its resource](#genetera-a-license-viewer-or-its-resource)
 3. [Tasks](#tasks)
     1. [Initialize](#initialize)
-    2. [Validate](#validate)
-    3. [Merge/Update](#mergeupdate)
-    4. [Visualize](#visualize)
+    2. [Inspect](#inspect)
+    3. [Validate](#validate)
+    4. [Merge/Update](#mergeupdate)
+    5. [Visualize](#visualize)
 4. [Extension](#extension)
 5. [Tips](#tips)
     1. [license-tools-plugin migration](#for-license-tools-plugin-users)
@@ -27,7 +38,9 @@ License List Plugin is a Gradle plugin to manage artifacts' licenses that your A
     5. [Html template customization](#html-customization)
     6. [Render Json output](#render-json)
 6. [Known limitation](#limitations)
-7. [LICENSE](#license)
+7. [Migration](#migration)
+    1. [since 0.4](#04-breaking-changes)
+8. [LICENSE](#license)
 
 ## Introduction
 
@@ -102,9 +115,9 @@ apply plugin: "io.github.jmatsu.license-list"
 
 </details>
 
-#### Create management files
+#### Start managing artifacts and/or licenses
 
-You can generate a management file based on the current dependencies.
+You can generate management files based on the current dependencies.
 
 If you need to manage only one variant, then it's better to configure this plugin first. For example, `freeRelease` is the variant to be managed.
 
@@ -116,33 +129,99 @@ licenseList {
 
 And then, run `./gradlew initLicenseList`. It's kinda alias of `initFreeReleaseLicenseList`. For those who need to manage multiple variants, `init<Variant>LicenseList` is available for each variants by default so please use the proper task.
 
-#### Tweak the generated files
+For those who have been using [cookpad/license-tools-plugin](https://github.com/cookpad/license-tools-plugin), you can migrate your licenses.yml. Please check [license-tools-plugin migration](#for-license-tools-plugin-users).
 
-After runnning `initLicenseList`, you can get the management files below.
+### About management files and syntax
 
-File | Description
-:---|:----
-`artifact-definition.yml` | Define artifacts and license *keys* to manage
-`license-catalog.yml` | A list of licenses that artifacts contain
-`.artifactignore` | A list of Regex to exclude artifacts from the management
+After running `initLicenseList`, you've got the management files below.
 
-- Modify the generated `artifact-definition.yml` 
-    - Some of artifacts do not have enough information in their pom files.
-- You may need to modify `.artifactignore` to exclude several dependencies
-- You need to modify `license-catalog.yml`
-    - It may contain several unsatisfactory licenses because their original definitions in the pom files are partially lacked.
+- artifact-definition.yml
+- license-catalog.yml
+- .artifactignore
 
-#### Generate a license viewer or its resource 
+#### artifact-definitions.yml
 
-Genereate the file for your license viewer by running `./gradlew visualize<Variant>LicenseList` and embed it into your application.
+This file contains the definitions of artifacts and license *keys* to manage.
+
+**structured with scope (default)**
+
+The base format is `Map<Scope, Map<Group, List<ArtifactDefinition>>>`.
+
+```yaml
+"<variant/scope name>":
+  "<group>":
+    - key: "<artifact name>" # Required
+      displayName: "<A name that will be displayed>" # Required
+      url: "<the url of this artifact>" # Optional. null or removing this field means this artifact has no url
+      copyrightHolders: # Optional. null or removing this field means this artifact has no copyright holders
+        - "<copyright holder name>"
+        - ...
+      license: # Required
+        - "<license key which is defined in license-catalog.yml>"
+      skip: "<true|false>" # Optional. Specify true if this artifact is not found in the current dependencies but should be displayed. false by default.
+    ...
+  ...
+...
+```
+
+<details>
+
+**structured w/o scope**
+
+The base format is `Map<Group, List<ArtifactDefinition>>`.
+
+**flatten**
+
+The base format is `List<ArtifactDefinition>`. The format of `ArtifactDefinition` is almost same but only *key* is different.
+
+```
+- key: "<group>:<artifact name>"
+  ...
+...
+```
+</details>
+
+#### license-catalog.yml
+
+This file contains licenses that artifacts have references. This plugin infers licenses using their name and provide primary keys automatically.
+
+```yaml
+- key: "<the primary key of this license>" # Required
+  name: "<name to be displayed>" # Required
+  url: "<license url>" # Optional. null or removing this field means this license has no url.
+```
+
+#### .artifactignore
+
+This file is to find artifact that should be ignored from the management. Each lines are regular expressions that matches with `<group>:<name>`.
+
+```
+com\.example:sample-artifact
+io\.github\.jmatsu.internal:.*
+```
+
+### Manage files
+
+This section explains how you will manage the files that this plugin uses.
+
+#### The basic management cycle
+
+The basic management cycle is the below.
+
+1. Run `./gradlew validate<Variant>LicenseList`
+2. Run `merge<Variant>LicenseList` to reflect the current artifacts if failed.
+3. Run `./gradlew inspect<Variant>LicenseList`
+4. Modify `artifact-definition.yml` based on the inspection report above.
+    - You may want to modify `.artifactignore` to exclude several artifacts.
+    - If so, please go to Step2 after updating `.artifactignore` to reflect the ignore configurations.
+5. And also, modify `license-catalog.yml` as well.
+6. Go back to Step1 until no issue is found.
+
+#### Generate a license viewer or its resource
+
+Generate the file for your license viewer by running `./gradlew visualize<Variant>LicenseList` and embed it into your application.
 
 This plugin supports `html` and `json` as the resource format.
-
-## Continuous management
-
-1. Run `./gradlew validate<Variant>LicenseList` before release or on every pull requests.
-2. If the validation above fails, please update `artifact-definition.yml` manually or use `./gradlew merge<Variant>LicenseList` until the validation succeeds. 
-3. Regenerate the resource of your license viewer through `visualize<Variant>LicenseList`
 
 ## Tasks
 
@@ -156,7 +235,17 @@ This is the entrypoint of this plugin. It generates the base definition file and
 
 **Do you want to overwrite it?**
 
-If you would like to re-initialize the definition files, then please pass `-Poverwrite=true` when running this task. 
+If you would like to re-initialize the definition files, then please pass `-Poverwrite=true` when running this task.
+
+### Inspect
+
+*Available since 0.4*
+
+`inspect<Variant>LicenseList`
+
+Inspect the current management files and report lacked attributes.
+
+NOTE: This doesn't mean your definition file *satisfy* license usages. It's your responsibility, not of this plugin.
 
 ### Validate 
 
@@ -178,9 +267,11 @@ The strategy is *defensive*. This task will preserve your changes in the definit
 
 `visualize<Variant>LicenseList`
 
-It will create a HTML file or JSON file based on the plugin configuration. 
+It will create a HTML file or JSON file based on the plugin configuration if validation and inspection succeed.
 
-NOTE: [example](./example) renders its licenses based on the both of json and html.
+NOTE: `-PskipInspect=true` can skip *inspect* action and `-PskipValidate=true` can skip *validate* action.
+
+Tips: [example](./example) renders its licenses based on the both of json and html.
 
 ## Extension
 
@@ -193,7 +284,7 @@ licenseList {
         // you can declare the configuration for each variants
         create("freeRelease") {
             // A directory that contains artifact-definitions.yml, license-catalog.yml and .artifactignore
-            artifactDefinitionDirectory = file("license-list")
+            baseDir = file("license-list")
 
             // options for the management file
             assembly {
@@ -277,6 +368,11 @@ Please move them to the directory where you would like to use for the management
 
 - Only v1.7.0 is tested. Please feel free to open issues if you have any problems.
 - `licenseTools.ignoreProjects` is not supported. Because I couldn't imagine the usecase that we really want to ignore *projects*. The group/artifact ignore feature is enough.
+
+*Points*
+
+- Each line of `.artifactignore` are the same to `skip` in license-tools-plugin
+- `skip` in `artifact-definition.yml` is the same to `forceGenerate`
 
 ### Exclude specific groups/artifacts
 
@@ -364,6 +460,24 @@ They are just *interfaces* in pure Kotlin. So you can chose any serialization me
     - I think Java project support should also be supported but not yet planned.
 - Sharing configuration between variants
 - Modification detection
+
+## Migration
+
+### 0.4 breaking changes
+
+Breaking change1 :
+
+- `inspect` action was introduced in `0.4`. It reports missing or misconfigured attributes in your management files.
+- However, `inspect` action recognizes null as *valid* values but *null* was default values of `License#url` until `0.3`. Since `0.4`, *""* (empty string) is a default value. Please modify *null* to *""* in your management file if the *null* is not unintended.
+
+Breaking change2 :
+
+- Now `visualize` action depends on `validate` and `inspect` actions.
+- Please pass `-PskipInspect=true` and/or `-PskipValidate=true` unless necessary.
+
+Deprecation:
+
+- `artifactOutputDirectory` has been deprecated and renamed to `baseDir`
 
 ## License
 
