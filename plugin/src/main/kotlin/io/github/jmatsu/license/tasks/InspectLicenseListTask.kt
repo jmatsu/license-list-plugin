@@ -92,8 +92,6 @@ abstract class InspectLicenseListTask
             }
 
             inspectedAssociations.restKeys.forEach {
-                hasFailure = true
-
                 logger.warn("$it can be removed from your catalog")
             }
 
