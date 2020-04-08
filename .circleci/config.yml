@@ -87,7 +87,7 @@ jobs:
           command: ~/top/.circleci/merge_test
       - run:
           name: Inspect
-          command: ~/top/.circleci/inpsection_test
+          command: ~/top/.circleci/inspection_test
       - run:
           name: Visualize
           command: ~/top/.circleci/visualization_test
