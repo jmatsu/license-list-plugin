@@ -467,12 +467,15 @@ They are just *interfaces* in pure Kotlin. So you can chose any serialization me
 
 Breaking change1 :
 
-- `inspect` action was introduced in `0.4`. It reports missing or misconfigured attributes in your management files.
-- However, `inspect` action recognizes null as *valid* values but *null* was default values of `License#url` until `0.3`. Since `0.4`, *""* (empty string) is a default value. Please modify *null* to *""* in your management file if the *null* is not unintended.
+`inspect` action was introduced in `0.4`. It reports missing or misconfigured attributes in your management files. `inspect` action does
+
+- Recognize empty string and empty array as *invalid* values, and  null as *valid* values.
+  - *null* was default values of `License#url` until `0.3`. Since `0.4`, *""* (empty string) is a default value because `inspection` should fail if no url is found in a pom file. Please modify *null* to *""* in your management file if the *null* is not unintended to make it an inspection target. It's okay to leave `null` as it is if it's intended of course.
+  - *empty array* was default values of `ArtifactDefinition#copyrightHolders`. It has not been changed in `0.4` but *empty array* becomes one of invalid values. This means `inspect` will fail anyway. Please use *null* or remove the copyrightHolders field from your management file if the artifact really has no copyright holders.
 
 Breaking change2 :
 
-- Now `visualize` action depends on `validate` and `inspect` actions.
+- Now `visualize` action depends on `validate` and `inspect` actions. 
 - Please pass `-PskipInspect=true` and/or `-PskipValidate=true` unless necessary.
 
 Deprecation:
