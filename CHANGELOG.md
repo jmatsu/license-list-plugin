@@ -1,3 +1,9 @@
+## Version 0.4.1 (2020/04/08)
+
+**Deprecation** :bow:
+
+- dataDir has been deprecated and please use baseDir. This was a typo. [#31](https://github.com/jmatsu/license-list-plugin/pull/31)
+
 ## Version 0.4 (2020/04/08)
 
 **New features** :tada:

@@ -387,7 +387,7 @@ io.github.jmatsu:example
 
 Please note that this plugin will automatically add `^` and `$` to each lines, so you must not add it in this ignore file.
 
-For the more details, see [example/app/.artifactignore](example/app/.artifactignore).
+For the more details, see [example/app/license-list/.artifactignore](example/app/license-list/.artifactignore).
 
 #### Additional configurations like WearApp
 
