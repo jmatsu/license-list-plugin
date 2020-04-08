@@ -1,3 +1,18 @@
+## Version 0.4 (2020/04/08)
+
+**New features** :tada:
+
+- `inspect` action is introduced. It reports missing or misconfigured attributes in your management files. [#28](https://github.com/jmatsu/license-list-plugin/pull/28)
+
+**Breaking changes** :bomb:
+
+- `inspect` action recognizes null as valid values but null was default values of License#url until 0.3. Since 0.4, "" (empty string) is a default value. [#28](https://github.com/jmatsu/license-list-plugin/pull/28)
+- Now visualize action depends on validate and inspect actions. [#28](https://github.com/jmatsu/license-list-plugin/pull/28)
+
+**Deprecation** :bow:
+
+- artifactOutputDirectory has been deprecated and renamed to baseDir [#26](https://github.com/jmatsu/license-list-plugin/pull/26)
+
 ## Version 0.3 (2020/04/07)
 
 - Fixed missing `</body>` in the html template
