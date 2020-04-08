@@ -62,7 +62,7 @@ abstract class InspectLicenseListTask
                     logger.error("\t has no licenses or contain *undetermined* license. Use unlicense if this has no license and/or policy.")
                 }
                 if (ArtifactInspector.Result.NoUrl in results) {
-                    logger.error("\t does not have url. Use `none` if no project url needs to be displayed.")
+                    logger.error("\t does not have url. Use null or emit the field if no project url needs to be displayed.")
                 }
 
                 logger.error("")
@@ -76,7 +76,7 @@ abstract class InspectLicenseListTask
                 logger.error("${license.key}")
 
                 if (LicenseInspector.Result.NoUrl in results) {
-                    logger.error("\t does not have url. Use `none` if no license url needs to be displayed.")
+                    logger.error("\t does not have url. Use null or emit the field if no license url needs to be displayed.")
                 }
                 if (LicenseInspector.Result.NoName in results) {
                     logger.error("\t does not have name. Use proper display name.")

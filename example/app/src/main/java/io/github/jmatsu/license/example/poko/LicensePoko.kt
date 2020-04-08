@@ -14,11 +14,11 @@ class LicenseKeyPoko(override val value: String) : LicenseKey {
         }
 
         @FromJson
-        fun fromJson(json: String): LicenseKeyPoko {
+        fun fromJson(json: String?): LicenseKeyPoko {
             return LicenseKeyPoko(json)
         }
     }
 }
 
 @JsonClass(generateAdapter = true)
-class PlainLicensePoko(override val key: LicenseKeyPoko, override val name: String, override val url: String) : PlainLicense
+class PlainLicensePoko(override val key: LicenseKeyPoko, override val name: String, override val url: String? = null) : PlainLicense

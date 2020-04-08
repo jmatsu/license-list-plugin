@@ -95,16 +95,25 @@ class LicenseListPlugin : Plugin<Project> {
                         |Merge the existing license list and the current license list that are retrieved from pom files based on the configuration for $variantName
                     """.trimMargin()
                 }
-                project.registerTask<VisualizeLicenseListTask>("visualize", variant = variant, extension = extension).configure {
-                    description = """
-                        |Visualize the existing license list of $variantName as the given style
-                    """.trimMargin()
-                }
 
                 project.registerTask<InspectLicenseListTask>("inspect", variant = variant, extension = extension).configure {
                     description = """
                         |Inspect the existing license list of $variantName and report missing and/or unsatisfied attributes.
                     """.trimMargin()
+                }
+
+                project.registerTask<VisualizeLicenseListTask>("visualize", variant = variant, extension = extension).configure {
+                    description = """
+                        |Visualize the existing license list of $variantName as the given style
+                    """.trimMargin()
+
+                    if (project.properties.getOrDefault("skipValidate", "false") != "true") {
+                        dependsOn(project.tasks.findByName("validate${variant.name.capitalize()}LicenseList"))
+                    }
+
+                    if (project.properties.getOrDefault("skipInspect", "false") != "true") {
+                        dependsOn(project.tasks.findByName("inspect${variant.name.capitalize()}LicenseList"))
+                    }
                 }
 
                 if (extension.defaultVariant == variantName) {

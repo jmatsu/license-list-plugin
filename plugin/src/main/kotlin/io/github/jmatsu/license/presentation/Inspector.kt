@@ -60,16 +60,22 @@ interface ArtifactInspector {
         return results.takeIf { it.isNotEmpty() } ?: listOf(Result.Success)
     }
 
+    // null or has elements or unlicensed
     fun ArtifactDefinition.hasCopyrightHolders(): Boolean {
-        return copyrightHolders?.isNotEmpty() == true || hasActiveLicenses() && licenses.all { it.value == LicenseClassifier.PredefinedKey.UNLICENSE }
+        return copyrightHolders?.isNotEmpty() != false || isUnlicensed()
     }
 
     fun ArtifactDefinition.hasActiveLicenses(): Boolean {
         return licenses.isNotEmpty() && licenses.all { it.value != LicenseClassifier.PredefinedKey.UNDETERMINED }
     }
 
+    // null or has the element or unlicensed
     fun ArtifactDefinition.hasUrl(): Boolean {
-        return url?.isNotBlank() == true
+        return url?.isNotBlank() != false || isUnlicensed()
+    }
+
+    private fun ArtifactDefinition.isUnlicensed(): Boolean {
+        return hasActiveLicenses() && licenses.all { it.value == LicenseClassifier.PredefinedKey.UNLICENSE }
     }
 }
 
@@ -94,7 +100,7 @@ interface LicenseInspector {
     }
 
     fun PlainLicense.hasUrl(): Boolean {
-        return url.isNotBlank()
+        return url?.isNotBlank() != false
     }
 
     fun PlainLicense.hasName(): Boolean {

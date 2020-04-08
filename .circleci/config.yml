@@ -165,8 +165,30 @@ jobs:
             fi
 
             git checkout -- app
-      - run: ./gradlew visualizeLicenseList -PvisualizationFormat=html
-      - run: ./gradlew visualizeLicenseList -PvisualizationFormat=json
+      - run:
+          name: Inspect
+          command: |
+            cp -f fixtures/inspection-artifact-definition.yml app/artifact-definition.yml
+            cp -f fixtures/inspection-license-catalog.yml app/license-catalog.yml
+
+            if ./gradlew inspectLicenseList 2> inspection.result; then
+              echo "inspection must fail"
+              exit 1
+            fi
+
+            ! grep "should_not_visible_in_inspection_result" inspection.result
+            ! grep "should_not_visible_in_inspection_result2" inspection.result
+            grep "rest_license" inspection.result
+            grep "missing_license" inspection.result
+
+            ! grep "has_no_copyright_holders" inspection.result
+            ! grep "has_no_copyright_holders2" inspection.result
+            ! grep "nothing_to_report" inspection.result
+            grep "should_have_copyright_holders" inspection.result
+            grep "should_have_url" inspection.result
+            grep "should_change_from_undetermined" inspection.result
+      - run: ./gradlew visualizeLicenseList -PvisualizationFormat=html -PskipInspect=true -PskipValidate=true
+      - run: ./gradlew visualizeLicenseList -PvisualizationFormat=json -PskipInspect=true -PskipValidate=true
       - store_artifacts:
           path: app/src/yellowBlueRelease/assets
           destination: assets

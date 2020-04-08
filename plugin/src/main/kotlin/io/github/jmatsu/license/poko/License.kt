@@ -37,5 +37,5 @@ data class PlainLicense(
     @Required
     override val key: LicenseKey,
     override val name: String,
-    override val url: String
+    override val url: String? = null
 ) : License(), io.github.jmatsu.license.schema.PlainLicense

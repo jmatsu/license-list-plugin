@@ -1,0 +1,14 @@
+  - key: should_not_visible_in_inspection_result
+    name: This license is available
+    url: http://example.com
+
+  - key: rest_license
+    name: No usage is found in definition
+    url: http://example.com
+
+  - key: undetermined
+    name: A placholder
+    url: http://example.com
+
+  - key: should_not_visible_in_inspection_result2
+    name: This license is available witout url

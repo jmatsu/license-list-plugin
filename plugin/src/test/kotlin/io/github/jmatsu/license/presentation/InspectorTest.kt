@@ -15,7 +15,7 @@ class InspectorTest {
         val inspector = Inspector(
             artifactDefinitions = listOf(
                 provideArtifact(key = "missing_url").copy(
-                    url = null
+                    url = ""
                 ),
                 provideArtifact(key = "missing_copyrightholder").copy(
                     copyrightHolders = emptyList()
@@ -41,10 +41,19 @@ class InspectorTest {
                         provideLicenseKey(LicenseClassifier.PredefinedKey.UNLICENSE)
                     )
                 ),
+                provideArtifact(key = "success4").copy(
+                    url = "",
+                    licenses = listOf(
+                        provideLicenseKey(LicenseClassifier.PredefinedKey.UNLICENSE)
+                    )
+                ),
+                provideArtifact(key = "success5").copy(
+                    url = null
+                ),
                 provideArtifact(key = "all_failure").copy(
                     copyrightHolders = emptyList(),
                     licenses = emptyList(),
-                    url = null
+                    url = ""
                 )
             ),
             plainLicenses = mockk()
@@ -85,6 +94,14 @@ class InspectorTest {
             assertEquals(1, size)
             assertEquals(ArtifactInspector.Result.Success, first())
         }
+        with(results.first { (a, _) -> a.key == "success4" }.second) {
+            assertEquals(1, size)
+            assertEquals(ArtifactInspector.Result.Success, first())
+        }
+        with(results.first { (a, _) -> a.key == "success5" }.second) {
+            assertEquals(1, size)
+            assertEquals(ArtifactInspector.Result.Success, first())
+        }
 
         with(results.first { (a, _) -> a.key == "all_failure" }.second) {
             assertEquals(3, size)
@@ -111,6 +128,9 @@ class InspectorTest {
                     name = ""
                 ),
                 providePlainLicense("success"),
+                providePlainLicense("success2").copy(
+                    url = null
+                ),
                 providePlainLicense("all_failure").copy(
                     url = "",
                     name = ""
