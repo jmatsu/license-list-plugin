@@ -83,6 +83,7 @@ jobs:
               exit 1
             fi
 
+            git checkout -- .
       - run: 
           name: check if init action does not fail and does not produce any diff
           command: |
@@ -92,6 +93,8 @@ jobs:
               echo "diff has been generated. assemble logic might be changed and it would be a breaking change."
               exit 1
             fi
+
+            git checkout -- .
       - run:
           name: check if ignore file works
           command: |
@@ -108,7 +111,7 @@ jobs:
               exit 1
             fi
 
-            git checkout -- app
+            git checkout -- .
       - run: 
           name: check if merge action does not fail and revert changes propery
           command: |
@@ -164,7 +167,7 @@ jobs:
               exit 1
             fi
 
-            git checkout -- app
+            git checkout -- .
       - run:
           name: Inspect
           command: |
@@ -221,6 +224,8 @@ jobs:
               echo "should_change_from_undetermined is not in inspection result!"
               exit 1
             fi
+
+            git checkout -- .
       - run: ./gradlew visualizeLicenseList -PvisualizationFormat=html -PskipInspect=true -PskipValidate=true
       - run: ./gradlew visualizeLicenseList -PvisualizationFormat=json -PskipInspect=true -PskipValidate=true
       - store_artifacts:
