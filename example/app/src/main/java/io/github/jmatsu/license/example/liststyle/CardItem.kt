@@ -42,7 +42,12 @@ class CardItem(
         definition.licenses.forEach { license ->
             val licenseBinding = ListitemLicenseBinding.inflate(layoutInflater, viewBinding.container, true)
 
-            licenseBinding.license.text = HtmlCompat.fromHtml("""- Under <a href="${license.url}">${license.name}</a>""", HtmlCompat.FROM_HTML_MODE_COMPACT)
+            if (license.url != null) {
+                licenseBinding.license.text = HtmlCompat.fromHtml("""- Under <a href="${license.url}">${license.name}</a>""", HtmlCompat.FROM_HTML_MODE_COMPACT)
+            } else {
+                licenseBinding.license.text = HtmlCompat.fromHtml("""- Under ${license.name}""", HtmlCompat.FROM_HTML_MODE_COMPACT)
+            }
+
             licenseBinding.license.movementMethod = LinkMovementMethod.getInstance()
         }
     }

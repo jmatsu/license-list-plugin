@@ -14,7 +14,7 @@ class LicenseKeyPoko(override val value: String) : LicenseKey {
         }
 
         @FromJson
-        fun fromJson(json: String?): LicenseKeyPoko {
+        fun fromJson(json: String): LicenseKeyPoko {
             return LicenseKeyPoko(json)
         }
     }
