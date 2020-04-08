@@ -75,22 +75,22 @@ jobs:
           at: ~/.m2
       - run: 
           name: Validate
-          command: ~/.circleci/validation_test
+          command: ~/top/.circleci/validation_test
       - run: 
           name: Init
-          command: ~/.circleci/init_test
+          command: ~/top/.circleci/init_test
       - run:
           name: Ignore
-          command: ~/.circleci/ignore_test
+          command: ~/top/.circleci/ignore_test
       - run: 
           name: Merge
-          command: ~/.circleci/merge_test
+          command: ~/top/.circleci/merge_test
       - run:
           name: Inspect
-          command: ~/.circleci/inpsection_test
+          command: ~/top/.circleci/inpsection_test
       - run:
           name: Visualize
-          command: ~/.circleci/visualization_test
+          command: ~/top/.circleci/visualization_test
       - store_artifacts:
           path: app/src/yellowBlueRelease/assets
           destination: assets
