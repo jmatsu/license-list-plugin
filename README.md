@@ -7,6 +7,8 @@ Schema lib : [ ![Download](https://api.bintray.com/packages/jmatsu/maven/license
 
 License List Plugin is a Gradle plugin to manage artifacts' licenses that your Android project uses. It can generate the data source as human readable or handy format.
 
+*This plugin is still under development. Breaking changes may be introduced until 1.0.0.*
+
 For those who have been using `0.3` or lower, version `0.4` has breaking changes. Please read [0.4 breaking changes](#0.4-breaking-changes)
 
 ## Guide
