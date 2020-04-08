@@ -468,6 +468,10 @@ Breaking change2 :
 - Now `visualize` action depends on `validate` and `inspect` actions.
 - Please pass `-PskipInspect=true` and/or `-PskipValidate=true` unless necessary.
 
+Deprecation:
+
+- `artifactOutputDirectory` has been deprecated and renamed to `baseDir`
+
 ## License
 
 Under MIT License.
