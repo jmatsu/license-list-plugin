@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-cp -f fixtures/inspection-artifact-definition.yml app/artifact-definition.yml
-cp -f fixtures/inspection-license-catalog.yml app/license-catalog.yml
+cp -f fixtures/inspection-artifact-definition.yml app/license-list/artifact-definition.yml
+cp -f fixtures/inspection-license-catalog.yml app/license-list/license-catalog.yml
 
 if ./gradlew inspectLicenseList 1> inspection.warning 2> inspection.result; then
     echo "inspection must fail"
