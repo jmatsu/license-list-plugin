@@ -76,7 +76,7 @@ abstract class ReadWriteLicenseTaskArgs(
     }
 
     val assembleOutputDir: File
-        get() = variantAwareOptions.dataDir ?: project.projectDir
+        get() = variantAwareOptions.baseDir ?: project.projectDir
     val assembledArtifactsFile: File
         get() = File(assembleOutputDir, "artifact-definition.$assembledFileExt")
     val assembledLicenseCatalogFile: File

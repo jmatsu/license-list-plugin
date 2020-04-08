@@ -98,6 +98,8 @@ licenseList {
 
     variants {
         create("yellowBlueRelease") {
+            baseDir = file("license-list")
+
             assembly {
                 // flatten is enough to show licenses but structured could be probably useful for the management.
                 style = "structured"
