@@ -197,12 +197,12 @@ jobs:
               exit 1
             fi
 
-            if grep "has_no_copyright_holders" inspection.result; then
-              echo "has_no_copyright_holders is in inspection result!"
-              exit 1
-            fi
             if grep "has_no_copyright_holders2" inspection.result; then
               echo "has_no_copyright_holders2 is in inspection result!"
+              exit 1
+            fi
+            if grep "has_no_copyright_holders" inspection.result; then
+              echo "has_no_copyright_holders is in inspection result!"
               exit 1
             fi
             if grep "nothing_to_report" inspection.result; then

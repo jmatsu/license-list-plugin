@@ -12,3 +12,6 @@
 
   - key: should_not_visible_in_inspection_result2
     name: This license is available witout url
+
+  - key: unlicense
+    name: Unlicense

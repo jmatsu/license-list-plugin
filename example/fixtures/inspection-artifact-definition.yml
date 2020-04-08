@@ -5,14 +5,14 @@ release:
       url: null
       copyrightHolders: null
       licenses:
-        - unlicensed
+        - should_not_visible_in_inspection_result
 
     - key: has_no_copyright_holders2
       displayName: No copyright holders but okay
       url: null
       copyrightHolders: []
       licenses:
-        - unlicensed
+        - unlicense
 
     - key: should_have_copyright_holders
       displayName: No copyright holders so ng
