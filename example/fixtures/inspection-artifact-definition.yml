@@ -1,0 +1,46 @@
+release:
+  dummy_scope:
+    - key: has_no_copyright_holders
+      displayName: No copyright holders but okay
+      url: null
+      copyrightHolders: null
+      licenses:
+        - should_not_visible_in_inspection_result
+
+    - key: has_no_copyright_holders2
+      displayName: No copyright holders but okay
+      url: null
+      copyrightHolders: []
+      licenses:
+        - unlicense
+
+    - key: should_have_copyright_holders
+      displayName: No copyright holders so ng
+      url: https://github.com/jmatsu/license-list-plugin
+      copyrightHolders: []
+      licenses:
+        - missing_license
+
+    - key: should_have_url
+      displayName: No URL
+      url: ""
+      copyrightHolders: []
+      licenses:
+        - should_not_visible_in_inspection_result
+
+    - key: should_change_from_undetermined
+      displayName: Undetermined
+      url: any
+      copyrightHolders:
+        - any
+      licenses:
+        - undetermined
+
+    - key: nothing_to_report
+      displayName: Okay
+      url: any
+      copyrightHolders:
+        - any
+      licenses:
+        - should_not_visible_in_inspection_result
+        - should_not_visible_in_inspection_result2

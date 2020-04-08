@@ -50,7 +50,7 @@ class Assembler(
                 when (val guessedLicense = LicenseClassifier(it.name).guess()) {
                     is LicenseClassifier.GuessedLicense.Undetermined -> {
                         val name = it.name ?: guessedLicense.name
-                        val url = it.url ?: guessedLicense.url
+                        val url = it.url.orEmpty()
 
                         LicenseKey(value = "$name@${url.length}").also { key ->
                             licenseCapture += PlainLicense(

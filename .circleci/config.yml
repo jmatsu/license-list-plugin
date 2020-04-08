@@ -74,99 +74,23 @@ jobs:
       - attach_workspace:
           at: ~/.m2
       - run: 
-          name: check if validate action does not fail and does not produce any diff
-          command: |
-            ./gradlew clean validateLicenseList --rerun-tasks
-
-            if ! [[ -z "$(git diff --name-only -- app)" ]]; then
-              echo "diff has been generated. validate logic must not generate any diff."
-              exit 1
-            fi
-
+          name: Validate
+          command: ~/top/.circleci/validation_test
       - run: 
-          name: check if init action does not fail and does not produce any diff
-          command: |
-            ./gradlew clean initLicenseList -Poverwrite=true --rerun-tasks
-
-            if ! [[ -z "$(git diff --name-only -- app)" ]]; then
-              echo "diff has been generated. assemble logic might be changed and it would be a breaking change."
-              exit 1
-            fi
+          name: Init
+          command: ~/top/.circleci/init_test
       - run:
-          name: check if ignore file works
-          command: |
-            echo > app/.artifactignore
-
-            if ./gradlew validateLicenseList --rerun-tasks; then
-              echo "validate should not succeed"
-              exit 1
-            fi
-
-            ./gradlew clean initLicenseList -Poverwrite=true --rerun-tasks
-            if ! diff app/artifact-definition.yml fixtures/nothing-ignored-artifact-definition.yml; then
-              echo "diff has not been generated. .customartifactignore might be wrong or artifact-definition is wrong"
-              exit 1
-            fi
-
-            git checkout -- app
+          name: Ignore
+          command: ~/top/.circleci/ignore_test
       - run: 
-          name: check if merge action does not fail and revert changes propery
-          command: |
-            if diff fixtures/changed-and-removed-artifact-definition.yml fixtures/artifact-definition.yml >/dev/null 2>&1; then
-              echo "changed-and-removed-artifact-definition.yml must be modified to test"
-              exit 1
-            fi
-
-            if diff fixtures/changed-and-removed-license-catalog.yml fixtures/license-catalog.yml >/dev/null 2>&1; then
-              echo "changed-and-removed-license-catalog.yml must be modified to test"
-              exit 1
-            fi
-
-            # Create a patch to see how manual modification happens on fixtures/artifact-definition.yml
-            if diff -u fixtures/changed-artifact-definition.yml fixtures/changed-and-removed-artifact-definition.yml > fixtures/artifact-definition.patch; then
-              echo "diff could not be generated : artifact-definition"
-              exit 1
-            fi
-            # Create a patch to see how manual modification happens on fixtures/license-catalog.yml
-            if diff -u fixtures/changed-license-catalog.yml fixtures/changed-and-removed-license-catalog.yml > fixtures/license-catalog.patch; then
-              echo "diff could not be generated : license-catalog"
-              exit 1
-            fi
-
-            cp -f fixtures/changed-and-removed-artifact-definition.yml app/artifact-definition.yml
-            cp -f fixtures/changed-and-removed-license-catalog.yml app/license-catalog.yml
-
-            ./gradlew clean mergeLicenseList --rerun-tasks
-
-            # As for artifact-definition.yml, removed artifacts should be reverted so diff must be generated
-            if diff app/artifact-definition.yml fixtures/changed-and-removed-artifact-definition.yml; then
-              echo "No diff is available in artifact-definition. merge process should revert changes so diff is expected."
-              exit 1
-            fi
-            # As for license-catalog.yml, removed licenses should be reverted so diff must be generated
-            if diff app/license-catalog.yml fixtures/changed-and-removed-license-catalog.yml; then
-              echo "No diff is available in license-catalog. merge process should revert changes so diff is expected."
-              exit 1
-            fi
-
-            # Generated diff should be same to the merge result above
-            patch -fu app/artifact-definition.yml < fixtures/artifact-definition.patch
-            patch -fu app/license-catalog.yml < fixtures/license-catalog.patch
-
-            # Should be reverted to fixtures/changed-and-removed-artifact-definition.yml
-            if ! diff fixtures/changed-and-removed-artifact-definition.yml app/artifact-definition.yml; then
-              echo "diff hapenned. no diff is expected : artifact-definition"
-              exit 1
-            fi
-            # Should be reverted to fixtures/changed-and-removed-license-catalog.yml
-            if ! diff fixtures/changed-and-removed-license-catalog.yml app/license-catalog.yml; then
-              echo "diff hapenned. no diff is expected : license-catalog"
-              exit 1
-            fi
-
-            git checkout -- app
-      - run: ./gradlew visualizeLicenseList -PvisualizationFormat=html
-      - run: ./gradlew visualizeLicenseList -PvisualizationFormat=json
+          name: Merge
+          command: ~/top/.circleci/merge_test
+      - run:
+          name: Inspect
+          command: ~/top/.circleci/inspection_test
+      - run:
+          name: Visualize
+          command: ~/top/.circleci/visualization_test
       - store_artifacts:
           path: app/src/yellowBlueRelease/assets
           destination: assets

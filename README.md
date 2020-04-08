@@ -356,7 +356,7 @@ dependencies {
 }
 ```
 
-They are just *interfaces* in pure Kotlin (== Java fully-compatible classes). So you can chose any serialization method, custom attribute transformation, and so on in the both of Java and Kotlin.
+They are just *interfaces* in pure Kotlin. So you can chose any serialization method, custom attribute transformation, and so on in the both of Java and Kotlin.
 
 ## Limitations
 

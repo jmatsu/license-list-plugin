@@ -27,7 +27,12 @@ class CardItem(
             viewBinding.projectUrl.visibility = View.GONE
         }
 
-        viewBinding.copylight.text = "Copyright : ${definition.copyrightHolders.joinToString(", ")}"
+        if (definition.copyrightHolders?.isNotEmpty() == true) {
+            viewBinding.copylight.text = "Copyright : ${definition.copyrightHolders.joinToString(", ")}"
+            viewBinding.copylight.visibility = View.VISIBLE
+        } else {
+            viewBinding.copylight.visibility = View.GONE
+        }
 
         val layoutInflater = LayoutInflater.from(viewBinding.container.context)
 
@@ -37,7 +42,12 @@ class CardItem(
         definition.licenses.forEach { license ->
             val licenseBinding = ListitemLicenseBinding.inflate(layoutInflater, viewBinding.container, true)
 
-            licenseBinding.license.text = HtmlCompat.fromHtml("""- Under <a href="${license.url}">${license.name}</a>""", HtmlCompat.FROM_HTML_MODE_COMPACT)
+            if (license.url != null) {
+                licenseBinding.license.text = HtmlCompat.fromHtml("""- Under <a href="${license.url}">${license.name}</a>""", HtmlCompat.FROM_HTML_MODE_COMPACT)
+            } else {
+                licenseBinding.license.text = HtmlCompat.fromHtml("""- Under ${license.name}""", HtmlCompat.FROM_HTML_MODE_COMPACT)
+            }
+
             licenseBinding.license.movementMethod = LinkMovementMethod.getInstance()
         }
     }

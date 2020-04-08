@@ -59,7 +59,7 @@
         <ul class="licenses">
             <#list artifact.licenses as license>
                 <li class="license">
-                    - Under <a href="${license.url}">${license.name}</a>
+                    - Under <#if license.url??><a href="${license.url}">${license.name}</a><#else>${license.name}</#if>
                 </li>
             </#list>
         </ul>
