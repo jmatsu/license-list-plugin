@@ -369,6 +369,11 @@ Please move them to the directory where you would like to use for the management
 - Only v1.7.0 is tested. Please feel free to open issues if you have any problems.
 - `licenseTools.ignoreProjects` is not supported. Because I couldn't imagine the usecase that we really want to ignore *projects*. The group/artifact ignore feature is enough.
 
+*Points*
+
+- Each line of `.artifactignore` are the same to `skip` in license-tools-plugin
+- `skip` in `artifact-definition.yml` is the same to `forceGenerate`
+
 ### Exclude specific groups/artifacts
 
 You can exclude specific groups and/or artifacts through `.artifactignore` file. `.artifactignore` file is a list of Regexp that matches with `<group>:<name>`.
