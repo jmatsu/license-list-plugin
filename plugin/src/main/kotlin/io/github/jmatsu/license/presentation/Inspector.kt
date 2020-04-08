@@ -61,7 +61,7 @@ interface ArtifactInspector {
     }
 
     fun ArtifactDefinition.hasCopyrightHolders(): Boolean {
-        return copyrightHolders.isNotEmpty() || licenses.any { it.value == LicenseClassifier.PredefinedKey.UNLICENSE }
+        return copyrightHolders?.isNotEmpty() == true || hasActiveLicenses() && licenses.all { it.value == LicenseClassifier.PredefinedKey.UNLICENSE }
     }
 
     fun ArtifactDefinition.hasActiveLicenses(): Boolean {

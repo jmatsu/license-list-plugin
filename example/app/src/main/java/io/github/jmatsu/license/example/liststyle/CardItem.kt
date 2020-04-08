@@ -27,7 +27,12 @@ class CardItem(
             viewBinding.projectUrl.visibility = View.GONE
         }
 
-        viewBinding.copylight.text = "Copyright : ${definition.copyrightHolders.joinToString(", ")}"
+        if (definition.copyrightHolders?.isNotEmpty() == true) {
+            viewBinding.copylight.text = "Copyright : ${definition.copyrightHolders.joinToString(", ")}"
+            viewBinding.copylight.visibility = View.VISIBLE
+        } else {
+            viewBinding.copylight.visibility = View.GONE
+        }
 
         val layoutInflater = LayoutInflater.from(viewBinding.container.context)
 

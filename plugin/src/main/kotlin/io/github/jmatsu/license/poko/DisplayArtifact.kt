@@ -9,7 +9,7 @@ data class DisplayArtifact(
     override val key: String,
     override val displayName: String,
     override val url: String?,
-    override val copyrightHolders: List<String>,
+    override val copyrightHolders: List<String>?,
     override val licenses: List<PlainLicense>,
     @Transient
     override val keep: Boolean = true

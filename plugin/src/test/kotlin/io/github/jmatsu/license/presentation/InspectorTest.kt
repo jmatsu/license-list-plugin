@@ -28,13 +28,19 @@ class InspectorTest {
                         provideLicenseKey(LicenseClassifier.PredefinedKey.UNDETERMINED)
                     )
                 ),
-                provideArtifact(key = "contain_undetermined_license").copy(
+                provideArtifact(key = "success"),
+                provideArtifact(key = "success2").copy(
+                    copyrightHolders = null,
                     licenses = listOf(
-                        provideLicenseKey("any"),
-                        provideLicenseKey(LicenseClassifier.PredefinedKey.UNDETERMINED)
+                        provideLicenseKey(LicenseClassifier.PredefinedKey.UNLICENSE)
                     )
                 ),
-                provideArtifact(key = "success"),
+                provideArtifact(key = "success3").copy(
+                    copyrightHolders = emptyList(),
+                    licenses = listOf(
+                        provideLicenseKey(LicenseClassifier.PredefinedKey.UNLICENSE)
+                    )
+                ),
                 provideArtifact(key = "all_failure").copy(
                     copyrightHolders = emptyList(),
                     licenses = emptyList(),
@@ -66,12 +72,16 @@ class InspectorTest {
             assertEquals(ArtifactInspector.Result.InactiveLicense, first())
         }
 
-        with(results.first { (a, _) -> a.key == "contain_undetermined_license" }.second) {
+        with(results.first { (a, _) -> a.key == "success" }.second) {
             assertEquals(1, size)
-            assertEquals(ArtifactInspector.Result.InactiveLicense, first())
+            assertEquals(ArtifactInspector.Result.Success, first())
         }
 
-        with(results.first { (a, _) -> a.key == "success" }.second) {
+        with(results.first { (a, _) -> a.key == "success2" }.second) {
+            assertEquals(1, size)
+            assertEquals(ArtifactInspector.Result.Success, first())
+        }
+        with(results.first { (a, _) -> a.key == "success3" }.second) {
             assertEquals(1, size)
             assertEquals(ArtifactInspector.Result.Success, first())
         }

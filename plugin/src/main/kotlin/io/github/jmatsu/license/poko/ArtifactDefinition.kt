@@ -16,7 +16,7 @@ data class ArtifactDefinition(
     override val key: String,
     override val displayName: String,
     override val url: String?,
-    override val copyrightHolders: List<String>,
+    override val copyrightHolders: List<String>?,
     override val licenses: List<LicenseKey>,
     override val keep: Boolean = false
 ) : Comparable<ArtifactDefinition>, PokoArtifactDefinition {
@@ -103,7 +103,7 @@ private class OptionalKeep(
     override val key: String,
     override val displayName: String,
     override val url: String?,
-    override val copyrightHolders: List<String>,
+    override val copyrightHolders: List<String>?,
     override val licenses: List<LicenseKey>,
     override val keep: Boolean = false
 ) : PokoArtifactDefinition
@@ -114,7 +114,7 @@ private class WithoutKeep(
     override val key: String,
     override val displayName: String,
     override val url: String?,
-    override val copyrightHolders: List<String>,
+    override val copyrightHolders: List<String>?,
     override val licenses: List<LicenseKey>,
 
     @Transient
@@ -127,7 +127,7 @@ private class Kept(
     override val key: String,
     override val displayName: String,
     override val url: String?,
-    override val copyrightHolders: List<String>,
+    override val copyrightHolders: List<String>?,
     override val licenses: List<LicenseKey>,
     override val keep: Boolean = false
 ) : PokoArtifactDefinition
