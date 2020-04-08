@@ -9,7 +9,7 @@ License List Plugin is a Gradle plugin to manage artifacts' licenses that your A
 
 *This plugin is still under development. Breaking changes may be introduced until 1.0.0.*
 
-For those who have been using `0.3` or lower, version `0.4` has breaking changes. Please read [0.4 breaking changes](#0.4-breaking-changes)
+For those who have been using `0.3` or lower, version `0.4` has breaking changes. Please read [0.4 breaking changes](#04-breaking-changes)
 
 ## Guide
 
@@ -17,9 +17,9 @@ For those who have been using `0.3` or lower, version `0.4` has breaking changes
 2. [Getting Started](#getting-started)
     1. [Installation](#installation)
     2. [About management files and syntax](#about-management-files-and-syntax)
-        1. [artifact-definition.yml](#artifact-definition.yml)
-        2. [license-catalog.yml](#license-catalog.yml)
-        3. [.artifactignore](#.artifactignore)
+        1. [artifact-definition.yml](#artifact-definitionyml)
+        2. [license-catalog.yml](#license-catalogyml)
+        3. [.artifactignore](#artifactignore)
     2. [Manage files](#manage-files)
         1. [The basic management cycle](#the-basic-management-cycle)
         2. [Generate a license viewer or its resource](#genetera-a-license-viewer-or-its-resource)
@@ -39,7 +39,7 @@ For those who have been using `0.3` or lower, version `0.4` has breaking changes
     6. [Render Json output](#render-json)
 6. [Known limitation](#limitations)
 7. [Migration](#migration)
-    1. [since 0.4](#0.4-breaking-changes)
+    1. [since 0.4](#04-breaking-changes)
 8. [LICENSE](#license)
 
 ## Introduction
