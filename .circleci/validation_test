@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+./gradlew clean validateLicenseList --rerun-tasks
+
+if ! [[ -z "$(git diff --name-only -- app)" ]]; then
+    echo "diff has been generated. validate logic must not generate any diff."
+    exit 1
+fi
+
+git checkout -- app

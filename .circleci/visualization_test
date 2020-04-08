@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+./gradlew visualizeLicenseList -PvisualizationFormat=html -PskipInspect=true -PskipValidate=true
+./gradlew visualizeLicenseList -PvisualizationFormat=json -PskipInspect=true -PskipValidate=true

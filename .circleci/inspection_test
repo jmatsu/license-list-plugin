@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+cp -f fixtures/inspection-artifact-definition.yml app/artifact-definition.yml
+cp -f fixtures/inspection-license-catalog.yml app/license-catalog.yml
+
+if ./gradlew inspectLicenseList 1> inspection.warning 2> inspection.result; then
+    echo "inspection must fail"
+    exit 1
+fi
+
+if grep "should_not_visible_in_inspection_result" inspection.result; then
+    echo "should_not_visible_in_inspection_result is in inspection result!"
+    exit 1
+fi
+if grep "should_not_visible_in_inspection_result2" inspection.result; then
+    echo "should_not_visible_in_inspection_result2 is in inspection result!"
+    exit 1
+fi
+if grep "rest_license" inspection.result; then
+    echo "rest_license is in inspection result!"
+    exit 1
+fi
+if ! grep "rest_license" inspection.warning; then
+    echo "rest_license is not in inspection warnings!"
+    exit 1
+fi
+if ! grep "missing_license" inspection.result; then
+    echo "missing_license is not in inspection result!"
+    exit 1
+fi
+
+if grep "has_no_copyright_holders2" inspection.result; then
+    echo "has_no_copyright_holders2 is in inspection result!"
+    exit 1
+fi
+if grep "has_no_copyright_holders" inspection.result; then
+    echo "has_no_copyright_holders is in inspection result!"
+    exit 1
+fi
+if grep "nothing_to_report" inspection.result; then
+    echo "nothing_to_report is in inspection result!"
+    exit 1
+fi
+if ! grep "should_have_copyright_holders" inspection.result; then
+    echo "should_have_copyright_holders is not in inspection result!"
+    exit 1
+fi
+if ! grep "should_have_url" inspection.result; then
+    echo "should_have_url is not in inspection result!"
+    exit 1
+fi
+if ! grep "should_change_from_undetermined" inspection.result; then
+    echo "should_change_from_undetermined is not in inspection result!"
+    exit 1
+fi
+
+git checkout -- app

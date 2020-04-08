@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+./gradlew clean initLicenseList -Poverwrite=true --rerun-tasks
+
+if ! [[ -z "$(git diff --name-only -- app)" ]]; then
+    echo "diff has been generated. assemble logic might be changed and it would be a breaking change."
+    exit 1
+fi
+
+git checkout -- app
