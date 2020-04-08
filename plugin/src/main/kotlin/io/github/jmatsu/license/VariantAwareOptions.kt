@@ -58,6 +58,10 @@ class VariantAwareOptionsImpl(
         set(value) { baseDir = value }
         get() = baseDir
 
+    override var dataDir: File?
+        set(value) { baseDir = value }
+        get() = baseDir
+
     override var baseDir: File? by optionalDirectoryProperty()
 
     override fun assembly(action: Action<AssemblyOptions>) {
