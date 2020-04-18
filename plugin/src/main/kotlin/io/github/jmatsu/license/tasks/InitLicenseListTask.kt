@@ -6,6 +6,7 @@ import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.presentation.Assembler
+import io.github.jmatsu.license.presentation.Builder
 import io.github.jmatsu.license.presentation.Convention
 import io.github.jmatsu.license.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.license.tasks.internal.TaskException
@@ -44,8 +45,11 @@ abstract class InitLicenseListTask
                 variantScope = args.variantScope,
                 additionalScopes = args.additionalScopes
             )
-            val assembler = Assembler(
+            val builder = Builder(
                 resolvedArtifactMap = scopedResolvedArtifacts
+            )
+            val assembler = Assembler(
+                assembleeData = builder.build()
             )
 
             val artifactsText = assembler.assembleArtifacts(args.assemblyStyle, args.assemblyFormat)
