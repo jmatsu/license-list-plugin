@@ -6,8 +6,10 @@ import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.model.ResolvedArtifact
+import io.github.jmatsu.license.presentation.AssembleeData
 import io.github.jmatsu.license.presentation.Assembler
 import io.github.jmatsu.license.presentation.Disassembler
+import io.github.jmatsu.license.presentation.Merger
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkConstructor
@@ -45,13 +47,14 @@ class ValidateLicenseListTaskTest {
 
     @Test
     fun `verify method calls`() {
-        mockkConstructor(ArtifactIgnoreParser::class, ArtifactManagement::class, Assembler::class, Disassembler::class)
+        mockkConstructor(ArtifactIgnoreParser::class, ArtifactManagement::class, Merger::class, Disassembler::class)
         mockkStatic("kotlin.io.FilesKt__FileReadWriteKt")
 
         val additionalScopes: Set<ResolveScope.Addition> = mockk()
         val variantScope: ResolveScope.Variant = mockk()
         val assemblyFormat: StringFormat = mockk()
         val assemblyStyle: Assembler.Style = mockk()
+        val mergedResult = AssembleeData(scopedArtifacts = emptyMap(), licenses = emptyList())
         val artifactsText = "artifactsText"
         val catalogText = "catalogText"
 
@@ -74,8 +77,8 @@ class ValidateLicenseListTaskTest {
         } returns regex
 
         every {
-            anyConstructed<Assembler>().transformForFlatten()
-        } returns listOf()
+            anyConstructed<Merger>().merge()
+        } returns mergedResult
 
         every {
             anyConstructed<Disassembler>().disassembleArtifacts(any())
@@ -108,7 +111,7 @@ class ValidateLicenseListTaskTest {
             )
             anyConstructed<Disassembler>().disassembleArtifacts(artifactsText)
             anyConstructed<Disassembler>().disassemblePlainLicenses(catalogText)
-            anyConstructed<Assembler>().transformForFlatten()
+            anyConstructed<Merger>().merge()
 
             args.assembledArtifactsFile.readText()
             args.assembledLicenseCatalogFile.readText()

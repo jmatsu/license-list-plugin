@@ -5,8 +5,6 @@ import com.google.common.annotations.VisibleForTesting
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.internal.ArtifactManagement
-import io.github.jmatsu.license.presentation.Assembler
-import io.github.jmatsu.license.presentation.Builder
 import io.github.jmatsu.license.presentation.Diff
 import io.github.jmatsu.license.presentation.Disassembler
 import io.github.jmatsu.license.presentation.Merger

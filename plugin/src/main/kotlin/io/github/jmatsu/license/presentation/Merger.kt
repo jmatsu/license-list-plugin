@@ -31,14 +31,18 @@ class Merger(
     }
 
     fun merge(): AssembleeData {
-        val scopedArtifactKeys: Map<ResolveScope, List<String>> = scopedArtifacts.mapValues { (_, artifacts) -> artifacts.map { it.key } }
+        val scopeNamedArtifactKeys: Map<String, List<String>> = scopedArtifacts.mapValues { (_, artifacts) -> artifacts.map { it.key } }.mapKeys { (scope, _) -> scope.name }
+        val scopeNames = (scopeNamedArtifactKeys.keys + scopedBaseArtifacts.keys.map { it.name }).distinct()
 
-        val mergedScopedArtifacts = scopedArtifactKeys
-            .map { (scope, keys) ->
-                val newScope = Scope(scope.name)
+        val mergedScopedArtifacts = scopeNames
+            .map { name ->
+                val newScope = Scope(name)
+                val existingKeys = scopeNamedArtifactKeys[name].orEmpty()
 
-                newScope to willBeUsedArtifacts.filter { it.key in keys } +
-                    scopedBaseArtifacts[Scope(scope.name)].orEmpty().filter { it.key in artifactDiff.keepKeys }
+                newScope to willBeUsedArtifacts.filter { it.key in existingKeys } +
+                    scopedBaseArtifacts[newScope].orEmpty().filter { it.key in artifactDiff.keepKeys }
+            }.filter { (_, artifacts) ->
+                artifacts.isNotEmpty()
             }.toMap()
 
         val licensesKeysToBeUsed = willBeUsedArtifacts.flatMap { it.licenses.map { it.value } }
@@ -49,7 +53,6 @@ class Merger(
             licenses = mergedLicenses
         )
     }
-
 }
 
 interface MergeStrategy {
