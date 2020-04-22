@@ -2,56 +2,24 @@
 
 set -euo pipefail
 
-if diff fixtures/changed-and-removed-artifact-definition.yml fixtures/artifact-definition.yml >/dev/null 2>&1; then
-    echo "changed-and-removed-artifact-definition.yml must be modified to test"
-    exit 1
-fi
+run() {
+  local -r category="$1"
 
-if diff fixtures/changed-and-removed-license-catalog.yml fixtures/license-catalog.yml >/dev/null 2>&1; then
-    echo "changed-and-removed-license-catalog.yml must be modified to test"
-    exit 1
-fi
+  cp -f fixtures/$category/{artifact-definition.yml,license-catalog.yml,.artifactignore} app/license-list/
 
-# Create a patch to see how manual modification happens on fixtures/artifact-definition.yml
-if diff -u fixtures/changed-artifact-definition.yml fixtures/changed-and-removed-artifact-definition.yml > fixtures/artifact-definition.patch; then
-    echo "diff could not be generated : artifact-definition"
-    exit 1
-fi
-# Create a patch to see how manual modification happens on fixtures/license-catalog.yml
-if diff -u fixtures/changed-license-catalog.yml fixtures/changed-and-removed-license-catalog.yml > fixtures/license-catalog.patch; then
-    echo "diff could not be generated : license-catalog"
-    exit 1
-fi
+  ./gradlew clean mergeLicenseList --rerun-tasks
 
-cp -f fixtures/changed-and-removed-artifact-definition.yml app/license-list/artifact-definition.yml
-cp -f fixtures/changed-and-removed-license-catalog.yml app/license-list/license-catalog.yml
+  if ! diff app/license-list/artifact-definition.yml fixtures/$category/expected-artifact-definition.yml; then
+      echo "diff is available in fixtures/$category/artifact-definition."
+      exit 1
+  fi
 
-./gradlew clean mergeLicenseList --rerun-tasks
+  if ! diff app/license-list/license-catalog.yml fixtures/$category/expected-license-catalog.yml; then
+      echo "diff is available in fixtures/$category/license-catalog."
+      exit 1
+  fi
+}
 
-# As for artifact-definition.yml, removed artifacts should be reverted so diff must be generated
-if diff app/license-list/artifact-definition.yml fixtures/changed-and-removed-artifact-definition.yml; then
-    echo "No diff is available in artifact-definition. merge process should revert changes so diff is expected."
-    exit 1
-fi
-# As for license-catalog.yml, removed licenses should be reverted so diff must be generated
-if diff app/license-list/license-catalog.yml fixtures/changed-and-removed-license-catalog.yml; then
-    echo "No diff is available in license-catalog. merge process should revert changes so diff is expected."
-    exit 1
-fi
-
-# Generated diff should be same to the merge result above
-patch -fu app/license-list/artifact-definition.yml < fixtures/artifact-definition.patch
-patch -fu app/license-list/license-catalog.yml < fixtures/license-catalog.patch
-
-# Should be reverted to fixtures/changed-and-removed-artifact-definition.yml
-if ! diff fixtures/changed-and-removed-artifact-definition.yml app/license-list/artifact-definition.yml; then
-    echo "diff hapenned. no diff is expected : artifact-definition"
-    exit 1
-fi
-# Should be reverted to fixtures/changed-and-removed-license-catalog.yml
-if ! diff fixtures/changed-and-removed-license-catalog.yml app/license-list/license-catalog.yml; then
-    echo "diff hapenned. no diff is expected : license-catalog"
-    exit 1
-fi
+run "merge"
 
 git checkout -- app

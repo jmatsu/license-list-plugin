@@ -45,8 +45,8 @@ class Merger(
                 artifacts.isNotEmpty()
             }.toMap()
 
-        val licensesKeysToBeUsed = willBeUsedArtifacts.flatMap { it.licenses.map { it.value } }
-        val mergedLicenses = baseLicenses.filter { it.key.value in licensesKeysToBeUsed }.reverseMerge(licenseCapture) { it.key }
+        val licensesKeysToBeUsed = mergedScopedArtifacts.flatMap { (_, artifacts) -> artifacts.flatMap { it.licenses.map { it.value } } }
+        val mergedLicenses = baseLicenses.reverseMerge(licenseCapture) { it.key }.filter { it.key.value in licensesKeysToBeUsed }
 
         return AssembleeData(
             scopedArtifacts = mergedScopedArtifacts,
@@ -57,7 +57,7 @@ class Merger(
 
 interface MergeStrategy {
 
-    fun <T, R> List<T>.reverseMerge(definitions: Set<T>, keyExtractor: (T) -> R): List<T> {
+    fun <T, R> Collection<T>.reverseMerge(definitions: Set<T>, keyExtractor: (T) -> R): List<T> {
         val keysToPreserve = map(keyExtractor)
 
         return toList() + definitions.filterNot { keyExtractor(it) in keysToPreserve }

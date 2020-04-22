@@ -1,0 +1,136 @@
+yellowBlueRelease:
+  com.googlecode.juniversalchardet:
+    - key: juniversalchardet
+      displayName: Modified - juniversalchardet
+      url: http://example.com
+      copyrightHolders:
+        - dummy copyrighter
+      licenses:
+        - Mozilla Public License 1.1 (MPL 1.1)@39
+  com.squareup:
+    - key: javapoet
+      displayName: JavaPoet
+      url: http://github.com/square/javapoet/
+      copyrightHolders: []
+      licenses:
+        - apache-2.0
+    - key: kotlinpoet
+      displayName: KotlinPoet
+      url: https://github.com/square/kotlinpoet
+      copyrightHolders:
+        - Square, Inc.
+      licenses:
+        - apache-2.0
+  com.squareup.moshi:
+    - key: moshi
+      displayName: Moshi
+      url: null
+      copyrightHolders: []
+      licenses: []
+    - key: moshi-kotlin-codegen
+      displayName: moshi-kotlin-codegen
+      url: null
+      copyrightHolders: []
+      licenses: []
+  com.squareup.okio:
+    - key: okio
+      displayName: Okio
+      url: null
+      copyrightHolders: []
+      licenses: []
+  com.xwray:
+    - key: groupie
+      displayName: Groupie
+      url: https://github.com/xwray/groupie
+      copyrightHolders:
+        - Lisa Wray
+      licenses:
+        - mit
+    - key: groupie-databinding
+      displayName: Groupie
+      url: https://github.com/xwray/groupie
+      copyrightHolders:
+        - Lisa Wray
+      licenses:
+        - mit
+  io.github.jmatsu:
+    - key: license-list-schema
+      displayName: Schema of License List Gradle Plugin
+      url: https://github.com/jmatsu/license-list-plugin
+      copyrightHolders:
+        - Jumpei Matsuda
+      licenses:
+        - mit
+    - key: license-list-schema2
+      displayName: Schema of License List Gradle Plugin
+      url: https://github.com/jmatsu/license-list-plugin
+      copyrightHolders:
+        - Jumpei Matsuda
+      licenses:
+        - new-dummy-license
+      keep: true
+  org.antlr:
+    - key: antlr4
+      displayName: ANTLR 4 Tool
+      url: null
+      copyrightHolders: []
+      licenses: []
+  org.checkerframework:
+    - key: checker-qual
+      displayName: Checker Qual
+      url: https://checkerframework.org
+      copyrightHolders:
+        - Michael Ernst
+        - Werner M. Dietl
+        - Suzanne Millstein
+      licenses:
+        - mit
+  org.codehaus.mojo:
+    - key: animal-sniffer-annotations
+      displayName: Animal Sniffer Annotations
+      url: null
+      copyrightHolders: []
+      licenses: []
+  org.jetbrains:
+    - key: annotations
+      displayName: IntelliJ IDEA Annotations
+      url: http://www.jetbrains.org
+      copyrightHolders:
+        - JetBrains Team
+      licenses:
+        - apache-2.0
+test:
+  org.hamcrest:
+    - key: hamcrest-core
+      displayName: Hamcrest Core
+      url: null
+      copyrightHolders: []
+      licenses: []
+androidTest:
+  com.squareup:
+    - key: javawriter
+      displayName: JavaWriter
+      url: http://github.com/square/javawriter/
+      copyrightHolders: []
+      licenses:
+        - apache-2.0
+  net.sf.kxml:
+    - key: kxml2
+      displayName: kXML 2 is a small XML pull parser based on the common XML pull
+        API
+      url: http://kxml.sourceforge.net/
+      copyrightHolders: []
+      licenses:
+        - BSD style@73
+        - Public Domain@48
+  org.hamcrest:
+    - key: hamcrest-integration
+      displayName: Hamcrest Integration
+      url: null
+      copyrightHolders: []
+      licenses: []
+    - key: hamcrest-library
+      displayName: Hamcrest library
+      url: null
+      copyrightHolders: []
+      licenses: []

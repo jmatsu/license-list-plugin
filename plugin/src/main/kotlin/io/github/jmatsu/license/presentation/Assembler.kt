@@ -39,7 +39,7 @@ class Assembler(
     }
 
     fun assemblePlainLicenses(format: StringFormat): String {
-        val licenses = assembleeData.licenses
+        val licenses = assembleeData.licenses.sortedBy { it.key.value }
 
         licenses.forEach {
             LicenseListPlugin.logger?.info(it.key.toString())
