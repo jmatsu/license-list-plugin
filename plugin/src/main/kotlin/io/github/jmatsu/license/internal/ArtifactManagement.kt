@@ -57,7 +57,7 @@ import org.gradle.maven.MavenPomArtifact
 class ArtifactManagement(
     private val project: Project,
     private val configurationNames: Set<String>,
-    private val exclusionRegex: Regex? = null
+    private val exclusionPredicate: IgnorePredicate?
 ) {
     companion object {
         /**
@@ -223,9 +223,9 @@ class ArtifactManagement(
         return lenientConfiguration()?.run {
             artifacts.filter { it.type == "aar" || it.type == "jar" }
                 .let {
-                    if (exclusionRegex != null) {
+                    if (exclusionPredicate != null) {
                         it.filterNot { artifact ->
-                            exclusionRegex.matches("${artifact.moduleVersion.id.group}:${artifact.moduleVersion.id.name}")
+                            exclusionPredicate.invoke(artifact.moduleVersion.id.group, artifact.moduleVersion.id.name)
                         }
                     } else {
                         it

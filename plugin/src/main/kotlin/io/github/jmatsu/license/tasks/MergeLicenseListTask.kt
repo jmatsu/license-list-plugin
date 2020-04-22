@@ -31,7 +31,7 @@ abstract class MergeLicenseListTask
             val artifactManagement = ArtifactManagement(
                 project = project,
                 configurationNames = args.configurationNames,
-                exclusionRegex = artifactIgnoreParser.parse()
+                exclusionPredicate = artifactIgnoreParser.buildPredicate(args.ignoreFormat)
             )
             val scopedResolvedArtifacts = artifactManagement.analyze(
                 variantScope = args.variantScope,

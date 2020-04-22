@@ -7,9 +7,12 @@ import io.github.jmatsu.license.VariantAwareOptions
 import io.github.jmatsu.license.VariantAwareOptionsImpl
 import io.github.jmatsu.license.VisualizationOptionsImpl
 import io.github.jmatsu.license.dsl.FlattenStyle
+import io.github.jmatsu.license.dsl.GlobIgnore
 import io.github.jmatsu.license.dsl.JsonFormat
+import io.github.jmatsu.license.dsl.RegexIgnore
 import io.github.jmatsu.license.dsl.StructuredStyle
 import io.github.jmatsu.license.dsl.YamlFormat
+import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.presentation.Assembler
 import io.github.jmatsu.license.presentation.Convention
@@ -84,4 +87,12 @@ abstract class ReadWriteLicenseTaskArgs(
 
     val ignoreFile: File
         get() = File(assembleOutputDir, ".artifactignore")
+
+    val ignoreFormat: ArtifactIgnoreParser.Format by lazy {
+        when (extension.ignoreFormat) {
+            RegexIgnore -> ArtifactIgnoreParser.Format.Regex
+            GlobIgnore -> ArtifactIgnoreParser.Format.Glob
+            else -> throw IllegalArgumentException("Only one of $RegexIgnore or $GlobIgnore are allowed.")
+        }
+    }
 }

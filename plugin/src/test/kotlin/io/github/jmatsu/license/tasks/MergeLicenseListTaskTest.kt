@@ -4,6 +4,7 @@ import com.android.build.gradle.api.ApplicationVariant
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.internal.ArtifactManagement
+import io.github.jmatsu.license.internal.IgnorePredicate
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.model.ResolvedArtifact
 import io.github.jmatsu.license.presentation.AssembleeData
@@ -74,7 +75,8 @@ class MergeLicenseListTaskTest {
             every { ignoreFile } returns mockk()
         }
 
-        val regex: Regex = mockk()
+        val ignoreFormat: ArtifactIgnoreParser.Format = ArtifactIgnoreParser.Format.Regex
+        val ignorePredicate: IgnorePredicate = { _, _ -> false }
         val analyzedResult: SortedMap<ResolveScope, List<ResolvedArtifact>> = emptyMap<ResolveScope, List<ResolvedArtifact>>()
             .toSortedMap(kotlin.Comparator { t, t2 -> t.hashCode().compareTo(t2.hashCode()) })
         val mergedResult = AssembleeData(scopedArtifacts = emptyMap(), licenses = emptyList())
@@ -82,8 +84,8 @@ class MergeLicenseListTaskTest {
         val assembledLicenses = "assembledLicenses"
 
         every {
-            anyConstructed<ArtifactIgnoreParser>().parse()
-        } returns regex
+            anyConstructed<ArtifactIgnoreParser>().buildPredicate(ignoreFormat)
+        } returns ignorePredicate
 
         every {
             anyConstructed<Disassembler>().disassembleArtifacts(any())
@@ -116,6 +118,7 @@ class MergeLicenseListTaskTest {
             )
         } returns assembledLicenses
 
+        every { args.ignoreFormat } returns ignoreFormat
         every { args.assembledArtifactsFile.readText() } returns artifactsText
         every { args.assembledLicenseCatalogFile.readText() } returns catalogText
 
@@ -128,7 +131,7 @@ class MergeLicenseListTaskTest {
         )
 
         verify {
-            anyConstructed<ArtifactIgnoreParser>().parse()
+            anyConstructed<ArtifactIgnoreParser>().buildPredicate(ignoreFormat)
             anyConstructed<ArtifactManagement>().analyze(
                 additionalScopes = additionalScopes,
                 variantScope = variantScope
