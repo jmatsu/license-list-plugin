@@ -9,4 +9,19 @@ if ! [[ -z "$(git diff --name-only -- app)" ]]; then
     exit 1
 fi
 
+cp -f fixtures/validate-artifact-definition.yml app/license-list/artifact-definition.yml
+cp -f fixtures/validate-license-catalog.yml app/license-list/license-catalog.yml
+
+if ! ./gradlew clean validateLicenseList --rerun-tasks; then
+    echo "validateLicenseList should have not failed"
+    exit 1
+fi
+
+cp -f fixtures/validate-missing-artifact-definition.yml app/license-list/artifact-definition.yml
+
+if ./gradlew clean validateLicenseList --rerun-tasks; then
+    echo "validateLicenseList should have failed but suceeded"
+    exit 1
+fi
+
 git checkout -- app
