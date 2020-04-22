@@ -6,10 +6,11 @@ import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.model.ResolvedArtifact
+import io.github.jmatsu.license.presentation.AssembleeData
 import io.github.jmatsu.license.presentation.Assembler
 import io.github.jmatsu.license.presentation.Convention
 import io.github.jmatsu.license.presentation.Disassembler
-import io.github.jmatsu.license.presentation.MergeableAssembler
+import io.github.jmatsu.license.presentation.Merger
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -49,7 +50,7 @@ class MergeLicenseListTaskTest {
 
     @Test
     fun `verify method calls`() {
-        mockkConstructor(ArtifactIgnoreParser::class, ArtifactManagement::class, MergeableAssembler::class, Disassembler::class)
+        mockkConstructor(ArtifactIgnoreParser::class, ArtifactManagement::class, Merger::class, Assembler::class, Disassembler::class)
         mockkStatic("kotlin.io.FilesKt__FileReadWriteKt")
 
         val additionalScopes: Set<ResolveScope.Addition> = mockk()
@@ -76,6 +77,7 @@ class MergeLicenseListTaskTest {
         val regex: Regex = mockk()
         val analyzedResult: SortedMap<ResolveScope, List<ResolvedArtifact>> = emptyMap<ResolveScope, List<ResolvedArtifact>>()
             .toSortedMap(kotlin.Comparator { t, t2 -> t.hashCode().compareTo(t2.hashCode()) })
+        val mergedResult = AssembleeData(scopedArtifacts = emptyMap(), licenses = emptyList())
         val assembledArtifacts = "assembledArtifacts"
         val assembledLicenses = "assembledLicenses"
 
@@ -98,14 +100,18 @@ class MergeLicenseListTaskTest {
         } returns analyzedResult
 
         every {
-            anyConstructed<MergeableAssembler>().assembleArtifacts(
+            anyConstructed<Merger>().merge()
+        } returns mergedResult
+
+        every {
+            anyConstructed<Assembler>().assembleArtifacts(
                 format = any(),
                 style = any()
             )
         } returns assembledArtifacts
 
         every {
-            anyConstructed<MergeableAssembler>().assemblePlainLicenses(
+            anyConstructed<Assembler>().assemblePlainLicenses(
                 format = any()
             )
         } returns assembledLicenses
@@ -129,11 +135,12 @@ class MergeLicenseListTaskTest {
             )
             anyConstructed<Disassembler>().disassembleArtifacts(artifactsText)
             anyConstructed<Disassembler>().disassemblePlainLicenses(catalogText)
-            anyConstructed<MergeableAssembler>().assembleArtifacts(
+            anyConstructed<Merger>().merge()
+            anyConstructed<Assembler>().assembleArtifacts(
                 format = assemblyFormat,
                 style = assemblyStyle
             )
-            anyConstructed<MergeableAssembler>().assemblePlainLicenses(
+            anyConstructed<Assembler>().assemblePlainLicenses(
                 format = Convention.Yaml.Assembly
             )
 

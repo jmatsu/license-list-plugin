@@ -1,0 +1,21 @@
+  - key: BSD style@73
+    name: BSD style
+    url: http://kxml.cvs.sourceforge.net/viewvc/kxml/kxml2/license.txt?view=markup
+  - key: Mozilla Public License 1.1 (MPL 1.1)@39
+    name: Mozilla Public License 1.1 (MPL 1.1)
+    url: http://www.mozilla.org/MPL/MPL-1.1.html
+  - key: Public Domain@48
+    name: Public Domain
+    url: http://creativecommons.org/licenses/publicdomain
+  - key: apache-2.0
+    name: Apache License 2.0
+    url: https://github.com/jmatsu/license-list-plugin/blob/master/license-files/apache-2.0.txt
+  - key: epl-1.0
+    name: Eclipse Public License 1.0
+    url: https://opensource.org/licenses/EPL-1.0
+  - key: mit
+    name: MIT License
+    url: https://github.com/jmatsu/license-list-plugin/blob/master/license-files/mit.txt
+  - key: new-dummy-license
+    name: Dummy License
+    url: http://example.com

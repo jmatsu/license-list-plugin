@@ -5,9 +5,9 @@ import com.google.common.annotations.VisibleForTesting
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.internal.ArtifactManagement
-import io.github.jmatsu.license.presentation.Assembler
 import io.github.jmatsu.license.presentation.Diff
 import io.github.jmatsu.license.presentation.Disassembler
+import io.github.jmatsu.license.presentation.Merger
 import io.github.jmatsu.license.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.license.tasks.internal.TaskException
 import io.github.jmatsu.license.tasks.internal.VariantAwareTask
@@ -48,10 +48,6 @@ abstract class ValidateLicenseListTask
                 variantScope = args.variantScope,
                 additionalScopes = args.additionalScopes
             )
-
-            val assembler = Assembler(
-                resolvedArtifactMap = scopedResolvedArtifacts
-            )
             val disassembler = Disassembler(
                 style = args.assemblyStyle,
                 format = args.assemblyFormat
@@ -60,13 +56,24 @@ abstract class ValidateLicenseListTask
             val artifactsText = args.assembledArtifactsFile.readText()
             val catalogText = args.assembledLicenseCatalogFile.readText()
 
-            val currentArtifacts = assembler.transformForFlatten()
-            val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).flatMap { (_, xs) -> xs }
+            val scopedBaseArtifacts = disassembler.disassembleArtifacts(artifactsText)
+            val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
+
+            val merger = Merger(
+                scopedResolvedArtifacts = scopedResolvedArtifacts,
+                scopedBaseArtifacts = scopedBaseArtifacts,
+                baseLicenses = recordedLicenses
+            )
+
+            val currentData = merger.merge()
+
+            val recordedArtifacts = disassembler.disassembleArtifacts(artifactsText).values.flatten()
+            val currentArtifacts = currentData.scopedArtifacts.values.flatten()
 
             val artifactDiff = Diff.calculateForArtifact(recordedArtifacts, newer = currentArtifacts)
 
             val currentLicenseKeys = currentArtifacts.flatMap { it.licenses }
-            val recordedLicenseKeys = disassembler.disassemblePlainLicenses(catalogText).map { it.key }
+            val recordedLicenseKeys = currentData.licenses.map { it.key }
 
             val licenseKeyDiff = Diff.calculateForLicense(recordedLicenseKeys, newer = currentLicenseKeys)
 

@@ -6,7 +6,9 @@ import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.internal.ArtifactManagement
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.model.ResolvedArtifact
+import io.github.jmatsu.license.presentation.AssembleeData
 import io.github.jmatsu.license.presentation.Assembler
+import io.github.jmatsu.license.presentation.Builder
 import io.github.jmatsu.license.presentation.Convention
 import io.mockk.Runs
 import io.mockk.every
@@ -47,7 +49,7 @@ class InitLicenseListTaskTest {
 
     @Test
     fun `verify method calls`() {
-        mockkConstructor(ArtifactIgnoreParser::class, ArtifactManagement::class, Assembler::class)
+        mockkConstructor(ArtifactIgnoreParser::class, ArtifactManagement::class, Builder::class, Assembler::class)
         mockkStatic("kotlin.io.FilesKt__FileReadWriteKt")
 
         val additionalScopes: Set<ResolveScope.Addition> = mockk()
@@ -71,6 +73,7 @@ class InitLicenseListTaskTest {
 
         val regex: Regex = mockk()
         val analyzedResult: SortedMap<ResolveScope, List<ResolvedArtifact>> = mockk()
+        val buildResult = AssembleeData(scopedArtifacts = emptyMap(), licenses = emptyList())
         val assembledArtifacts = "assembledArtifacts"
         val assembledLicenses = "assembledLicenses"
 
@@ -93,6 +96,10 @@ class InitLicenseListTaskTest {
         } returns assembledArtifacts
 
         every {
+            anyConstructed<Builder>().build()
+        } returns buildResult
+
+        every {
             anyConstructed<Assembler>().assemblePlainLicenses(
                 format = any()
             )
@@ -112,6 +119,7 @@ class InitLicenseListTaskTest {
                 additionalScopes = additionalScopes,
                 variantScope = variantScope
             )
+            anyConstructed<Builder>().build()
             anyConstructed<Assembler>().assembleArtifacts(
                 format = assemblyFormat,
                 style = assemblyStyle

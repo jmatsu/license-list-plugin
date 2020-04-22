@@ -5,9 +5,10 @@ import com.google.common.annotations.VisibleForTesting
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.internal.ArtifactManagement
+import io.github.jmatsu.license.presentation.Assembler
 import io.github.jmatsu.license.presentation.Convention
 import io.github.jmatsu.license.presentation.Disassembler
-import io.github.jmatsu.license.presentation.MergeableAssembler
+import io.github.jmatsu.license.presentation.Merger
 import io.github.jmatsu.license.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.license.tasks.internal.VariantAwareTask
 import javax.inject.Inject
@@ -47,10 +48,14 @@ abstract class MergeLicenseListTask
             val scopedBaseArtifacts = disassembler.disassembleArtifacts(artifactsText)
             val recordedLicenses = disassembler.disassemblePlainLicenses(catalogText).toSet()
 
-            val assembler = MergeableAssembler(
+            val merger = Merger(
                 scopedResolvedArtifacts = scopedResolvedArtifacts,
                 scopedBaseArtifacts = scopedBaseArtifacts,
                 baseLicenses = recordedLicenses
+            )
+
+            val assembler = Assembler(
+                assembleeData = merger.merge()
             )
 
             val newArtifactsText = assembler.assembleArtifacts(
