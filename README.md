@@ -193,11 +193,24 @@ This file contains licenses that artifacts have references. This plugin infers l
 
 #### .artifactignore
 
-This file is to find artifact that should be ignored from the management. Each lines are regular expressions that matches with `<group>:<name>`.
+This file is to find artifact that should be ignored from the management. Each lines must consist of regular expressions or glob patterns that matches with `<group>:<name>`. If you'd like to use `glob` pattern, you need to configure this plugin through the extension. ref: [Extension](#extension)
+
+**Regular expression samples**
 
 ```
 com\.example:sample-artifact
-io\.github\.jmatsu.internal:.*
+io\.github\.jmatsu\.internal:.*
+io\.github\.jmatsu\..*
+```
+
+**Glob pattern samples**
+
+*: is a path separator instead of /* 
+
+```
+com.example:sample-artifact
+io.github.jmatsu.internal:*
+io.github.jmatsu.**
 ```
 
 ### Manage files

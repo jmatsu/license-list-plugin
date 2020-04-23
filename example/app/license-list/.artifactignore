@@ -1,3 +1,4 @@
+# This file uses regular expressions!
 # any statements that contain '#' will be recognized as comments
 
 # empty lines are also allowed (will be ignored)
@@ -10,5 +11,5 @@ com\.android\.support\.test:runner
 # the following can ignore groups
 androidx\.appcompat:.*
 
-# the following is not separated by spaces but it contains '#' so this plugin ignore the line
+# the following is not separated by spaces but it contains '#' so this plugin ignore it
 this_is_also_a_comment#but_future_changes_may_break_so_do_not_use_commnets_with_this_style
