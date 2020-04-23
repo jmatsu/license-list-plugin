@@ -38,8 +38,12 @@ jobs:
         with:
           name: schema-jar
           path: schema/build/libs
+
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+      strategy:
+        matrix:
+          os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v2
