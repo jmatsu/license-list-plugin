@@ -1,3 +1,13 @@
+## Version 0.5.0 (2020/04/24)
+
+**New features** :tada:
+
+- `glob` pattern is available to ignore artifacts. [#34](https://github.com/jmatsu/license-list-plugin/pull/34)
+
+**Bug fixes**
+
+- `validation` task didn't look up `keep` attributes [#33](https://github.com/jmatsu/license-list-plugin/pull/33)
+
 ## Version 0.4.1 (2020/04/08)
 
 **Deprecation** :bow:

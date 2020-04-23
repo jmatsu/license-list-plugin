@@ -193,11 +193,24 @@ This file contains licenses that artifacts have references. This plugin infers l
 
 #### .artifactignore
 
-This file is to find artifact that should be ignored from the management. Each lines are regular expressions that matches with `<group>:<name>`.
+This file is to find artifact that should be ignored from the management. Each lines must consist of regular expressions or glob patterns that matches with `<group>:<name>`. If you'd like to use `glob` pattern, you need to configure this plugin through the extension. ref: [Extension](#extension)
+
+**Regular expression samples**
 
 ```
 com\.example:sample-artifact
-io\.github\.jmatsu.internal:.*
+io\.github\.jmatsu\.internal:.*
+io\.github\.jmatsu\..*
+```
+
+**Glob pattern samples**
+
+*: is a path separator instead of /* 
+
+```
+com.example:sample-artifact
+io.github.jmatsu.internal:*
+io.github.jmatsu.**
 ```
 
 ### Manage files
@@ -277,13 +290,19 @@ Tips: [example](./example) renders its licenses based on the both of json and ht
 
 ```kotlin
 licenseList {
+    // Control availability of this plugin('s tasks). true by default.
+    isEnabled = <true|false>
+
     // Make initLicenseList an alias of `initFreeReleaseLicenseList`
     defaultTarget = "<variant name like freeRelease>"
+    
+    // The filter pattern used for ignore feature. regex is default.
+    ignoreFormat = "<regex|glob>"
 
     variants {
         // you can declare the configuration for each variants
         create("freeRelease") {
-            // A directory that contains artifact-definitions.yml, license-catalog.yml and .artifactignore
+            // A directory that contains artifact-definition.yml, license-catalog.yml and .artifactignore
             baseDir = file("license-list")
 
             // options for the management file
