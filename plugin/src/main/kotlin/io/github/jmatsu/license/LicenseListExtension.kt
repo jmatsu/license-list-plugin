@@ -1,5 +1,7 @@
 package io.github.jmatsu.license
 
+import io.github.jmatsu.license.dsl.IgnoreFormat
+import io.github.jmatsu.license.dsl.RegexIgnore
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.tasks.Input
@@ -30,4 +32,11 @@ open class LicenseListExtension(
      */
     @get:Input
     var defaultVariant: String = "release"
+
+    /**
+     * A text format of each statement of .artifactignore
+     * regex (regular expression) is by default.
+     */
+    @get:Input
+    var ignoreFormat: IgnoreFormat = RegexIgnore
 }
