@@ -62,6 +62,10 @@ configurations.getByName("implementation").extendsFrom(sampleConfiguration)
 val orphanConfiguration = configurations.create("orphan")
 
 dependencies {
+    implementation(fileTree(project.file("lib")) {
+        include("*.jar")
+    })
+
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.71")
     implementation("androidx.core:core-ktx:1.3.0-alpha02")
     implementation("androidx.appcompat:appcompat:1.2.0-alpha03")

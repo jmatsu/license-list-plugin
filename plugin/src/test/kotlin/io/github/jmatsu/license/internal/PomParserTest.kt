@@ -1,5 +1,6 @@
 package io.github.jmatsu.license.internal
 
+import io.github.jmatsu.license.model.LicenseSeed
 import java.io.File
 import java.util.stream.Stream
 import kotlin.test.expect
@@ -19,7 +20,7 @@ class PomParserTest {
                     "https://github.com/jmatsu",
                     listOf("jmatsu"),
                     listOf(
-                        PomParser.License(
+                        LicenseSeed(
                             name = "The Apache Software License, Version 2.0",
                             url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
                         )
@@ -32,11 +33,11 @@ class PomParserTest {
                     "https://github.com/jmatsu/license-list-plugin.git",
                     listOf("jmatsu1", "jmatsu2", "jmatsu3"),
                     listOf(
-                        PomParser.License(
+                        LicenseSeed(
                             name = "license1",
                             url = "url1"
                         ),
-                        PomParser.License(
+                        LicenseSeed(
                             name = "license2",
                             url = "url2"
                         )
@@ -57,7 +58,7 @@ class PomParserTest {
                     null,
                     emptyList<String>(),
                     listOf(
-                        PomParser.License(
+                        LicenseSeed(
                             name = null,
                             url = null
                         )
@@ -75,7 +76,7 @@ class PomParserTest {
         displayNameCandidates: List<String>,
         associatedUrl: String?,
         copyrightHolders: List<String>,
-        licenses: List<PomParser.License>
+        licenses: List<LicenseSeed>
     ) {
         var pomFile: File? = null
         try {

@@ -1,7 +1,7 @@
 package io.github.jmatsu.license.presentation
 
 import io.github.jmatsu.license.Factory.provideArtifact
-import io.github.jmatsu.license.internal.PomParser
+import io.github.jmatsu.license.model.LicenseSeed
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.model.ResolvedArtifact
 import io.github.jmatsu.license.model.ResolvedModuleIdentifier
@@ -26,10 +26,10 @@ class MergerTest : MergeStrategy {
                         name = "name1",
                         version = VersionString("+")
                     ),
-                    pomFile = ResolvedPomFile(
+                    metadata = ResolvedPomFile(
                         associatedUrl = "http://example.com",
                         displayNameCandidates = listOf("displayName1"),
-                        licenses = listOf(PomParser.License(name = "licenseKeyNew", url = "http://example.com/length/28")),
+                        licenses = listOf(LicenseSeed(name = "licenseKeyNew", url = "http://example.com/length/28")),
                         copyrightHolders = listOf("copyrightHolder1")
                     )
                 )
@@ -41,10 +41,10 @@ class MergerTest : MergeStrategy {
                         name = "name4",
                         version = VersionString("+")
                     ),
-                    pomFile = ResolvedPomFile(
+                    metadata = ResolvedPomFile(
                         associatedUrl = "http://example.com",
                         displayNameCandidates = listOf("displayName1"),
-                        licenses = listOf(PomParser.License(name = "Apache License 2.0", url = "http://example.com")),
+                        licenses = listOf(LicenseSeed(name = "Apache License 2.0", url = "http://example.com")),
                         copyrightHolders = listOf("copyrightHolder1")
                     )
                 )

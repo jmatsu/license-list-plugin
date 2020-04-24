@@ -1,53 +1,24 @@
 package io.github.jmatsu.license.internal
 
+import io.github.jmatsu.license.LicenseListPlugin
 import io.github.jmatsu.license.ext.collectToMap
 import io.github.jmatsu.license.ext.lenientConfiguration
+import io.github.jmatsu.license.model.LicenseSeed
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.model.ResolvedArtifact
+import io.github.jmatsu.license.model.ResolvedLocalFileMetadata
 import io.github.jmatsu.license.model.ResolvedModuleIdentifier
 import io.github.jmatsu.license.model.VersionString
+import io.github.jmatsu.license.model.localGroup
+import java.io.File
 import java.util.SortedMap
-import kotlin.Comparator
-import kotlin.Pair
-import kotlin.String
-import kotlin.also
-import kotlin.arrayOf
-import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.Set
-import kotlin.collections.asSequence
+import java.util.zip.ZipFile
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.component3
-import kotlin.collections.contains
-import kotlin.collections.distinctBy
-import kotlin.collections.filter
-import kotlin.collections.filterNot
-import kotlin.collections.flatMap
-import kotlin.collections.getValue
-import kotlin.collections.groupBy
-import kotlin.collections.listOf
-import kotlin.collections.map
-import kotlin.collections.mapKeys
-import kotlin.collections.mapNotNull
-import kotlin.collections.mapValues
-import kotlin.collections.max
-import kotlin.collections.orEmpty
-import kotlin.collections.plus
-import kotlin.collections.plusAssign
-import kotlin.collections.reduce
-import kotlin.collections.setOf
-import kotlin.collections.toMap
-import kotlin.collections.toSet
-import kotlin.collections.toSortedMap
-import kotlin.let
-import kotlin.requireNotNull
-import kotlin.run
-import kotlin.takeIf
-import kotlin.to
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.SelfResolvingDependency
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.kotlin.dsl.withArtifacts
@@ -94,8 +65,22 @@ class ArtifactManagement(
 
         val components: MutableList<ComponentIdentifier> = ArrayList()
 
-        val scopedModules = scopedConfigurations.mapValues { (_, configurations) ->
+        val localFileMap: MutableMap<ResolveScope, List<File>> = hashMapOf()
+
+        val scopedModules = scopedConfigurations.mapValues { (scope, configurations) ->
             configurations.flatMap { configuration ->
+                runCatching {
+                    localFileMap.putIfAbsent(scope, emptyList())
+                    localFileMap[scope] = localFileMap.getValue(scope) + configuration.allDependencies
+                        .filterIsInstance<SelfResolvingDependency>()
+                        .flatMap {
+                            it.resolve()
+                        }
+                        .filter { it.name.endsWith(".jar") || it.name.endsWith(".aar") }
+                }.onFailure {
+                    LicenseListPlugin.logger?.error("could not resolve local files in ${scope.name}", it)
+                }
+
                 val newResolvedIdentifiers = configuration.toResolvedModuleIdentifiers().filterNot { id ->
                     id.id?.componentIdentifier in components
                 }
@@ -116,7 +101,41 @@ class ArtifactManagement(
 
         val allScopes = listOf(variantScope) + additionalScopes
 
-        return resolveResults.resolvedComponents.flatMap { result ->
+        val scopedLocalFiles = localFileMap.values.flatten().distinct().groupBy { file ->
+            localFileMap.asIterable().first { (_, files) -> file in files }.key
+        }.flatMap { (key, files) ->
+            files.map { file ->
+                val id = ResolvedModuleIdentifier(
+                    group = localGroup,
+                    name = file.name
+                )
+
+                val licenseCandidates = ZipFile(file).use { zip ->
+                    zip.entries().asSequence()
+                        .filter { !it.isDirectory && it.name.startsWith("META-INF/") && it.name.contains("LICENSE") }
+                        .map { it.name }
+                        .toList()
+                }
+
+                // It's hard to infer used licenses through META-INF/LICENSE*
+                val metadata = ResolvedLocalFileMetadata(
+                    displayName = file.nameWithoutExtension,
+                    licenses = licenseCandidates.mapIndexed { i, path ->
+                        LicenseSeed(
+                            name = "${file.nameWithoutExtension}-$i",
+                            url = path
+                        )
+                    }
+                )
+
+                key to ResolvedArtifact(
+                    id = id,
+                    metadata = metadata
+                )
+            }
+        }
+
+        return (resolveResults.resolvedComponents.flatMap { result ->
             result.getArtifacts(MavenPomArtifact::class.java).map {
                 it as ResolvedArtifactResult
 
@@ -143,7 +162,7 @@ class ArtifactManagement(
 
                         ResolveScope.Unknown to ResolvedArtifact(
                             id = id,
-                            pomFile = pomFile
+                            metadata = pomFile
                         )
                     }
                     else -> {
@@ -151,12 +170,12 @@ class ArtifactManagement(
 
                         scope to ResolvedArtifact(
                             id = modules.getValue(component),
-                            pomFile = pomFile
+                            metadata = pomFile
                         )
                     }
                 }
             }
-        }.collectToMap().toSortedMap(Comparator { o1, o2 ->
+        } + scopedLocalFiles).collectToMap().toSortedMap(Comparator { o1, o2 ->
             allScopes.indexOf(o1).compareTo(allScopes.indexOf(o2))
         })
     }
