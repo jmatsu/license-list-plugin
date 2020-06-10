@@ -35,7 +35,7 @@ class Builder(
                         val name = licenseName ?: guessedLicense.name
                         val url = it.url.orEmpty()
 
-                        LicenseKey(value = "${name}@${url.length}").also { key ->
+                        LicenseKey(value = "$name@${url.length}").also { key ->
                             licenseCapture += PlainLicense(
                                 name = name,
                                 url = url,
