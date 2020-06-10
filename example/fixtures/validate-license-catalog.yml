@@ -1,6 +1,12 @@
   - key: BSD style@73
     name: BSD style
     url: http://kxml.cvs.sourceforge.net/viewvc/kxml/kxml2/license.txt?view=markup
+  - key: Common Development and Distribution License (CDDL) v1.0@51
+    name: Common Development and Distribution License (CDDL) v1.0
+    url: https://glassfish.dev.java.net/public/CDDLv1.0.html
+  - key: Dual license consisting of the CDDL v1.1 and GPL v2@55
+    name: Dual license consisting of the CDDL v1.1 and GPL v2
+    url: https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
   - key: Mozilla Public License 1.1 (MPL 1.1)@39
     name: Mozilla Public License 1.1 (MPL 1.1)
     url: http://www.mozilla.org/MPL/MPL-1.1.html
