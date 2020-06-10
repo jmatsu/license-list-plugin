@@ -79,6 +79,9 @@ dependencies {
     // orphanConfiguration is not included by any other configurations, so you need to add this to targetConfigurations. See licenseList block.
     orphanConfiguration("com.android.support.test:runner:1.0.2")
 
+    // the license text contains line-return else...
+    implementation("org.jvnet.staxex:stax-ex:1.7.8")
+
     testImplementation("junit:junit:4.12")
     androidTestImplementation("com.android.support.test:runner:1.0.2")
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
