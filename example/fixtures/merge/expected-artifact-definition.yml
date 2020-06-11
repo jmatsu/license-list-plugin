@@ -104,6 +104,19 @@ yellowBlueRelease:
         licenses:
           - new-dummy-license
         keep: true
+    javax.activation:
+      - key: activation
+        displayName: JavaBeans Activation Framework (JAF)
+        url: http://java.sun.com/products/javabeans/jaf/index.jsp
+        copyrightHolders: []
+        licenses:
+          - Common Development and Distribution License (CDDL) v1.0@51
+    javax.xml.stream:
+      - key: stax-api
+        displayName: stax-api
+        url: null
+        copyrightHolders: []
+        licenses: []
     org.antlr:
       - key: antlr4
         displayName: ANTLR 4 Tool
@@ -134,6 +147,15 @@ yellowBlueRelease:
           - JetBrains Team
         licenses:
           - apache-2.0
+    org.jvnet.staxex:
+      - key: stax-ex
+        displayName: Extended StAX API
+        url: http://stax-ex.java.net/
+        copyrightHolders:
+          - Jitendra Kotamraju
+          - Martin Grebac
+        licenses:
+          - Dual license consisting of the CDDL v1.1 and GPL v2@55
 test:
     junit:
       - key: junit

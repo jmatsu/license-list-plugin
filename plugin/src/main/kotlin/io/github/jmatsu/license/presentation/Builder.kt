@@ -28,9 +28,11 @@ class Builder(
 
         private fun ResolvedPomFile.licenses(licenseCapture: MutableSet<PlainLicense>): List<LicenseKey> {
             return licenses.map {
-                when (val guessedLicense = LicenseClassifier(it.name).guess()) {
+                val licenseName = it.name?.trim { c -> c.isWhitespace() || c == '\n' || c == '\r' }
+
+                when (val guessedLicense = LicenseClassifier(licenseName).guess()) {
                     is LicenseClassifier.GuessedLicense.Undetermined -> {
-                        val name = it.name ?: guessedLicense.name
+                        val name = licenseName ?: guessedLicense.name
                         val url = it.url.orEmpty()
 
                         LicenseKey(value = "$name@${url.length}").also { key ->

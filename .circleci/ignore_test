@@ -11,7 +11,7 @@ fi
 
 ./gradlew clean initLicenseList -Poverwrite=true --rerun-tasks
 
-if ! diff app/license-list/artifact-definition.yml fixtures/nothing-ignored-artifact-definition.yml; then
+if diff app/license-list/artifact-definition.yml fixtures/nothing-ignored-artifact-definition.yml; then
     echo "diff has not been generated. .customartifactignore might be wrong or artifact-definition is wrong"
     exit 1
 fi
