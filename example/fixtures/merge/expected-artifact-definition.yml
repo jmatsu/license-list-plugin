@@ -117,6 +117,14 @@ yellowBlueRelease:
         url: null
         copyrightHolders: []
         licenses: []
+    local-file:
+      - key: ktlint-html-reporter-0.2.0.jar
+        displayName: ktlint-html-reporter
+        url: https://github.com/mcassiano/ktlint-html-reporter
+        copyrightHolders:
+          - Matheus Candido
+        licenses:
+          - mit
     org.antlr:
       - key: antlr4
         displayName: ANTLR 4 Tool
