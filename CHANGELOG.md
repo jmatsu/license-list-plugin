@@ -1,3 +1,13 @@
+## Version 0.6.0 (2020/06/12)
+
+**New features** :tada:
+
+- Support local jar/aar files. [#36](https://github.com/jmatsu/license-list-plugin/pull/36)
+
+**Bug fixes** :tada:
+
+- Licenses that contain heading/trailing spaces and/or CRLF always caused validation errors. [#37](https://github.com/jmatsu/license-list-plugin/pull/37)
+
 ## Version 0.5.0 (2020/04/24)
 
 **New features** :tada:
