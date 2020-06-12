@@ -104,11 +104,15 @@ class ArtifactManagement(
         val scopedLocalFiles = localFileMap.values.flatten().distinct().groupBy { file ->
             localFileMap.asIterable().first { (_, files) -> file in files }.key
         }.flatMap { (key, files) ->
-            files.map { file ->
+            files.mapNotNull { file ->
                 val id = ResolvedModuleIdentifier(
                     group = localGroup,
                     name = file.name
                 )
+
+                if (exclusionPredicate?.invoke(id.group, id.name) == true) {
+                    return@mapNotNull null
+                }
 
                 val licenseCandidates = ZipFile(file).use { zip ->
                     zip.entries().asSequence()
