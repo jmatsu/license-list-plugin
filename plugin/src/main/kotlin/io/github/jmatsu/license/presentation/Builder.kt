@@ -3,7 +3,7 @@ package io.github.jmatsu.license.presentation
 import io.github.jmatsu.license.internal.LicenseClassifier
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.model.ResolvedArtifact
-import io.github.jmatsu.license.model.ResolvedPomFile
+import io.github.jmatsu.license.model.ResolvedMetadata
 import io.github.jmatsu.license.poko.ArtifactDefinition
 import io.github.jmatsu.license.poko.LicenseKey
 import io.github.jmatsu.license.poko.PlainLicense
@@ -19,14 +19,14 @@ class Builder(
         fun transformToArtifact(artifact: ResolvedArtifact, licenseCapture: MutableSet<PlainLicense>): ArtifactDefinition {
             return ArtifactDefinition(
                 key = "${artifact.id.group}:${artifact.id.name}",
-                licenses = artifact.pomFile.licenses(licenseCapture),
-                copyrightHolders = artifact.pomFile.copyrightHolders,
-                url = artifact.pomFile.associatedUrl,
-                displayName = artifact.pomFile.displayName
+                licenses = artifact.metadata.licenses(licenseCapture),
+                copyrightHolders = artifact.metadata.copyrightHolders,
+                url = artifact.metadata.associatedUrl,
+                displayName = artifact.metadata.displayName
             )
         }
 
-        private fun ResolvedPomFile.licenses(licenseCapture: MutableSet<PlainLicense>): List<LicenseKey> {
+        private fun ResolvedMetadata.licenses(licenseCapture: MutableSet<PlainLicense>): List<LicenseKey> {
             return licenses.map {
                 val licenseName = it.name?.trim { c -> c.isWhitespace() || c == '\n' || c == '\r' }
 

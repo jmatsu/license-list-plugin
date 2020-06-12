@@ -2,16 +2,13 @@ package io.github.jmatsu.license.internal
 
 import groovy.util.XmlSlurper
 import groovy.util.slurpersupport.GPathResult
+import io.github.jmatsu.license.model.LicenseSeed
 import io.github.jmatsu.license.model.ResolvedPomFile
 import java.io.File
 
 class PomParser(
     private val file: File
 ) {
-    data class License(
-        val name: String?,
-        val url: String?
-    )
 
     fun parse(): ResolvedPomFile {
         val pomRoot = XmlSlurper(false, false).parse(file)
@@ -26,13 +23,13 @@ class PomParser(
             it?.trimText()
         }
 
-        val licenses: List<License> = pomRoot["licenses"]
+        val licenses: List<LicenseSeed> = pomRoot["licenses"]
             .childPaths()
             .map {
                 val name = it["name"]?.trimText()
                 val url = it["url"]?.trimText()
                 // Is distribution node required? :thinking_face:
-                License(
+                LicenseSeed(
                     name = name,
                     url = url
                 )
