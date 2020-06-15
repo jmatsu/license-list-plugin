@@ -1,3 +1,9 @@
+## Version 0.6.1 (2020/06/15)
+
+**Bug fixes** :tada:
+
+- Ignore local jar/arr files based on .artifactignore properly. [#40](https://github.com/jmatsu/license-list-plugin/pull/40)
+
 ## Version 0.6.0 (2020/06/12)
 
 **New features** :tada:
