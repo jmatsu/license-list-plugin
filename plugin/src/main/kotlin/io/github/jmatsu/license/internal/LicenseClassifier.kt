@@ -58,7 +58,7 @@ class LicenseClassifier(
 
         abstract class GitHubAPICompatibleLicense : GuessedLicense() {
             override val url: String
-                get() = "https://github.com/jmatsu/license-list-plugin/blob/master/license-files/$key.txt"
+                get() = "https://raw.githubusercontent.com/jmatsu/license-list-plugin/master/license-files/$key.txt"
         }
 
         object AGPL30 : GitHubAPICompatibleLicense() {
@@ -163,7 +163,7 @@ class LicenseClassifier(
         object FacebookSDK : GuessedLicense() {
             override val key: String = PredefinedKey.FACEBOOK_SDK
             override val name: String = "the Facebook Platform License"
-            override val url: String = "https://github.com/facebook/facebook-android-sdk/blob/master/LICENSE.txt"
+            override val url: String = "https://raw.githubusercontent.com/facebook/facebook-android-sdk/master/LICENSE.txt"
         }
 
         object Bcl : GuessedLicense() {

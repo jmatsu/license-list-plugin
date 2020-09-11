@@ -32,11 +32,12 @@ For those who have been using `0.3` or lower, version `0.4` has breaking changes
 4. [Extension](#extension)
 5. [Tips](#tips)
     1. [license-tools-plugin migration](#for-license-tools-plugin-users)
-    2. [Exclude specific groups/artifacts](#exclude-specific-groupsartifacts)
-    3. [Add other configurations like WearApp](#additional-configurations-like-wearapp)
-    4. [Custom variant-aware configurations](#custom-variant-aware-configurations)
-    5. [Html template customization](#html-customization)
-    6. [Render Json output](#render-json)
+    2. [Local jar/aar files][#manage-local-files)
+    3. [Exclude specific groups/artifacts](#exclude-specific-groupsartifacts)
+    4. [Add other configurations like WearApp](#additional-configurations-like-wearapp)
+    5. [Custom variant-aware configurations](#custom-variant-aware-configurations)
+    6. [Html template customization](#html-customization)
+    7. [Render Json output](#render-json)
 6. [Known limitation](#limitations)
 7. [Migration](#migration)
     1. [since 0.4](#04-breaking-changes)
@@ -159,6 +160,7 @@ The base format is `Map<Scope, Map<Group, List<ArtifactDefinition>>>`.
       license: # Required
         - "<license key which is defined in license-catalog.yml>"
       skip: "<true|false>" # Optional. Specify true if this artifact is not found in the current dependencies but should be displayed. false by default.
+      # Please use .artifactignore if you would like not to display any artifacts.
     ...
   ...
 ...
@@ -393,6 +395,18 @@ Please move them to the directory where you would like to use for the management
 - Each line of `.artifactignore` are the same to `skip` in license-tools-plugin
 - `skip` in `artifact-definition.yml` is the same to `forceGenerate`
 
+## Manage local files
+
+This plugin can manage local files as well. `local-files` is the reserved *group* in `artifact-definition.yml`.
+
+```yaml
+local-files: # equivalent to group
+  - key: "<jar/aar filename (requires the extension)>"
+    ...
+  ...
+...
+```
+
 ### Exclude specific groups/artifacts
 
 You can exclude specific groups and/or artifacts through `.artifactignore` file. `.artifactignore` file is a list of Regexp that matches with `<group>:<name>`.
@@ -481,6 +495,10 @@ They are just *interfaces* in pure Kotlin. So you can chose any serialization me
 - Modification detection
 
 ## Migration
+
+### 0.7 breaking changes
+
+The generated license URLs have been changed to show the contents correctly. Please run `mergeLicenseList` and `visualizeLicenseList` tasks to update your license catalog file and visualized file.
 
 ### 0.4 breaking changes
 

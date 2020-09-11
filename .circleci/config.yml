@@ -3,7 +3,7 @@ version: 2.1
 executors:
   android:
     docker:
-      - image: circleci/android:api-29
+      - image: circleci/android@sha256:e8a82728a4d2a1b7085f3ada107b492b76aeeefaa7bf739b5addace0a73ba79d
     working_directory: ~/top/example
     environment:
       GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.daemon=false'

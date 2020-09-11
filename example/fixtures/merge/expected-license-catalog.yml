@@ -15,13 +15,13 @@
     url: http://creativecommons.org/licenses/publicdomain
   - key: apache-2.0
     name: Apache License 2.0
-    url: https://github.com/jmatsu/license-list-plugin/blob/master/license-files/apache-2.0.txt
+    url: https://raw.githubusercontent.com/jmatsu/license-list-plugin/master/license-files/apache-2.0.txt
   - key: epl-1.0
     name: Eclipse Public License 1.0
     url: https://opensource.org/licenses/EPL-1.0
   - key: mit
     name: MIT License
-    url: https://github.com/jmatsu/license-list-plugin/blob/master/license-files/mit.txt
+    url: https://raw.githubusercontent.com/jmatsu/license-list-plugin/master/license-files/mit.txt
   - key: new-dummy-license
     name: Dummy License
     url: http://example.com
