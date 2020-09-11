@@ -496,6 +496,10 @@ They are just *interfaces* in pure Kotlin. So you can chose any serialization me
 
 ## Migration
 
+### 0.7 breaking changes
+
+The generated license URLs have been changed to show the contents correctly. Please update the license files and visualized files.
+
 ### 0.4 breaking changes
 
 Breaking change1 :
