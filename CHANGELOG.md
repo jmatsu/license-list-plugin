@@ -1,3 +1,10 @@
+## Version 0.7.0 (2020/09/11)
+
+**Bug fixes** :tada:
+
+- Use github raw content URLs instead of web pages. [#43](https://github.com/jmatsu/license-list-plugin/pull/43)
+    - Please run `mergeLicenseList` and `visualizeLicenseList` to follow this change.
+
 ## Version 0.6.1 (2020/06/15)
 
 **Bug fixes** :tada:
