@@ -54,9 +54,8 @@ bintray {
         websiteUrl = "https://github.com/jmatsu/license-list-plugin"
         issueTrackerUrl = "https://github.com/jmatsu/license-list-plugin/issues"
         vcsUrl = "https://github.com/jmatsu/license-list-plugin.git"
-        // FIXME out-in after opening a repository
-//        githubRepo = "jmatsu/license-list-plugin"
-//        githubReleaseNotesFile = "CHANGELOG.md"
+        githubRepo = "jmatsu/license-list-plugin"
+        githubReleaseNotesFile = "CHANGELOG.md"
         version(delegateClosureOf<VersionConfig> {
             name = project.version as String
             released = DateTimeFormatter

@@ -46,12 +46,25 @@ class Merger(
             }.toMap()
 
         val licensesKeysToBeUsed = mergedScopedArtifacts.flatMap { (_, artifacts) -> artifacts.flatMap { it.licenses.map { it.value } } }
-        val mergedLicenses = baseLicenses.reverseMerge(licenseCapture) { it.key }.filter { it.key.value in licensesKeysToBeUsed }
+        val mergedLicenses = baseLicenses.reverseMerge(licenseCapture) { it.key }.filter { it.key.value in licensesKeysToBeUsed }.fixLicenseUrl()
 
         return AssembleeData(
             scopedArtifacts = mergedScopedArtifacts,
             licenses = mergedLicenses
         )
+    }
+
+    /**
+     * v0.7 introduced the breaking changes on license URLs. This hack fixes it.
+     */
+    private fun Iterable<PlainLicense>.fixLicenseUrl(): List<PlainLicense> {
+        return map { license ->
+            if (license.url?.startsWith("https://github.com/jmatsu/license-list-plugin/blob/master/license-files/") == true || license.url == "https://github.com/facebook/facebook-android-sdk/blob/master/LICENSE.txt") {
+                license.copy(url = license.url.replace("github.com", "raw.githubusercontent.com").replace("/blob", ""))
+            } else {
+                license
+            }
+        }
     }
 }
 

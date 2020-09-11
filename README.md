@@ -498,7 +498,7 @@ They are just *interfaces* in pure Kotlin. So you can chose any serialization me
 
 ### 0.7 breaking changes
 
-The generated license URLs have been changed to show the contents correctly. Please update the license files and visualized files.
+The generated license URLs have been changed to show the contents correctly. Please run `mergeLicenseList` and `visualizeLicenseList` tasks to update your license catalog file and visualized file.
 
 ### 0.4 breaking changes
 
