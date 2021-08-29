@@ -12,6 +12,7 @@ import org.gradle.api.Named
 import org.gradle.api.reflect.HasPublicType
 import org.gradle.api.reflect.TypeOf
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.kotlin.dsl.typeOf
 
 interface AssemblyOptions : Named {
@@ -67,11 +68,15 @@ interface AssemblyOptions : Named {
      */
     @get:Input
     var targetConfigurations: Set<String>
+
+    @Input
+    override fun getName(): String
 }
 
 class AssemblyOptionsImpl(private val name: String) : AssemblyOptions, HasPublicType {
     override fun getName(): String = name
 
+    @Internal
     override fun getPublicType(): TypeOf<AssemblyOptions> {
         return typeOf()
     }
