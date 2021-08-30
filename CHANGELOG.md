@@ -1,3 +1,9 @@
+## Version 0.8.0 (2021/08/30)
+
+**Improvements** :tada:
+
+- Support Gradle 7.x compatibility. [#48](https://github.com/jmatsu/license-list-plugin/pull/48)
+
 ## Version 0.7.0 (2020/09/11)
 
 **Bug fixes** :tada:
