@@ -26,17 +26,10 @@ jobs:
       - id: parse
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }}; then
-            version='${{ github.event.inputs.snapshot-version }}'
-
-            if [ -z "${version}" ]; then
-              version="$(cat VERSION)"
-            fi
-
             artifacts='${{ github.event.inputs.artifacts }}'
             checkout_ref='${{ github.event.inputs.ref }}'
             release_mode='${{ github.event.inputs.snapshot-version && 'false' || 'true' }}'
           else
-            version="${GITHUB_REF#refs/tags/}"
             artifacts='plugin,schema'
             checkout_ref='${{ github.ref }}'
             release_mode='true'
@@ -45,7 +38,22 @@ jobs:
           echo "::set-output name=artifacts::${artifacts}"
           echo "::set-output name=checkout-ref::${checkout_ref}"
           echo "::set-output name=release-mode::${release_mode}"
-          echo "::set-output name=version::${version}"
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.parse.outputs.checkout-ref }}
+      - id: version
+        run: |
+          if ${{ github.event_name == 'workflow_dispatch' }}; then
+            version='${{ github.event.inputs.snapshot-version }}'
+
+            if [ -z "${version}" ]; then
+              version="$(cat VERSION)"
+            fi
+          else
+            version="${GITHUB_REF#refs/tags/}"
+          fi
+
+          echo "::set-output name=result::${version}"
 
           if [ ! "$(cat VERSION)" = "${version}" ]; then
             echo 'version mismatch'
@@ -55,7 +63,7 @@ jobs:
       artifacts: ${{ steps.parse.outputs.artifacts }}
       checkout-ref: ${{ steps.parse.outputs.checkout-ref }}
       release-mode: ${{ steps.parse.outputs.release-mode }}
-      version: ${[ steps.parse.outputs.version }}
+      version: ${{ steps.version.outputs.result }}
   plugin-release:
     if: contains(needs.params.outputs.artifacts, 'plugin')
     runs-on: ubuntu-latest
