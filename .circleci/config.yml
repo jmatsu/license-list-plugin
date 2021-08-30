@@ -101,14 +101,14 @@ jobs:
     executor: android
     steps:
       - setup_workspace
+      - attach_workspace:
+          at: ~/.m2
       - switch_java:
           jdk-version: << parameters.jdk-version >>
       - switch_gradle:
           gradle-version: << parameters.gradle-version >>
       - restore_gradle_cache:
           cache_name: example-<< parameters.gradle-version >>
-      - attach_workspace:
-          at: ~/.m2
       - run: ./gradlew assembleYellowBlueRelease # it's okay if succeed
 
   acceptance_test:
@@ -116,14 +116,14 @@ jobs:
     executor: android
     steps:
       - setup_workspace
+      - attach_workspace:
+          at: ~/.m2
       - switch_java:
           jdk-version: << parameters.jdk-version >>
       - switch_gradle:
           gradle-version: << parameters.gradle-version >>
       - restore_gradle_cache:
           cache_name: example-<< parameters.gradle-version >>
-      - attach_workspace:
-          at: ~/.m2
       - run: 
           name: Validate
           command: ~/top/.circleci/validation_test
