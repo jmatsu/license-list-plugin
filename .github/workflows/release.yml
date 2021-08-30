@@ -1,20 +1,82 @@
 name: Release artifacts
 
 on:
+  workflow_dispatch:
+    inputs:
+      artifacts:
+        description: Comma separeted artifact name list. e.g. plugin,schema
+        required: true
+        default: plugin,schema
+      ref:
+        description: Git Ref to release
+        required: true
+        default: master
+      snapshot-version:
+        description: Specify the snapshot version name. Keep empty for the production release.
+
   push:
     tags:
       - \d.\d
       - \d.\d.\d
 
 jobs:
-  production-release:
+  params:
     runs-on: ubuntu-latest
     steps:
+      - id: parse
+        run: |
+          if ${{ github.event_name == 'workflow_dispatch' }}; then
+            artifacts='${{ github.event.inputs.artifacts }}'
+            checkout_ref='${{ github.event.inputs.ref }}'
+            release_mode='${{ github.event.inputs.snapshot-version && 'false' || 'true' }}'
+          else
+            artifacts='plugin,schema'
+            checkout_ref='${{ github.ref }}'
+            release_mode='true'
+          fi
+
+          echo "::set-output name=artifacts::${artifacts}"
+          echo "::set-output name=checkout-ref::${checkout_ref}"
+          echo "::set-output name=release-mode::${release_mode}"
       - uses: actions/checkout@v2
-      - run: "[[ refs/tags/$(cat VERSION) == $GITHUB_REF ]]"
+        with:
+          ref: ${{ steps.parse.outputs.checkout-ref }}
+      - id: version
+        run: |
+          if ${{ github.event_name == 'workflow_dispatch' }}; then
+            version='${{ github.event.inputs.snapshot-version }}'
+
+            if [ -z "${version}" ]; then
+              version="$(cat VERSION)"
+            fi
+          else
+            version="${GITHUB_REF#refs/tags/}"
+          fi
+
+          echo "::set-output name=result::${version}"
+
+          if [ ! "$(cat VERSION)" = "${version}" ]; then
+            echo 'version mismatch'
+            exit 1
+          fi
+    outputs:
+      artifacts: ${{ steps.parse.outputs.artifacts }}
+      checkout-ref: ${{ steps.parse.outputs.checkout-ref }}
+      release-mode: ${{ steps.parse.outputs.release-mode }}
+      version: ${{ steps.version.outputs.result }}
+  plugin-release:
+    if: contains(needs.params.outputs.artifacts, 'plugin')
+    runs-on: ubuntu-latest
+    needs: [ params ]
+    env:
+      RELEASE_MODE: ${{ needs.params.outputs.release-mode }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.params.outputs.checkout-ref }}
       - uses: actions/setup-java@v1
         with:
-          java-version: '8.0.x'
+          java-version: '8'
           java-package: jdk
       - uses: actions/cache@v1
         with:
@@ -26,13 +88,43 @@ jobs:
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+      - run: echo '${{ needs.params.outputs.version }}' > VERSION
       - name: Publish plugin
         run: ./gradlew publishPlugins -Dgradle.publish.key=$GRADLE_PORTAL_PUBLISH_KEY -Dgradle.publish.secret=$GRADLE_PORTAL_PUBLISH_SECRET
         env:
           GRADLE_PORTAL_PUBLISH_KEY: ${{ secrets.GRADLE_PORTAL_PUBLISH_KEY }}
           GRADLE_PORTAL_PUBLISH_SECRET: ${{ secrets.GRADLE_PORTAL_PUBLISH_SECRET }}
-      - name: Publish schema
-        run: ./gradlew :license-list-schema:bintrayUpload -PdryRun=false
+  schema-release:
+    if: contains(needs.params.outputs.artifacts, 'schema')
+    runs-on: ubuntu-latest
+    needs: [ params ]
+    env:
+      RELEASE_MODE: ${{ needs.params.outputs.release-mode }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.params.outputs.checkout-ref }}
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+          java-package: jdk
+      - uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('buildSrc/src/main/**/*.kt') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+      - run: echo '${{ needs.params.outputs.version }}' > VERSION
+      - name: Publish artifacts
+        run: |
+          ./gradlew ':license-list-schema:publishSchemaPublicationToMavenRepository'
         env:
-          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+          ORG_GRADLE_PROJECT_nexusUsername: jmatsu
+          ORG_GRADLE_PROJECT_nexusPassword: ${{ secrets.NEXUS_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingRequired: true
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SECRET_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
