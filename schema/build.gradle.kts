@@ -1,24 +1,45 @@
 @file:Suppress("RemoveRedundantQualifierName")
 
-import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
-import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
 import shared.Version
-import java.time.format.DateTimeFormatter
-import java.time.Instant
-import java.time.ZoneId
 
 plugins {
     id("org.gradle.kotlin.kotlin-dsl")
     id("org.jmailen.kotlinter")
 
     `maven-publish`
-    id("com.jfrog.bintray")
+    id("signing")
 }
 
 repositories {
     google()
-    jcenter()
+    mavenCentral()
 }
+
+ext {
+    var isRelease = System.getenv("RELEASE_MODE") == "true"
+
+    val versionFile = File(rootDir, "VERSION")
+    if (versionFile.exists()) {
+        val versionText = versionFile.readText().trim()
+
+        set("versionText", versionText)
+        set("releaseVersion", if (isRelease) versionText else "${versionText.split("-")[0]}-SNAPSHOT")
+    } else {
+        set("releaseVersion", "0.99.0")
+        isRelease = false
+    }
+
+    set("isRelease", isRelease)
+    set("repoUrl", if (isRelease) "https://oss.sonatype.org/service/local/staging/deploy/maven2/" else "https://oss.sonatype.org/content/repositories/snapshots/")
+    set("repoUsername", findProperty("nexusUsername"))
+    set("repoPassword", findProperty("nexusPassword"))
+}
+
+val isRelease: Boolean by project.ext
+val releaseVersion: String by project.ext
+val repoUrl: String by project.ext
+val repoUsername: String? by project.ext
+val repoPassword: String? by project.ext
 
 configurations.configureEach {
     resolutionStrategy {
@@ -43,41 +64,25 @@ kotlinter {
     fileBatchSize = 30
 }
 
-bintray {
-    user = System.getenv("BINTRAY_USER")
-    key = System.getenv("BINTRAY_API_KEY")
-    pkg(delegateClosureOf<PackageConfig> {
-        repo = "maven"
-        name = shared.Definition.schemaName
-        userOrg = "jmatsu"
-        setLicenses("MIT")
-        websiteUrl = "https://github.com/jmatsu/license-list-plugin"
-        issueTrackerUrl = "https://github.com/jmatsu/license-list-plugin/issues"
-        vcsUrl = "https://github.com/jmatsu/license-list-plugin.git"
-        githubRepo = "jmatsu/license-list-plugin"
-        githubReleaseNotesFile = "CHANGELOG.md"
-        version(delegateClosureOf<VersionConfig> {
-            name = project.version as String
-            released = DateTimeFormatter
-                .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
-                .withZone(ZoneId.of("UTC"))
-                .format(Instant.now())
-        })
-    })
-
-    dryRun = properties["dryRun"]?.toString()?.toBoolean() ?: true
-
-    setPublications("schemaPublish")
-}
-
 java {
     withJavadocJar()
     withSourcesJar()
 }
 
 publishing {
+    repositories {
+        maven {
+            setUrl(repoUrl)
+
+            credentials(PasswordCredentials::class) {
+                username = repoUsername
+                password = repoPassword
+            }
+        }
+    }
+
     publications {
-        create("schemaPublish", MavenPublication::class) {
+        create("schema", MavenPublication::class) {
             from(components.getByName("java"))
             groupId = shared.Definition.group
             artifactId = shared.Definition.schemaName
@@ -109,6 +114,22 @@ publishing {
                     url.set("https://github.com/jmatsu/license-list-plugin")
                 }
             }
+        }
+    }
+}
+
+afterEvaluate {
+    val isRelease: Boolean by project.ext
+
+    signing {
+        setRequired { isRelease && gradle.taskGraph.hasTask("publishSchemaPublicationToMavenRepository") || findProperty("signingRequired") == "true" }
+
+        val signingKey: String? = findProperty("signingKey") as? String
+        val signingPassword: String? = findProperty("signingPassword") as? String
+
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        publishing.publications.configureEach {
+            sign(this)
         }
     }
 }

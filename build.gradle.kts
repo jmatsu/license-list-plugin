@@ -2,9 +2,6 @@ plugins {
     `kotlin-dsl` apply false
     kotlin("plugin.serialization") version shared.Version.kotlin apply false
     id("org.jmailen.kotlinter") version shared.Version.kotlinter apply false
-
-    // release stuff
-    id("com.jfrog.bintray") version shared.Version.bintray apply false
 }
 
 subprojects {
@@ -22,7 +19,7 @@ subprojects {
 
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 

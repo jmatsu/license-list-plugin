@@ -16,7 +16,7 @@ plugins {
 
 repositories {
     google()
-    jcenter()
+    mavenCentral()
 }
 
 // Add a source set for the functional test suite
