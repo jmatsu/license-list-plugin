@@ -52,7 +52,7 @@ commands:
             java -version
             update-java-alternatives --list || true
       - run:
-          name: Get the 
+          name: Get the ditribution name to use
           command: |
             readonly distribution="$(update-java-alternatives -l | grep "java-1.<< parameters.jdk-version >>" | cut -d " " -f1)"
 
@@ -70,6 +70,9 @@ commands:
       gradle-version:
         type: string
     steps:
+      - run:
+          name: Dirty hack # https://github.com/CircleCI-Public/cimg-android/blob/1b1a9bf01dd11e3fa549ad42da0f23128ccbcb8b/2021.08/Dockerfile#L25
+          command: echo "export PATH=/usr/local/gradle-${GRADLE_VERSION}/bin:$PATH" >> $BASH_ENV
       - run:
           name: Use the specified Gradle version
           command: gradle wrapper --gradle-version {{ parameters.gradle-version }} --distribution-type --bin
