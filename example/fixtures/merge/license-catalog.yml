@@ -16,3 +16,6 @@
   - key: new-dummy-license
     name: Dummy License
     url: http://example.com
+  - key: Eclipse Distribution License - v 1.0@48
+    name: Eclipse Distribution License - v 1.0
+    url: http://www.eclipse.org/org/documents/edl-v10.php
