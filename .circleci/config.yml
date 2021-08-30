@@ -84,7 +84,7 @@ jobs:
       - setup_workspace
       - restore_gradle_cache:
           cache_name: plugin
-      - run: ./gradlew publishToMavenLocal
+      - run: ./gradlew publishToMavenLocal --stacktrace
       - persist_to_workspace:
           root: ~/.m2
           paths:
@@ -109,7 +109,7 @@ jobs:
           gradle-version: << parameters.gradle-version >>
       - restore_gradle_cache:
           cache_name: example-<< parameters.gradle-version >>
-      - run: ./gradlew assembleYellowBlueRelease # it's okay if succeed
+      - run: ./gradlew assembleYellowBlueRelease --stacktrace # it's okay if succeed
 
   acceptance_test:
     parameters: *build_env_parameters
@@ -160,11 +160,11 @@ workflows:
           matrix:
             parameters:
               jdk-version: ['8', '11']
-              gradle-version: ['6.0.1', '7.0.2']
+              gradle-version: ['6.7.1', '7.0.2']
       - schema_test:
           requires:
             - install_plugin_jars
           matrix:
             parameters:
               jdk-version: ['8', '11']
-              gradle-version: ['6.0.1', '7.0.2']
+              gradle-version: ['6.7.1', '7.0.2']
