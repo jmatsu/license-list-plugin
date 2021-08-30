@@ -460,6 +460,18 @@ yellowBlueRelease:
       licenses:
         - xdefined-license@18
       keep: true
+  jakarta.activation:
+    - key: jakarta.activation-api
+      displayName: JavaBeans Activation Framework API jar
+      url: null
+      copyrightHolders: []
+      licenses: []
+  jakarta.xml.bind:
+    - key: jakarta.xml.bind-api
+      displayName: jakarta.xml.bind-api
+      url: null
+      copyrightHolders: []
+      licenses: []
   javax.activation:
     - key: activation
       displayName: JavaBeans Activation Framework (JAF)
