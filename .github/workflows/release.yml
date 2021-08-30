@@ -57,7 +57,7 @@ jobs:
       release-mode: ${{ steps.parse.outputs.release-mode }}
       version: ${[ steps.parse.outputs.version }}
   plugin-release:
-    if: contains(needs.params.outputs.artifacts, "plugin")
+    if: contains(needs.params.outputs.artifacts, 'plugin')
     runs-on: ubuntu-latest
     needs: [ params ]
     env:
@@ -87,7 +87,7 @@ jobs:
           GRADLE_PORTAL_PUBLISH_KEY: ${{ secrets.GRADLE_PORTAL_PUBLISH_KEY }}
           GRADLE_PORTAL_PUBLISH_SECRET: ${{ secrets.GRADLE_PORTAL_PUBLISH_SECRET }}
   schema-release:
-    if: contains(needs.params.outputs.artifacts, "schema")
+    if: contains(needs.params.outputs.artifacts, 'schema')
     runs-on: ubuntu-latest
     needs: [ params ]
     env:
