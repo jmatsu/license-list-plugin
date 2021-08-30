@@ -11,6 +11,7 @@ import org.gradle.api.reflect.HasPublicType
 import org.gradle.api.reflect.TypeOf
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
@@ -48,15 +49,19 @@ interface VisualizationOptions : Named {
     /**
      * An output directory of the generated visualized file.
      */
-    @get:PathSensitive(PathSensitivity.RELATIVE)
     @get:OutputDirectory
     @get:Optional
     var outputDir: File?
+
+    @Input
+    override fun getName(): String
 }
 
 class VisualizationOptionsImpl(
     private val name: String
 ) : VisualizationOptions, HasPublicType {
+
+    @Internal
     override fun getPublicType(): TypeOf<VisualizationOptions> {
         return typeOf()
     }

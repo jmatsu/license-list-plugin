@@ -7,10 +7,11 @@ import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.reflect.HasPublicType
 import org.gradle.api.reflect.TypeOf
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.kotlin.dsl.typeOf
@@ -20,12 +21,18 @@ interface VariantAwareOptions : Named {
      * @see baseDir
      */
     @Deprecated("the name has been changed. This would be removed in 1.0.0", replaceWith = ReplaceWith("baseDir"))
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    @get:InputDirectory
+    @get:Optional
     var artifactDefinitionDirectory: File?
 
     /**
      * @see baseDir
      */
     @Deprecated("this name was produced by a typo. This will be removed in 1.0.0.", replaceWith = ReplaceWith("baseDir"))
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    @get:InputDirectory
+    @get:Optional
     var dataDir: File?
 
     /**
@@ -33,7 +40,6 @@ interface VariantAwareOptions : Named {
      */
     @get:PathSensitive(PathSensitivity.RELATIVE)
     @get:InputDirectory
-    @get:OutputDirectory
     @get:Optional
     var baseDir: File?
 
@@ -46,6 +52,9 @@ interface VariantAwareOptions : Named {
     fun assembly(action: Action<AssemblyOptions>)
 
     fun visualization(action: Action<VisualizationOptions>)
+
+    @Input
+    override fun getName(): String
 }
 
 class VariantAwareOptionsImpl(
@@ -72,6 +81,7 @@ class VariantAwareOptionsImpl(
         action.execute(visualization)
     }
 
+    @Internal
     override fun getPublicType(): TypeOf<VariantAwareOptions> {
         return typeOf()
     }
