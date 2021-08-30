@@ -38,6 +38,18 @@ yellowBlueRelease:
         url: null
         copyrightHolders: []
         licenses: []
+    com.sun.istack:
+      - key: istack-commons-runtime
+        displayName: istack common utility code runtime
+        url: null
+        copyrightHolders: []
+        licenses: []
+    com.sun.xml.fastinfoset:
+      - key: FastInfoset
+        displayName: fastinfoset
+        url: null
+        copyrightHolders: []
+        licenses: []
     com.xwray:
       - key: groupie
         displayName: Groupie
@@ -104,6 +116,18 @@ yellowBlueRelease:
         licenses:
           - new-dummy-license
         keep: true
+    jakarta.activation:
+      - key: jakarta.activation-api
+        displayName: JavaBeans Activation Framework API jar
+        url: null
+        copyrightHolders: []
+        licenses: []
+    jakarta.xml.bind:
+      - key: jakarta.xml.bind-api
+        displayName: jakarta.xml.bind-api
+        url: null
+        copyrightHolders: []
+        licenses: []
     javax.activation:
       - key: activation
         displayName: JavaBeans Activation Framework (JAF)
@@ -145,6 +169,17 @@ yellowBlueRelease:
         url: null
         copyrightHolders: []
         licenses: []
+    org.glassfish.jaxb:
+      - key: jaxb-runtime
+        displayName: JAXB Runtime
+        url: null
+        copyrightHolders: []
+        licenses: []
+      - key: txw2
+        displayName: TXW2 Runtime
+        url: null
+        copyrightHolders: []
+        licenses: []
     org.jetbrains:
       - key: annotations
         displayName: IntelliJ IDEA Annotations
@@ -156,12 +191,12 @@ yellowBlueRelease:
     org.jvnet.staxex:
       - key: stax-ex
         displayName: Extended StAX API
-        url: http://stax-ex.java.net/
+        url: https://github.com/eclipse-ee4j/jaxb-stax-ex
         copyrightHolders:
-          - Jitendra Kotamraju
-          - Martin Grebac
+          - Roman Grigoriadi
+          - Zheng Jun Li
         licenses:
-          - Dual license consisting of the CDDL v1.1 and GPL v2@55
+          - Eclipse Distribution License - v 1.0@48
 test:
     junit:
       - key: junit
