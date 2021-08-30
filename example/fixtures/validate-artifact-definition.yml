@@ -100,22 +100,22 @@ yellowBlueRelease:
       licenses:
         - apache-2.0
     - key: databinding-common
-      displayName: Data Binding Base Library
-      url: https://developer.android.com/studio
+      displayName: androidx.databinding.databinding-common
+      url: http://tools.android.com/
       copyrightHolders:
         - The Android Open Source Project
       licenses:
         - apache-2.0
     - key: databinding-compiler
-      displayName: Data Binding Annotation Processor
-      url: https://developer.android.com/studio
+      displayName: androidx.databinding.databinding-compiler
+      url: http://tools.android.com/
       copyrightHolders:
         - The Android Open Source Project
       licenses:
         - apache-2.0
     - key: databinding-compiler-common
-      displayName: Data Binding Compiler Common
-      url: https://developer.android.com/studio
+      displayName: androidx.databinding.databinding-compiler-common
+      url: http://tools.android.com/
       copyrightHolders:
         - The Android Open Source Project
       licenses:
@@ -273,8 +273,8 @@ yellowBlueRelease:
         - apache-2.0
   com.android.tools:
     - key: annotations
-      displayName: Android Tools Annotations library
-      url: https://developer.android.com/studio
+      displayName: com.android.tools.annotations
+      url: http://tools.android.com/
       copyrightHolders:
         - The Android Open Source Project
       licenses:
@@ -379,6 +379,18 @@ yellowBlueRelease:
   com.squareup.okio:
     - key: okio
       displayName: Okio
+      url: null
+      copyrightHolders: []
+      licenses: []
+  com.sun.istack:
+    - key: istack-commons-runtime
+      displayName: istack common utility code runtime
+      url: null
+      copyrightHolders: []
+      licenses: []
+  com.sun.xml.fastinfoset:
+    - key: FastInfoset
+      displayName: fastinfoset
       url: null
       copyrightHolders: []
       licenses: []
@@ -491,6 +503,17 @@ yellowBlueRelease:
       url: null
       copyrightHolders: []
       licenses: []
+  org.glassfish.jaxb:
+    - key: jaxb-runtime
+      displayName: JAXB Runtime
+      url: null
+      copyrightHolders: []
+      licenses: []
+    - key: txw2
+      displayName: TXW2 Runtime
+      url: null
+      copyrightHolders: []
+      licenses: []
   org.jetbrains:
     - key: annotations
       displayName: IntelliJ IDEA Annotations
@@ -508,28 +531,28 @@ yellowBlueRelease:
       licenses:
         - apache-2.0
     - key: kotlin-stdlib
-      displayName: org.jetbrains.kotlin:kotlin-stdlib
+      displayName: Kotlin Stdlib
       url: https://kotlinlang.org/
       copyrightHolders:
         - Kotlin Team
       licenses:
         - apache-2.0
     - key: kotlin-stdlib-common
-      displayName: org.jetbrains.kotlin:kotlin-stdlib-common
+      displayName: Kotlin Stdlib Common
       url: https://kotlinlang.org/
       copyrightHolders:
         - Kotlin Team
       licenses:
         - apache-2.0
     - key: kotlin-stdlib-jdk7
-      displayName: org.jetbrains.kotlin:kotlin-stdlib-jdk7
+      displayName: Kotlin Stdlib Jdk7
       url: https://kotlinlang.org/
       copyrightHolders:
         - Kotlin Team
       licenses:
         - apache-2.0
     - key: kotlin-stdlib-jdk8
-      displayName: org.jetbrains.kotlin:kotlin-stdlib-jdk8
+      displayName: Kotlin Stdlib Jdk8
       url: https://kotlinlang.org/
       copyrightHolders:
         - Kotlin Team
@@ -538,12 +561,12 @@ yellowBlueRelease:
   org.jvnet.staxex:
     - key: stax-ex
       displayName: Extended StAX API
-      url: http://stax-ex.java.net/
+      url: https://github.com/eclipse-ee4j/jaxb-stax-ex
       copyrightHolders:
-        - Jitendra Kotamraju
-        - Martin Grebac
+        - Roman Grigoriadi
+        - Zheng Jun Li
       licenses:
-        - Dual license consisting of the CDDL v1.1 and GPL v2@55
+        - Eclipse Distribution License - v 1.0@48
 test:
   junit:
     - key: junit
