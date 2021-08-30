@@ -75,7 +75,7 @@ commands:
           command: echo "export PATH=/usr/local/gradle-${GRADLE_VERSION}/bin:$PATH" >> $BASH_ENV
       - run:
           name: Use the specified Gradle version
-          command: gradle wrapper --gradle-version << parameters.gradle-version >> --distribution-type --bin
+          command: gradle wrapper --gradle-version << parameters.gradle-version >> --distribution-type bin
 
 jobs:
   install_plugin_jars:
