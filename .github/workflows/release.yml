@@ -64,36 +64,6 @@ jobs:
       checkout-ref: ${{ steps.parse.outputs.checkout-ref }}
       release-mode: ${{ steps.parse.outputs.release-mode }}
       version: ${{ steps.version.outputs.result }}
-  plugin-release:
-    if: contains(needs.params.outputs.artifacts, 'plugin')
-    runs-on: ubuntu-latest
-    needs: [ params ]
-    env:
-      RELEASE_MODE: ${{ needs.params.outputs.release-mode }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ needs.params.outputs.checkout-ref }}
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '8'
-          java-package: jdk
-      - uses: actions/cache@v1
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('buildSrc/src/main/**/*.kt') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-      - uses: actions/cache@v1
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-      - run: echo '${{ needs.params.outputs.version }}' > VERSION
-      - name: Publish plugin
-        run: ./gradlew publishPlugins -Dgradle.publish.key=$GRADLE_PORTAL_PUBLISH_KEY -Dgradle.publish.secret=$GRADLE_PORTAL_PUBLISH_SECRET
-        env:
-          GRADLE_PORTAL_PUBLISH_KEY: ${{ secrets.GRADLE_PORTAL_PUBLISH_KEY }}
-          GRADLE_PORTAL_PUBLISH_SECRET: ${{ secrets.GRADLE_PORTAL_PUBLISH_SECRET }}
   schema-release:
     if: contains(needs.params.outputs.artifacts, 'schema')
     runs-on: ubuntu-latest
@@ -128,3 +98,49 @@ jobs:
           ORG_GRADLE_PROJECT_signingRequired: true
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SECRET_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
+      - run: sleep 10
+      - name: Download startship
+        run: |
+         curl -sSfL \
+           --url 'https://github.com/saket/startship/releases/download/1.1.1/startship.zip' \
+           -o startship.zip && \
+           unzip startship.zip
+
+         echo "$PWD/$(find startship -type d -name "bin")" >> $GITHUB_PATH
+      - name: Close and promote the schema
+        run: |
+          startship release \
+            -c "io.github.jmatsu:license-list-schema:$(cat VERSION)" \
+            -u jmatsu \
+            -p ${{ secrets.NEXUS_PASSWORD }}
+  plugin-release:
+    if: contains(needs.params.outputs.artifacts, 'plugin')
+    runs-on: ubuntu-latest
+    needs: [ params, schema-release ]
+    env:
+      RELEASE_MODE: ${{ needs.params.outputs.release-mode }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.params.outputs.checkout-ref }}
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+          java-package: jdk
+      - uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('buildSrc/src/main/**/*.kt') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+      - run: echo '${{ needs.params.outputs.version }}' > VERSION
+      - name: Publish plugin
+        run: ./gradlew publishPlugins -Dgradle.publish.key=$GRADLE_PORTAL_PUBLISH_KEY -Dgradle.publish.secret=$GRADLE_PORTAL_PUBLISH_SECRET
+        env:
+          GRADLE_PORTAL_PUBLISH_KEY: ${{ secrets.GRADLE_PORTAL_PUBLISH_KEY }}
+          GRADLE_PORTAL_PUBLISH_SECRET: ${{ secrets.GRADLE_PORTAL_PUBLISH_SECRET }}
+
