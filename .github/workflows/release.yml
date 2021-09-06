@@ -101,6 +101,9 @@ jobs:
       - run: sleep 10
       - name: Download startship
         run: |
+         mkdir -p ~/.gradle
+         touch ~/.gradle/gradle.properties
+        
          curl -sSfL \
            --url 'https://github.com/saket/startship/releases/download/1.1.1/startship.zip' \
            -o startship.zip && \
