@@ -1,9 +1,8 @@
 package io.github.jmatsu.license.presentation
 
+import com.google.common.collect.Sets
 import io.github.jmatsu.license.poko.ArtifactDefinition
 import io.github.jmatsu.license.poko.LicenseKey
-import org.gradle.util.ChangeListener
-import org.gradle.util.DiffUtil
 
 object Diff {
     data class DiffResult(
@@ -20,26 +19,8 @@ object Diff {
 
         val keepKeys = base.mapNotNull { a -> a.key.takeIf { a.keep } }.toSet()
 
-        val added = HashSet<String>()
-        val removed = HashSet<String>()
-
-        DiffUtil.diff(newerKeys, baseKeys, object : ChangeListener<String> {
-            override fun added(element: String) {
-                added += element
-            }
-
-            override fun changed(element: String) {
-                error("DiffUtil does not support changed because it's based on Set")
-            }
-
-            override fun removed(element: String) {
-                if (element in keepKeys) {
-                    return
-                }
-
-                removed += element
-            }
-        })
+        val added = Sets.difference(newerKeys, baseKeys)
+        val removed = Sets.difference(baseKeys, newerKeys).filterNot { keepKeys.contains(it) }.toSet()
 
         return DiffResult(
             missingKeys = added,
@@ -52,22 +33,8 @@ object Diff {
         val baseKeys = base.map { it.value }.toSet()
         val newerKeys = newer.map { it.value }.toSet()
 
-        val added = HashSet<String>()
-        val removed = HashSet<String>()
-
-        DiffUtil.diff(newerKeys, baseKeys, object : ChangeListener<String> {
-            override fun added(element: String) {
-                added += element
-            }
-
-            override fun changed(element: String) {
-                error("DiffUtil does not support changed because it's based on Set")
-            }
-
-            override fun removed(element: String) {
-                removed += element
-            }
-        })
+        val added = Sets.difference(newerKeys, baseKeys)
+        val removed = Sets.difference(baseKeys, newerKeys)
 
         return DiffResult(
             missingKeys = added,

@@ -160,11 +160,11 @@ workflows:
           matrix:
             parameters:
               jdk-version: ['8', '11']
-              gradle-version: ['6.7.1', '7.0.2']
+              gradle-version: ['6.7.1', '7.0.2', '7.2']
       - schema_test:
           requires:
             - install_plugin_jars
           matrix:
             parameters:
               jdk-version: ['8', '11']
-              gradle-version: ['6.7.1', '7.0.2']
+              gradle-version: ['6.7.1', '7.0.2', '7.2']
