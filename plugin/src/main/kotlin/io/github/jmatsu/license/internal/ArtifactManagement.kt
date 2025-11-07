@@ -205,9 +205,7 @@ class ArtifactManagement(
             variantScope.name.decapitalize() + suffix.capitalize()
         }
 
-        return project.configurations.flatMap {
-            it.all
-        }.distinctBy { it.name }.filter { configuration ->
+        return project.configurations.toList().distinctBy { it.name }.filter { configuration ->
             (configuration.name in targetConfigurationNames).also { isTarget ->
                 if (isTarget) {
                     project.logger.info("Configuration(name = ${configuration.name}) will be search")
