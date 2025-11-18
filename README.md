@@ -469,11 +469,11 @@ licenseList {
 }
 ```
 
-The schema of the json resources are defined in `schema` module, which is published to jcenter.
+The schema of the json resources are defined in `schema` module, which is published to mavenCentral.
 
 ```kotlin
 repositories {
-  jcenter()
+  mavenCentral()
 }
 
 dependencies {

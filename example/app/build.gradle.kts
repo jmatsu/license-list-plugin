@@ -53,7 +53,7 @@ repositories {
         mavenLocal()
     }
     google()
-    jcenter()
+    mavenCentral()
 }
 
 val sampleConfiguration = configurations.create("sample")

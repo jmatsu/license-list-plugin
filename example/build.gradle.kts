@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         if (System.getenv("CI") == "true") {
             mavenLocal()
         } else {

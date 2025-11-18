@@ -49,7 +49,7 @@ android {
 
 repositories {
     google()
-    jcenter()
+    mavenCentral()
     mavenLocal()
 }
 
