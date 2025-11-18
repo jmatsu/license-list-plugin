@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    id("com.cookpad.android.licensetools")
+    // id("com.cookpad.android.licensetools")
 }
 
 android {
