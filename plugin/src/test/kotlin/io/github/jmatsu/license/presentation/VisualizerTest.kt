@@ -20,14 +20,14 @@ class VisualizerTest {
         )
 
         val format: StringFormat = mockk {
-            every { stringify<List<DisplayArtifact>>(any(), any()) } returns expectedText
+            every { encodeToString<List<DisplayArtifact>>(any(), any()) } returns expectedText
         }
 
         val actualText = visualizer.visualizeArtifacts(format)
 
         verify {
             // serializer will be returned new instances for every calls
-            format.stringify(any(), displayArtifacts)
+            format.encodeToString(any(), displayArtifacts)
         }
 
         assertSame(expectedText, actualText)

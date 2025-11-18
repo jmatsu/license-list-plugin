@@ -4,15 +4,15 @@ import io.github.jmatsu.license.dsl.HtmlFormat
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
-import org.junit.Before
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import kotlin.test.BeforeTest
 
 class VisualizationOptionsImplTest {
 
     lateinit var options: VisualizationOptions
 
-    @Before
+    @BeforeTest
     fun setup() {
         options = VisualizationOptionsImpl(
             name = "default"

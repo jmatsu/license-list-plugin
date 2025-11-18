@@ -1,7 +1,6 @@
 package io.github.jmatsu.license.migration
 
 import com.charleskorn.kaml.Yaml
-import com.google.common.annotations.VisibleForTesting
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.ext.collectToMap
 import io.github.jmatsu.license.internal.LicenseClassifier
@@ -10,15 +9,16 @@ import io.github.jmatsu.license.poko.LicenseKey
 import io.github.jmatsu.license.poko.PlainLicense
 import io.github.jmatsu.license.poko.Scope
 import io.github.jmatsu.license.presentation.Convention
+import kotlinx.serialization.builtins.ListSerializer
 import java.io.File
 import javax.inject.Inject
 import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.TaskAction
+import org.jetbrains.annotations.VisibleForTesting
 
 abstract class MigrateLicenseToolsDefinitionTask
 @Inject constructor(
@@ -40,7 +40,7 @@ abstract class MigrateLicenseToolsDefinitionTask
             toolsLicenseFile: File,
             ignoredGroups: Set<String>
         ) {
-            val toolsLicenses = Yaml.default.parse(LibraryInfo.serializer().list, toolsLicenseFile.readText())
+            val toolsLicenses = Yaml.default.decodeFromString(ListSerializer(LibraryInfo.serializer()), toolsLicenseFile.readText())
 
             val keyToToolsLicenseMap = toolsLicenses.map {
                 it.artifact.split(":").take(2).joinToString(":") to it
@@ -90,9 +90,9 @@ abstract class MigrateLicenseToolsDefinitionTask
 
             val artifactMap = mapOf(Scope(targetVariant) to definitions.collectToMapByArtifactGroup())
 
-            val serializer = MapSerializer(Scope.serializer(), MapSerializer(String.serializer(), ArtifactDefinition.serializer().list))
-            artifactFile.writeText(formatter.stringify(serializer, artifactMap))
-            licenseFile.writeText(formatter.stringify(PlainLicense.serializer().list, licenses))
+            val serializer = MapSerializer(Scope.serializer(), MapSerializer(String.serializer(), ListSerializer(ArtifactDefinition.serializer())))
+            artifactFile.writeText(formatter.encodeToString(serializer, artifactMap))
+            licenseFile.writeText(formatter.encodeToString(ListSerializer(PlainLicense.serializer()), licenses))
 
             artifactIgnoreFile.writeText(
                 (

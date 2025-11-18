@@ -1,8 +1,8 @@
 package io.github.jmatsu.license.ext
 
 import kotlin.test.expect
-import org.junit.Test
 import org.junit.jupiter.api.assertThrows
+import kotlin.test.Test
 
 class SetTest {
 

@@ -6,8 +6,8 @@ import io.github.jmatsu.license.poko.ArtifactDefinition
 import io.github.jmatsu.license.poko.PlainLicense
 import io.github.jmatsu.license.poko.Scope
 import kotlinx.serialization.StringFormat
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
 
 class Assembler(
@@ -24,16 +24,16 @@ class Assembler(
 
         return when (style) {
             Style.Flatten -> {
-                val serializer = ArtifactDefinition.serializer().list
-                format.stringify(serializer, scopedArtifacts.values.flatten().sorted())
+                val serializer = ListSerializer(ArtifactDefinition.serializer())
+                format.encodeToString(serializer, scopedArtifacts.values.flatten().sorted())
             }
             Style.StructuredWithoutScope -> {
-                val serializer = MapSerializer(String.serializer(), ArtifactDefinition.serializer().list)
-                format.stringify(serializer, scopedArtifacts.values.flatten().collectToMapByArtifactGroup())
+                val serializer = MapSerializer(String.serializer(), ListSerializer(ArtifactDefinition.serializer()))
+                format.encodeToString(serializer, scopedArtifacts.values.flatten().collectToMapByArtifactGroup())
             }
             Style.StructuredWithScope -> {
-                val serializer = MapSerializer(Scope.serializer(), MapSerializer(String.serializer(), ArtifactDefinition.serializer().list))
-                format.stringify(serializer, scopedArtifacts.mapValues { (_, artifacts) -> artifacts.collectToMapByArtifactGroup() })
+                val serializer = MapSerializer(Scope.serializer(), MapSerializer(String.serializer(), ListSerializer(ArtifactDefinition.serializer())))
+                format.encodeToString(serializer, scopedArtifacts.mapValues { (_, artifacts) -> artifacts.collectToMapByArtifactGroup() })
             }
         }
     }
@@ -45,7 +45,7 @@ class Assembler(
             LicenseListPlugin.logger?.info(it.key.toString())
         }
 
-        return format.stringify(PlainLicense.serializer().list, licenses)
+        return format.encodeToString(ListSerializer(PlainLicense.serializer()), licenses)
     }
 }
 

@@ -58,10 +58,10 @@ dependencies {
 }
 
 kotlinter {
-    ignoreFailures = false
+    ignoreLintFailures = false
     reporters = arrayOf("checkstyle", "html")
-    experimentalRules = false
-    fileBatchSize = 30
+//    experimentalRules = false
+//    fileBatchSize = 30
 }
 
 java {

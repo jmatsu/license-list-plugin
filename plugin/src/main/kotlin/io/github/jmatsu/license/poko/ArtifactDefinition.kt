@@ -1,17 +1,17 @@
 package io.github.jmatsu.license.poko
 
-import kotlinx.serialization.Decoder
-import kotlinx.serialization.Encoder
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Required
-import kotlinx.serialization.SerialDescriptor
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
 import kotlinx.serialization.Transient
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 private typealias PokoArtifactDefinition = io.github.jmatsu.license.schema.ArtifactDefinition<LicenseKey>
 
-@Serializable
+@Serializable(ArtifactDefinition.Companion::class)
 data class ArtifactDefinition(
     override val key: String,
     override val displayName: String,
@@ -42,16 +42,13 @@ data class ArtifactDefinition(
     /**
      * The serializer that deserializes keep properly and serializes *keep* attribute iff it's true
      */
-    @Serializer(forClass = ArtifactDefinition::class)
     companion object : KSerializer<ArtifactDefinition> {
         private val coreSerializer: KSerializer<OptionalKeep>
             get() = OptionalKeep.serializer()
 
         override val descriptor: SerialDescriptor by lazy {
             // Rename
-            object : SerialDescriptor by coreSerializer.descriptor {
-                override val serialName: String = "ArtifactDefinition"
-            }
+            buildClassSerialDescriptor("ArtifactDefinition")
         }
 
         override fun deserialize(decoder: Decoder): ArtifactDefinition {
