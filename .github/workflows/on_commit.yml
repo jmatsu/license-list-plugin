@@ -28,12 +28,12 @@ jobs:
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
       - name: Build
         run: ./gradlew jar
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: success()
         with:
           name: plugin-jar
           path: plugin/build/libs
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: success()
         with:
           name: schema-jar
