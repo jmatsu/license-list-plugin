@@ -58,10 +58,9 @@ commands:
 
             if [ -z "${distribution}" ]; then
               echo 'jdk << parameters.jdk-version >> is not found so try to install from apt'
-              sudo apt-get update && sudo apt-get install -y \
-                  openjdk-<< parameters.jdk-version >>-jdk
-                && \
-                sudo rm -rf /var/lib/apt/lists/*
+              sudo apt-get update
+              sudo apt-get install -y openjdk-<< parameters.jdk-version >>-jdk
+              sudo rm -rf /var/lib/apt/lists/*
             fi
 
             distribution="$(update-java-alternatives -l | grep "java-1.<< parameters.jdk-version >>" | cut -d " " -f1)"
