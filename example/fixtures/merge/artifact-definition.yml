@@ -38,21 +38,6 @@ yellowBlueRelease:
       url: null
       copyrightHolders: []
       licenses: []
-  com.xwray:
-    - key: groupie
-      displayName: Groupie
-      url: https://github.com/xwray/groupie
-      copyrightHolders:
-        - Lisa Wray
-      licenses:
-        - mit
-    - key: groupie-databinding
-      displayName: Groupie
-      url: https://github.com/xwray/groupie
-      copyrightHolders:
-        - Lisa Wray
-      licenses:
-        - mit
   io.github.jmatsu:
     - key: license-list-schema
       displayName: Schema of License List Gradle Plugin

@@ -394,21 +394,6 @@ yellowBlueRelease:
       url: null
       copyrightHolders: []
       licenses: []
-  com.xwray:
-    - key: groupie
-      displayName: Groupie
-      url: https://github.com/xwray/groupie
-      copyrightHolders:
-        - Lisa Wray
-      licenses:
-        - mit
-    - key: groupie-databinding
-      displayName: Groupie
-      url: https://github.com/xwray/groupie
-      copyrightHolders:
-        - Lisa Wray
-      licenses:
-        - mit
   commons-codec:
     - key: commons-codec
       displayName: Apache Commons Codec

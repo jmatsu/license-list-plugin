@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    id("com.cookpad.android.licensetools")
+    // id("com.cookpad.android.licensetools")
 }
 
 android {
@@ -49,7 +49,7 @@ android {
 
 repositories {
     google()
-    jcenter()
+    mavenCentral()
     mavenLocal()
 }
 
@@ -65,8 +65,6 @@ dependencies {
 
     implementation("androidx.recyclerview:recyclerview:1.1.0")
     implementation("com.google.android.material:material:1.2.0-alpha05")
-    implementation("com.xwray:groupie:2.7.0")
-    implementation("com.xwray:groupie-databinding:2.7.0")
 
     implementation("com.squareup.moshi:moshi:1.9.2")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.9.2")

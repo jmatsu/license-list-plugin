@@ -22,21 +22,6 @@ yellowBlueRelease:
           - The Android Open Source Project
         licenses:
           - apache-2.0
-    androidx.appcompat:
-      - key: appcompat
-        displayName: Android AppCompat Library v7
-        url: https://developer.android.com/jetpack/androidx
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
-      - key: appcompat-resources
-        displayName: Android Resources Library
-        url: https://developer.android.com/jetpack/androidx
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
     androidx.arch.core:
       - key: core-common
         displayName: Android Arch-Common
@@ -280,8 +265,8 @@ yellowBlueRelease:
           - apache-2.0
     com.android.databinding:
       - key: baseLibrary
-        displayName: Data Binding Base Library
-        url: https://developer.android.com/studio
+        displayName: com.android.databinding.baseLibrary
+        url: http://tools.android.com/
         copyrightHolders:
           - The Android Open Source Project
         licenses:
@@ -409,21 +394,6 @@ yellowBlueRelease:
         url: null
         copyrightHolders: []
         licenses: []
-    com.xwray:
-      - key: groupie
-        displayName: Groupie
-        url: https://github.com/xwray/groupie
-        copyrightHolders:
-          - Lisa Wray
-        licenses:
-          - mit
-      - key: groupie-databinding
-        displayName: Groupie
-        url: https://github.com/xwray/groupie
-        copyrightHolders:
-          - Lisa Wray
-        licenses:
-          - mit
     commons-codec:
       - key: commons-codec
         displayName: Apache Commons Codec
@@ -467,6 +437,39 @@ yellowBlueRelease:
           - Jumpei Matsuda
         licenses:
           - mit
+    jakarta.activation:
+      - key: jakarta.activation-api
+        displayName: JavaBeans Activation Framework API jar
+        url: null
+        copyrightHolders: []
+        licenses: []
+    jakarta.xml.bind:
+      - key: jakarta.xml.bind-api
+        displayName: jakarta.xml.bind-api
+        url: null
+        copyrightHolders: []
+        licenses: []
+    javax.activation:
+      - key: activation
+        displayName: JavaBeans Activation Framework (JAF)
+        url: http://java.sun.com/products/javabeans/jaf/index.jsp
+        copyrightHolders: []
+        licenses:
+          - Common Development and Distribution License (CDDL) v1.0@51
+    javax.xml.stream:
+      - key: stax-api
+        displayName: Streaming API for XML
+        url: null
+        copyrightHolders: []
+        licenses:
+          - GNU General Public Library@35
+          - COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0@33
+    local-file:
+      - key: ktlint-html-reporter-0.2.0.jar
+        displayName: ktlint-html-reporter-0.2.0
+        url: null
+        copyrightHolders: []
+        licenses: []
     org.antlr:
       - key: antlr4
         displayName: ANTLR 4 Tool
@@ -544,6 +547,15 @@ yellowBlueRelease:
           - Kotlin Team
         licenses:
           - apache-2.0
+    org.jvnet.staxex:
+      - key: stax-ex
+        displayName: Extended StAX API
+        url: https://github.com/eclipse-ee4j/jaxb-stax-ex
+        copyrightHolders:
+          - Roman Grigoriadi
+          - Zheng Jun Li
+        licenses:
+          - Eclipse Distribution License - v 1.0@48
 test:
     junit:
       - key: junit
@@ -573,13 +585,6 @@ androidTest:
           - apache-2.0
     com.android.support.test:
       - key: monitor
-        displayName: Android Testing Support Library
-        url: https://developer.android.com/testing
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
-      - key: runner
         displayName: Android Testing Support Library
         url: https://developer.android.com/testing
         copyrightHolders:
