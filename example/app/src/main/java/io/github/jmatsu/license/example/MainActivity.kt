@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.GroupieViewHolder
+// import com.xwray.groupie.GroupAdapter
+// import com.xwray.groupie.GroupieViewHolder
 import io.github.jmatsu.license.example.liststyle.CardItem
 import io.github.jmatsu.license.example.liststyle.SpaceItemDecoration
 import io.github.jmatsu.license.example.poko.ArtifactDifinitionPoko
@@ -22,8 +22,8 @@ class MainActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.addItemDecoration(SpaceItemDecoration())
 
-        val adapter = GroupAdapter<GroupieViewHolder>()
-        recyclerView.adapter = adapter
+        // val adapter = GroupAdapter<GroupieViewHolder>()
+        // recyclerView.adapter = adapter
 
         val text = assets.open("license-list.json").bufferedReader().readText()
         val moshi = Moshi.Builder().add(LicenseKeyPoko.Adapter).build()
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
                 definition = def
             )
         }.also { items ->
-            adapter.update(items)
+            // adapter.update(items)
         }
     }
 

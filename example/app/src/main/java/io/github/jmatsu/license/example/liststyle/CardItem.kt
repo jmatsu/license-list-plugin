@@ -5,11 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.core.text.HtmlCompat
 import androidx.core.view.children
-import com.xwray.groupie.databinding.BindableItem
+// import com.xwray.groupie.databinding.BindableItem
 import io.github.jmatsu.license.example.R
 import io.github.jmatsu.license.example.databinding.ListitemBodyBinding
 import io.github.jmatsu.license.example.databinding.ListitemLicenseBinding
 import io.github.jmatsu.license.example.poko.ArtifactDifinitionPoko
+
+abstract class BindableItem<T>() {
+    abstract fun getLayout(): Int
+    abstract fun bind(viewBinding: T, position: Int)
+}
 
 class CardItem(
     val definition: ArtifactDifinitionPoko
