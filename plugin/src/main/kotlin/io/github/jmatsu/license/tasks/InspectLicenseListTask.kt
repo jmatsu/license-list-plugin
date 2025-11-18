@@ -1,7 +1,6 @@
 package io.github.jmatsu.license.tasks
 
 import com.android.build.gradle.api.ApplicationVariant
-import com.google.common.annotations.VisibleForTesting
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.presentation.ArtifactInspector
 import io.github.jmatsu.license.presentation.Disassembler
@@ -13,6 +12,7 @@ import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.api.tasks.TaskAction
+import org.jetbrains.annotations.VisibleForTesting
 
 abstract class InspectLicenseListTask
 @Inject constructor(

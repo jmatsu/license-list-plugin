@@ -1,17 +1,17 @@
 package io.github.jmatsu.license.migration
 
-import kotlinx.serialization.CompositeDecoder
-import kotlinx.serialization.Decoder
-import kotlinx.serialization.Encoder
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerialDescriptor
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.Serializer
-import kotlinx.serialization.builtins.list
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
-@Serializable
+@Serializable(LibraryInfo.Companion::class)
 data class LibraryInfo(
     val artifact: String,
     val name: String = "",
@@ -27,9 +27,8 @@ data class LibraryInfo(
     val copyrightHolders: List<String> = emptyList(),
     val author: String = ""
 ) {
-    @Serializer(forClass = LibraryInfo::class)
     companion object : KSerializer<LibraryInfo> {
-        override val descriptor: SerialDescriptor = SerialDescriptor("LibraryInfo") {
+        override val descriptor: SerialDescriptor = buildClassSerialDescriptor("LibraryInfo") {
             element("artifact", String.serializer().descriptor)
             element("name", String.serializer().descriptor, isOptional = true)
             element("filename", String.serializer().descriptor, isOptional = true)
@@ -40,8 +39,8 @@ data class LibraryInfo(
             element("url", String.serializer().descriptor, isOptional = true)
             element("skip", Boolean.serializer().descriptor, isOptional = true)
             element("forceGenerate", Boolean.serializer().descriptor, isOptional = true)
-            element("authors", String.serializer().list.descriptor, isOptional = true)
-            element("copyrightHolders", String.serializer().list.descriptor, isOptional = true)
+            element("authors", ListSerializer(String.serializer()).descriptor, isOptional = true)
+            element("copyrightHolders", ListSerializer(String.serializer()).descriptor, isOptional = true)
             element("author", String.serializer().descriptor, isOptional = true)
         }
 
@@ -63,7 +62,7 @@ data class LibraryInfo(
             decoder.beginStructure(descriptor).apply {
                 loop@ while (true) {
                     when (val index = decodeElementIndex(descriptor)) {
-                        CompositeDecoder.READ_DONE -> break@loop
+                        CompositeDecoder.DECODE_DONE -> break@loop
                         0 -> artifact = decodeStringElement(descriptor, index)
                         1 -> name = decodeStringElement(descriptor, index)
                         2 -> filename = decodeStringElement(descriptor, index)
@@ -74,8 +73,8 @@ data class LibraryInfo(
                         7 -> url = decodeStringElement(descriptor, index)
                         8 -> skip = decodeBooleanElement(descriptor, index)
                         9 -> forceGenerate = decodeBooleanElement(descriptor, index)
-                        10 -> authors = decodeSerializableElement(descriptor, index, String.serializer().list)
-                        11 -> copyrightHolders = decodeSerializableElement(descriptor, index, String.serializer().list)
+                        10 -> authors = decodeSerializableElement(descriptor, index, ListSerializer(String.serializer()))
+                        11 -> copyrightHolders = decodeSerializableElement(descriptor, index, ListSerializer(String.serializer()))
                         12 -> author = decodeStringElement(descriptor, index)
                         else -> throw SerializationException("Unknown index $index")
                     }

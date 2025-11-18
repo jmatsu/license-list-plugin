@@ -6,15 +6,15 @@ import io.github.jmatsu.license.internal.ArtifactManagement
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import org.junit.Before
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import kotlin.test.BeforeTest
 
 class AssemblyOptionsImplTest {
 
     lateinit var options: AssemblyOptions
 
-    @Before
+    @BeforeTest
     fun setup() {
         options = AssemblyOptionsImpl(
             name = "default"
