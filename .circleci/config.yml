@@ -54,7 +54,17 @@ commands:
       - run:
           name: Get the ditribution name to use
           command: |
-            readonly distribution="$(update-java-alternatives -l | grep "java-1.<< parameters.jdk-version >>" | cut -d " " -f1)"
+            distribution="$(update-java-alternatives -l | grep "java-1.<< parameters.jdk-version >>" | cut -d " " -f1)"
+
+            if [ -z "${distribution}" ]; then
+              echo 'jdk << parameters.jdk-version >> is not found so try to install from apt'
+              sudo apt-get update && sudo apt-get install -y \
+                  openjdk-<< parameters.jdk-version >>-jdk
+                && \
+                sudo rm -rf /var/lib/apt/lists/*
+            fi
+
+            distribution="$(update-java-alternatives -l | grep "java-1.<< parameters.jdk-version >>" | cut -d " " -f1)"
 
             if [ -z "${distribution}" ]; then
               echo "Couldn't get the jdk distribution name. Please check if the command above works." 1>&2
