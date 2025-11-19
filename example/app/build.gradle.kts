@@ -1,34 +1,35 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
     id("io.github.jmatsu.license-list")
 }
 
 android {
-    compileSdkVersion(29)
+    compileSdk = 36
 
     defaultConfig {
-        minSdkVersion(23)
-        targetSdkVersion(29)
+        namespace = "io.github.jmatsu.license.example"
+        minSdk = 23
+        targetSdk = 29
         versionCode = 1
         versionName = "1.0"
     }
 
-    flavorDimensions("one", "two")
+    flavorDimensions += arrayOf("one", "two")
 
     productFlavors {
         create("yellow") {
-            setDimension("one")
+            dimension = "one"
         }
         create("red") {
-            setDimension("one")
+            dimension = "one"
         }
         create("white") {
-            setDimension("two")
+            dimension = "two"
         }
         create("blue") {
-            setDimension("two")
+            dimension = "two"
         }
     }
 
@@ -38,13 +39,6 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("debug")
         }
-    }
-
-    viewBinding {
-        isEnabled = false
-    }
-    dataBinding {
-        isEnabled = true
     }
 }
 
@@ -66,15 +60,15 @@ dependencies {
         include("*.jar")
     })
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.71")
-    implementation("androidx.core:core-ktx:1.3.0-alpha02")
-    implementation("androidx.appcompat:appcompat:1.2.0-alpha03")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.21")
+    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.appcompat:appcompat:1.7.1")
 
-    implementation("androidx.recyclerview:recyclerview:1.1.0")
-    implementation("com.google.android.material:material:1.2.0-alpha05")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
+    implementation("com.google.android.material:material:1.13.0")
 
-    implementation("com.squareup.moshi:moshi:1.9.2")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.9.2")
+    implementation("com.squareup.moshi:moshi:1.15.2")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.2")
 
     // sampleConfiguration is included by `implementation` so this plugin will collect sampleConfiguration as well without any setup
     sampleConfiguration("io.github.jmatsu:license-list-schema:${rootProject.file("../VERSION").readText().trim()}")
@@ -87,14 +81,6 @@ dependencies {
     testImplementation("junit:junit:4.12")
     androidTestImplementation("com.android.support.test:runner:1.0.2")
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
-}
-
-kapt {
-    correctErrorTypes = true
-
-    javacOptions {
-        option("-Xmaxerrs", 500)
-    }
 }
 
 licenseList {
@@ -123,5 +109,11 @@ licenseList {
                 format = properties["visualizationFormat"] as? String ?: "html"
             }
         }
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
