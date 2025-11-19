@@ -80,11 +80,15 @@ commands:
         type: string
     steps:
       - run:
-          name: Dirty hack # https://github.com/CircleCI-Public/cimg-android/blob/1b1a9bf01dd11e3fa549ad42da0f23128ccbcb8b/2021.08/Dockerfile#L25
-          command: echo "export PATH=/usr/local/gradle-${GRADLE_VERSION}/bin:$PATH" >> $BASH_ENV
-      - run:
           name: Use the specified Gradle version
-          command: gradle wrapper --gradle-version << parameters.gradle-version >> --distribution-type bin
+          command: |
+            cat<<EOF > gradle/wrapper/gradle-wrapper.properties
+            distributionBase=GRADLE_USER_HOME
+            distributionPath=wrapper/dists
+            distributionUrl=https\://services.gradle.org/distributions/gradle-<< parameters.gradle-version >>-bin.zip
+            zipStoreBase=GRADLE_USER_HOME
+            zipStorePath=wrapper/dists
+            EOF
 
 jobs:
   install_plugin_jars:
@@ -103,10 +107,10 @@ jobs:
     parameters: &build_env_parameters
       jdk-version:
         type: string
-        description: JDK version. 8 or 11
+        description: JDK version
       gradle-version:
         type: string
-        description: Gradle version. e.g. 6.0.2
+        description: Gradle version2
     executor: android
     steps:
       - setup_workspace
@@ -168,12 +172,12 @@ workflows:
             - install_plugin_jars
           matrix:
             parameters:
-              jdk-version: ['8', '11'] #, '17']
-              gradle-version: ['6.7.1', '7.0.2', '7.2'] # '9.0' needs AGP upgrade
+              jdk-version: ['17']
+              gradle-version: ['8.13.4'] # '9.0'
       - schema_test:
           requires:
             - install_plugin_jars
           matrix:
             parameters:
-              jdk-version: ['8', '11'] #, '17']
-              gradle-version: ['6.7.1', '7.0.2', '7.2'] # '9.0' needs AGP upgrade
+              jdk-version: ['17']
+              gradle-version: ['8.13.4'] # '9.0'
