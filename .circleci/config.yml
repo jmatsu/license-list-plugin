@@ -82,7 +82,7 @@ commands:
       - run:
           name: Use the specified Gradle version
           command: |
-            cat<<EOF > gradle/wrapper/gradle-wrapper.properties
+            cat\<<EOF > gradle/wrapper/gradle-wrapper.properties
             distributionBase=GRADLE_USER_HOME
             distributionPath=wrapper/dists
             distributionUrl=https\://services.gradle.org/distributions/gradle-<< parameters.gradle-version >>-bin.zip
