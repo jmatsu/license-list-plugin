@@ -173,11 +173,11 @@ workflows:
           matrix:
             parameters:
               jdk-version: ['17']
-              gradle-version: ['8.13.4'] # '9.0'
+              gradle-version: ['8.14.3'] # '9.0'
       - schema_test:
           requires:
             - install_plugin_jars
           matrix:
             parameters:
               jdk-version: ['17']
-              gradle-version: ['8.13.4'] # '9.0'
+              gradle-version: ['8.14.3'] # '9.0'
