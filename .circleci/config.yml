@@ -85,7 +85,7 @@ jobs:
       - restore_gradle_cache:
           cache_name: example-<< parameters.gradle-version >>
       - run: java -version
-      - run: ./gradlew assembleYellowBlueRelease --stacktrace # it's okay if succeed
+      - run: ./gradlew assembleYellowBlueDebug --stacktrace # it's okay if succeed
 
   acceptance_test:
     parameters: *build_env_parameters
