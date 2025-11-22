@@ -2,22 +2,22 @@ yellowBlueRelease:
     androidx.activity:
       - key: activity
         displayName: Activity
-        url: https://developer.android.com/jetpack/androidx
+        url: https://developer.android.com/jetpack/androidx/releases/activity#1.8.0
         copyrightHolders:
           - The Android Open Source Project
         licenses:
           - apache-2.0
     androidx.annotation:
-      - key: annotation
-        displayName: Android Support Library Annotations
-        url: http://developer.android.com/tools/extras/support-library.html
+      - key: annotation-experimental
+        displayName: Experimental annotation
+        url: https://developer.android.com/jetpack/androidx/releases/annotation#1.4.1
         copyrightHolders:
           - The Android Open Source Project
         licenses:
           - apache-2.0
-      - key: annotation-experimental
-        displayName: Experimental annotation
-        url: https://developer.android.com/jetpack/androidx
+      - key: annotation-jvm
+        displayName: Annotation
+        url: https://developer.android.com/jetpack/androidx/releases/annotation#1.8.1
         copyrightHolders:
           - The Android Open Source Project
         licenses:
@@ -25,14 +25,14 @@ yellowBlueRelease:
     androidx.arch.core:
       - key: core-common
         displayName: Android Arch-Common
-        url: https://developer.android.com/topic/libraries/architecture/index.html
+        url: https://developer.android.com/jetpack/androidx/releases/arch-core#2.2.0
         copyrightHolders:
           - The Android Open Source Project
         licenses:
           - apache-2.0
       - key: core-runtime
         displayName: Android Arch-Runtime
-        url: https://developer.android.com/topic/libraries/architecture/index.html
+        url: https://developer.android.com/jetpack/androidx/releases/arch-core#2.2.0
         copyrightHolders:
           - The Android Open Source Project
         licenses:
@@ -46,9 +46,32 @@ yellowBlueRelease:
         licenses:
           - apache-2.0
     androidx.collection:
-      - key: collection
-        displayName: Android Support Library collections
-        url: http://developer.android.com/tools/extras/support-library.html
+      - key: collection-jvm
+        displayName: collections
+        url: https://developer.android.com/jetpack/androidx/releases/collection#1.4.2
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.concurrent:
+      - key: concurrent-futures
+        displayName: AndroidX Futures
+        url: https://developer.android.com/topic/libraries/architecture/index.html
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.constraintlayout:
+      - key: constraintlayout
+        displayName: Android ConstraintLayout
+        url: http://tools.android.com
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+      - key: constraintlayout-core
+        displayName: Android ConstraintLayout Core
+        url: http://tools.android.com
         copyrightHolders:
           - The Android Open Source Project
         licenses:
@@ -63,15 +86,22 @@ yellowBlueRelease:
           - apache-2.0
     androidx.core:
       - key: core
-        displayName: Android Support Library compat
-        url: https://developer.android.com/jetpack/androidx
+        displayName: Core
+        url: https://developer.android.com/jetpack/androidx/releases/core#1.17.0
         copyrightHolders:
           - The Android Open Source Project
         licenses:
           - apache-2.0
       - key: core-ktx
         displayName: Core Kotlin Extensions
-        url: https://developer.android.com/jetpack/androidx
+        url: https://developer.android.com/jetpack/androidx/releases/core#1.17.0
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+      - key: core-viewtree
+        displayName: androidx.core:core-viewtree
+        url: https://developer.android.com/jetpack/androidx/releases/core#1.0.0
         copyrightHolders:
           - The Android Open Source Project
         licenses:
@@ -87,55 +117,45 @@ yellowBlueRelease:
     androidx.customview:
       - key: customview
         displayName: Android Support Library Custom View
-        url: http://developer.android.com/tools/extras/support-library.html
+        url: https://developer.android.com/jetpack/androidx
         copyrightHolders:
           - The Android Open Source Project
         licenses:
           - apache-2.0
-    androidx.databinding:
-      - key: databinding-adapters
-        displayName: databinding-adapters
-        url: null
-        copyrightHolders: []
-        licenses:
-          - apache-2.0
-      - key: databinding-common
-        displayName: androidx.databinding.databinding-common
-        url: http://tools.android.com/
+      - key: customview-poolingcontainer
+        displayName: androidx.customview:poolingcontainer
+        url: https://developer.android.com/jetpack/androidx/releases/customview#1.0.0
         copyrightHolders:
           - The Android Open Source Project
-        licenses:
-          - apache-2.0
-      - key: databinding-compiler
-        displayName: androidx.databinding.databinding-compiler
-        url: http://tools.android.com/
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
-      - key: databinding-compiler-common
-        displayName: androidx.databinding.databinding-compiler-common
-        url: http://tools.android.com/
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
-      - key: databinding-runtime
-        displayName: databinding-runtime
-        url: null
-        copyrightHolders: []
-        licenses:
-          - apache-2.0
-      - key: viewbinding
-        displayName: viewbinding
-        url: null
-        copyrightHolders: []
         licenses:
           - apache-2.0
     androidx.drawerlayout:
       - key: drawerlayout
         displayName: Android Support Library Drawer Layout
-        url: http://developer.android.com/tools/extras/support-library.html
+        url: https://developer.android.com/jetpack/androidx
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.dynamicanimation:
+      - key: dynamicanimation
+        displayName: DynamicAnimation
+        url: https://developer.android.com/jetpack/androidx/releases/dynamicanimation#1.1.0
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.emoji2:
+      - key: emoji2
+        displayName: Android Emoji2 Compat
+        url: https://developer.android.com/jetpack/androidx/releases/emoji2#1.3.0
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+      - key: emoji2-views-helper
+        displayName: Android Emoji2 Compat view helpers
+        url: https://developer.android.com/jetpack/androidx/releases/emoji2#1.3.0
         copyrightHolders:
           - The Android Open Source Project
         licenses:
@@ -143,7 +163,15 @@ yellowBlueRelease:
     androidx.fragment:
       - key: fragment
         displayName: Android Support Library fragment
-        url: https://developer.android.com/jetpack/androidx
+        url: https://developer.android.com/jetpack/androidx/releases/fragment#1.5.4
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.graphics:
+      - key: graphics-shapes-desktop
+        displayName: Graphics Shapes
+        url: https://developer.android.com/jetpack/androidx/releases/graphics#1.0.1
         copyrightHolders:
           - The Android Open Source Project
         licenses:
@@ -159,35 +187,49 @@ yellowBlueRelease:
     androidx.lifecycle:
       - key: lifecycle-common
         displayName: Android Lifecycle-Common
-        url: https://developer.android.com/topic/libraries/architecture/index.html
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle#2.6.2
         copyrightHolders:
           - The Android Open Source Project
         licenses:
           - apache-2.0
       - key: lifecycle-livedata
         displayName: Android Lifecycle LiveData
-        url: https://developer.android.com/topic/libraries/architecture/index.html
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle#2.6.2
         copyrightHolders:
           - The Android Open Source Project
         licenses:
           - apache-2.0
       - key: lifecycle-livedata-core
         displayName: Android Lifecycle LiveData Core
-        url: https://developer.android.com/topic/libraries/architecture/index.html
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle#2.6.2
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+      - key: lifecycle-process
+        displayName: Android Lifecycle Process
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle#2.6.2
         copyrightHolders:
           - The Android Open Source Project
         licenses:
           - apache-2.0
       - key: lifecycle-runtime
         displayName: Android Lifecycle Runtime
-        url: https://developer.android.com/topic/libraries/architecture/index.html
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle#2.6.2
         copyrightHolders:
           - The Android Open Source Project
         licenses:
           - apache-2.0
       - key: lifecycle-viewmodel
         displayName: Android Lifecycle ViewModel
-        url: https://developer.android.com/topic/libraries/architecture/index.html
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle#2.6.2
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+      - key: lifecycle-viewmodel-savedstate
+        displayName: Android Lifecycle ViewModel with SavedState
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle#2.6.2
         copyrightHolders:
           - The Android Open Source Project
         licenses:
@@ -200,26 +242,58 @@ yellowBlueRelease:
           - The Android Open Source Project
         licenses:
           - apache-2.0
+    androidx.profileinstaller:
+      - key: profileinstaller
+        displayName: androidx.profileinstaller:profileinstaller
+        url: https://developer.android.com/jetpack/androidx/releases/profileinstaller#1.3.1
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
     androidx.recyclerview:
       - key: recyclerview
-        displayName: Android Support RecyclerView v7
-        url: https://developer.android.com/jetpack/androidx
+        displayName: RecyclerView
+        url: https://developer.android.com/jetpack/androidx/releases/recyclerview#1.4.0
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.resourceinspection:
+      - key: resourceinspection-annotation
+        displayName: Android Resource Inspection - Annotations
+        url: https://developer.android.com/jetpack/androidx/releases/resourceinspection#1.0.1
         copyrightHolders:
           - The Android Open Source Project
         licenses:
           - apache-2.0
     androidx.savedstate:
       - key: savedstate
-        displayName: Activity
-        url: https://developer.android.com/jetpack/androidx
+        displayName: Saved State
+        url: https://developer.android.com/jetpack/androidx/releases/savedstate#1.2.1
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.startup:
+      - key: startup-runtime
+        displayName: Android App Startup Runtime
+        url: https://developer.android.com/jetpack/androidx/releases/startup#1.1.1
+        copyrightHolders:
+          - The Android Open Source Project
+        licenses:
+          - apache-2.0
+    androidx.tracing:
+      - key: tracing
+        displayName: Android Tracing
+        url: https://developer.android.com/jetpack/androidx/releases/tracing#1.2.0
         copyrightHolders:
           - The Android Open Source Project
         licenses:
           - apache-2.0
     androidx.transition:
       - key: transition
-        displayName: Android Transition Support Library
-        url: https://developer.android.com/jetpack/androidx
+        displayName: Transition
+        url: https://developer.android.com/jetpack/androidx/releases/transition#1.5.0
         copyrightHolders:
           - The Android Open Source Project
         licenses:
@@ -257,32 +331,8 @@ yellowBlueRelease:
           - apache-2.0
     androidx.viewpager2:
       - key: viewpager2
-        displayName: AndroidX Widget ViewPager2
-        url: https://developer.android.com/jetpack/androidx
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
-    com.android.databinding:
-      - key: baseLibrary
-        displayName: com.android.databinding.baseLibrary
-        url: http://tools.android.com/
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
-    com.android.tools:
-      - key: annotations
-        displayName: com.android.tools.annotations
-        url: http://tools.android.com/
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
-    com.android.tools.build.jetifier:
-      - key: jetifier-core
-        displayName: Android Jetifier Core
-        url: https://developer.android.com/jetpack/androidx
+        displayName: ViewPager2
+        url: https://developer.android.com/jetpack/androidx/releases/viewpager2#1.1.0-beta02
         copyrightHolders:
           - The Android Open Source Project
         licenses:
@@ -295,25 +345,6 @@ yellowBlueRelease:
           - The Android Open Source Project
         licenses:
           - apache-2.0
-    com.google.auto:
-      - key: auto-common
-        displayName: Auto Common Libraries
-        url: http://github.com/google/auto
-        copyrightHolders: []
-        licenses: []
-    com.google.code.findbugs:
-      - key: jsr305
-        displayName: FindBugs-jsr305
-        url: http://findbugs.sourceforge.net/
-        copyrightHolders: []
-        licenses:
-          - apache-2.0
-    com.google.code.gson:
-      - key: gson
-        displayName: Gson
-        url: null
-        copyrightHolders: []
-        licenses: []
     com.google.errorprone:
       - key: error_prone_annotations
         displayName: error-prone annotations
@@ -322,113 +353,27 @@ yellowBlueRelease:
         licenses:
           - apache-2.0
     com.google.guava:
-      - key: failureaccess
-        displayName: Guava InternalFutureFailureAccess and InternalFutures
-        url: null
-        copyrightHolders: []
-        licenses: []
-      - key: guava
-        displayName: 'Guava: Google Core Libraries for Java'
-        url: null
-        copyrightHolders: []
-        licenses: []
       - key: listenablefuture
         displayName: Guava ListenableFuture only
         url: null
         copyrightHolders: []
         licenses: []
-    com.google.j2objc:
-      - key: j2objc-annotations
-        displayName: J2ObjC Annotations
-        url: https://github.com/google/j2objc/
-        copyrightHolders: []
-        licenses:
-          - apache-2.0
-    com.googlecode.juniversalchardet:
-      - key: juniversalchardet
-        displayName: juniversalchardet
-        url: http://juniversalchardet.googlecode.com/
-        copyrightHolders: []
-        licenses:
-          - Mozilla Public License 1.1 (MPL 1.1)@39
-    com.squareup:
-      - key: javapoet
-        displayName: JavaPoet
-        url: http://github.com/square/javapoet/
-        copyrightHolders: []
-        licenses:
-          - apache-2.0
-      - key: kotlinpoet
-        displayName: KotlinPoet
-        url: https://github.com/square/kotlinpoet
+    com.squareup.moshi:
+      - key: moshi
+        displayName: moshi
+        url: https://github.com/square/moshi/
         copyrightHolders:
           - Square, Inc.
         licenses:
           - apache-2.0
-    com.squareup.moshi:
-      - key: moshi
-        displayName: Moshi
-        url: null
-        copyrightHolders: []
-        licenses: []
-      - key: moshi-kotlin-codegen
-        displayName: moshi-kotlin-codegen
-        url: null
-        copyrightHolders: []
-        licenses: []
     com.squareup.okio:
-      - key: okio
-        displayName: Okio
-        url: null
-        copyrightHolders: []
-        licenses: []
-    com.sun.istack:
-      - key: istack-commons-runtime
-        displayName: istack common utility code runtime
-        url: null
-        copyrightHolders: []
-        licenses: []
-    com.sun.xml.fastinfoset:
-      - key: FastInfoset
-        displayName: fastinfoset
-        url: null
-        copyrightHolders: []
-        licenses: []
-    commons-codec:
-      - key: commons-codec
-        displayName: Apache Commons Codec
-        url: http://commons.apache.org/proper/commons-codec/
+      - key: okio-jvm
+        displayName: okio
+        url: https://github.com/square/okio/
         copyrightHolders:
-          - Henri Yandell
-          - Tim OBrien
-          - Scott Sanders
-          - Rodney Waldhoff
-          - Daniel Rall
-          - Jon S. Stevens
-          - Gary Gregory
-          - David Graham
-          - Julius Davies
-          - Thomas Neidhart
-        licenses: []
-    commons-io:
-      - key: commons-io
-        displayName: Commons IO
-        url: http://commons.apache.org/io/
-        copyrightHolders:
-          - Scott Sanders
-          - dIon Gillard
-          - Nicola Ken Barozzi
-          - Henri Yandell
-          - Stephen Colebourne
-          - Jeremias Maerki
-          - Matthew Hawthorne
-          - Martin Cooper
-          - Rob Oxspring
-          - Jochen Wiedmann
-          - Niall Pemberton
-          - Jukka Zitting
-          - Gary Gregory
-        licenses: []
+          - Square, Inc.
+        licenses:
+          - apache-2.0
     io.github.jmatsu:
       - key: license-list-schema
         displayName: Schema of License List Gradle Plugin
@@ -437,18 +382,6 @@ yellowBlueRelease:
           - Jumpei Matsuda
         licenses:
           - mit
-    jakarta.activation:
-      - key: jakarta.activation-api
-        displayName: JavaBeans Activation Framework API jar
-        url: null
-        copyrightHolders: []
-        licenses: []
-    jakarta.xml.bind:
-      - key: jakarta.xml.bind-api
-        displayName: jakarta.xml.bind-api
-        url: null
-        copyrightHolders: []
-        licenses: []
     javax.activation:
       - key: activation
         displayName: JavaBeans Activation Framework (JAF)
@@ -470,64 +403,17 @@ yellowBlueRelease:
         url: null
         copyrightHolders: []
         licenses: []
-    org.antlr:
-      - key: antlr4
-        displayName: ANTLR 4 Tool
-        url: null
-        copyrightHolders: []
-        licenses: []
-    org.checkerframework:
-      - key: checker-qual
-        displayName: Checker Qual
-        url: https://checkerframework.org
-        copyrightHolders:
-          - Michael Ernst
-          - Werner M. Dietl
-          - Suzanne Millstein
-        licenses:
-          - mit
-    org.codehaus.mojo:
-      - key: animal-sniffer-annotations
-        displayName: Animal Sniffer Annotations
-        url: null
-        copyrightHolders: []
-        licenses: []
-    org.glassfish.jaxb:
-      - key: jaxb-runtime
-        displayName: JAXB Runtime
-        url: null
-        copyrightHolders: []
-        licenses: []
-      - key: txw2
-        displayName: TXW2 Runtime
-        url: null
-        copyrightHolders: []
-        licenses: []
     org.jetbrains:
       - key: annotations
-        displayName: IntelliJ IDEA Annotations
-        url: http://www.jetbrains.org
+        displayName: JetBrains Java Annotations
+        url: https://github.com/JetBrains/java-annotations
         copyrightHolders:
           - JetBrains Team
         licenses:
           - apache-2.0
     org.jetbrains.kotlin:
-      - key: kotlin-reflect
-        displayName: org.jetbrains.kotlin:kotlin-reflect
-        url: https://kotlinlang.org/
-        copyrightHolders:
-          - Kotlin Team
-        licenses:
-          - apache-2.0
       - key: kotlin-stdlib
         displayName: Kotlin Stdlib
-        url: https://kotlinlang.org/
-        copyrightHolders:
-          - Kotlin Team
-        licenses:
-          - apache-2.0
-      - key: kotlin-stdlib-common
-        displayName: Kotlin Stdlib Common
         url: https://kotlinlang.org/
         copyrightHolders:
           - Kotlin Team
@@ -547,15 +433,38 @@ yellowBlueRelease:
           - Kotlin Team
         licenses:
           - apache-2.0
+    org.jetbrains.kotlinx:
+      - key: kotlinx-coroutines-android
+        displayName: kotlinx-coroutines-android
+        url: https://github.com/Kotlin/kotlinx.coroutines
+        copyrightHolders:
+          - JetBrains Team
+        licenses:
+          - apache-2.0
+      - key: kotlinx-coroutines-core-jvm
+        displayName: kotlinx-coroutines-core
+        url: https://github.com/Kotlin/kotlinx.coroutines
+        copyrightHolders:
+          - JetBrains Team
+        licenses:
+          - apache-2.0
+    org.jspecify:
+      - key: jspecify
+        displayName: JSpecify annotations
+        url: http://jspecify.org/
+        copyrightHolders:
+          - Kevin Bourrillion
+        licenses:
+          - apache-2.0
     org.jvnet.staxex:
       - key: stax-ex
         displayName: Extended StAX API
-        url: https://github.com/eclipse-ee4j/jaxb-stax-ex
+        url: http://stax-ex.java.net/
         copyrightHolders:
-          - Roman Grigoriadi
-          - Zheng Jun Li
+          - Jitendra Kotamraju
+          - Martin Grebac
         licenses:
-          - Eclipse Distribution License - v 1.0@48
+          - Dual license consisting of the CDDL v1.1 and GPL v2@55
 test:
     junit:
       - key: junit

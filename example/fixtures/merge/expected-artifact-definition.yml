@@ -1,90 +1,20 @@
 yellowBlueRelease:
-    com.googlecode.juniversalchardet:
-      - key: juniversalchardet
-        displayName: Modified - juniversalchardet
-        url: http://example.com
-        copyrightHolders:
-          - dummy copyrighter
-        licenses:
-          - Mozilla Public License 1.1 (MPL 1.1)@39
-    com.squareup:
-      - key: javapoet
-        displayName: JavaPoet
-        url: http://github.com/square/javapoet/
-        copyrightHolders: []
-        licenses:
-          - apache-2.0
-      - key: kotlinpoet
-        displayName: KotlinPoet
-        url: https://github.com/square/kotlinpoet
+    com.squareup.moshi:
+      - key: moshi
+        displayName: moshi
+        url: https://github.com/square/moshi/
         copyrightHolders:
           - Square, Inc.
         licenses:
           - apache-2.0
-    com.squareup.moshi:
-      - key: moshi
-        displayName: Moshi
-        url: null
-        copyrightHolders: []
-        licenses: []
-      - key: moshi-kotlin-codegen
-        displayName: moshi-kotlin-codegen
-        url: null
-        copyrightHolders: []
-        licenses: []
     com.squareup.okio:
-      - key: okio
-        displayName: Okio
-        url: null
-        copyrightHolders: []
-        licenses: []
-    com.sun.istack:
-      - key: istack-commons-runtime
-        displayName: istack common utility code runtime
-        url: null
-        copyrightHolders: []
-        licenses: []
-    com.sun.xml.fastinfoset:
-      - key: FastInfoset
-        displayName: fastinfoset
-        url: null
-        copyrightHolders: []
-        licenses: []
-    commons-codec:
-      - key: commons-codec
-        displayName: Apache Commons Codec
-        url: http://commons.apache.org/proper/commons-codec/
+      - key: okio-jvm
+        displayName: okio
+        url: https://github.com/square/okio/
         copyrightHolders:
-          - Henri Yandell
-          - Tim OBrien
-          - Scott Sanders
-          - Rodney Waldhoff
-          - Daniel Rall
-          - Jon S. Stevens
-          - Gary Gregory
-          - David Graham
-          - Julius Davies
-          - Thomas Neidhart
-        licenses: []
-    commons-io:
-      - key: commons-io
-        displayName: Commons IO
-        url: http://commons.apache.org/io/
-        copyrightHolders:
-          - Scott Sanders
-          - dIon Gillard
-          - Nicola Ken Barozzi
-          - Henri Yandell
-          - Stephen Colebourne
-          - Jeremias Maerki
-          - Matthew Hawthorne
-          - Martin Cooper
-          - Rob Oxspring
-          - Jochen Wiedmann
-          - Niall Pemberton
-          - Jukka Zitting
-          - Gary Gregory
-        licenses: []
+          - Square, Inc.
+        licenses:
+          - apache-2.0
     io.github.jmatsu:
       - key: license-list-schema
         displayName: Schema of License List Gradle Plugin
@@ -101,18 +31,6 @@ yellowBlueRelease:
         licenses:
           - new-dummy-license
         keep: true
-    jakarta.activation:
-      - key: jakarta.activation-api
-        displayName: JavaBeans Activation Framework API jar
-        url: null
-        copyrightHolders: []
-        licenses: []
-    jakarta.xml.bind:
-      - key: jakarta.xml.bind-api
-        displayName: jakarta.xml.bind-api
-        url: null
-        copyrightHolders: []
-        licenses: []
     javax.activation:
       - key: activation
         displayName: JavaBeans Activation Framework (JAF)
@@ -134,56 +52,31 @@ yellowBlueRelease:
         url: null
         copyrightHolders: []
         licenses: []
-    org.antlr:
-      - key: antlr4
-        displayName: ANTLR 4 Tool
-        url: null
-        copyrightHolders: []
-        licenses: []
-    org.checkerframework:
-      - key: checker-qual
-        displayName: Checker Qual
-        url: https://checkerframework.org
-        copyrightHolders:
-          - Michael Ernst
-          - Werner M. Dietl
-          - Suzanne Millstein
-        licenses:
-          - mit
-    org.codehaus.mojo:
-      - key: animal-sniffer-annotations
-        displayName: Animal Sniffer Annotations
-        url: null
-        copyrightHolders: []
-        licenses: []
-    org.glassfish.jaxb:
-      - key: jaxb-runtime
-        displayName: JAXB Runtime
-        url: null
-        copyrightHolders: []
-        licenses: []
-      - key: txw2
-        displayName: TXW2 Runtime
-        url: null
-        copyrightHolders: []
-        licenses: []
     org.jetbrains:
       - key: annotations
-        displayName: IntelliJ IDEA Annotations
-        url: http://www.jetbrains.org
+        displayName: JetBrains Java Annotations
+        url: https://github.com/JetBrains/java-annotations
         copyrightHolders:
           - JetBrains Team
+        licenses:
+          - apache-2.0
+    org.jspecify:
+      - key: jspecify
+        displayName: JSpecify annotations
+        url: http://jspecify.org/
+        copyrightHolders:
+          - Kevin Bourrillion
         licenses:
           - apache-2.0
     org.jvnet.staxex:
       - key: stax-ex
         displayName: Extended StAX API
-        url: https://github.com/eclipse-ee4j/jaxb-stax-ex
+        url: http://stax-ex.java.net/
         copyrightHolders:
-          - Roman Grigoriadi
-          - Zheng Jun Li
+          - Jitendra Kotamraju
+          - Martin Grebac
         licenses:
-          - Eclipse Distribution License - v 1.0@48
+          - Dual license consisting of the CDDL v1.1 and GPL v2@55
 test:
     junit:
       - key: junit

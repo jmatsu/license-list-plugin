@@ -7,15 +7,12 @@
   - key: Common Development and Distribution License (CDDL) v1.0@51
     name: Common Development and Distribution License (CDDL) v1.0
     url: https://glassfish.dev.java.net/public/CDDLv1.0.html
-  - key: Eclipse Distribution License - v 1.0@48
-    name: Eclipse Distribution License - v 1.0
-    url: http://www.eclipse.org/org/documents/edl-v10.php
+  - key: Dual license consisting of the CDDL v1.1 and GPL v2@55
+    name: Dual license consisting of the CDDL v1.1 and GPL v2
+    url: https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
   - key: GNU General Public Library@35
     name: GNU General Public Library
     url: http://www.gnu.org/licenses/gpl.txt
-  - key: Mozilla Public License 1.1 (MPL 1.1)@39
-    name: Mozilla Public License 1.1 (MPL 1.1)
-    url: http://www.mozilla.org/MPL/MPL-1.1.html
   - key: Public Domain@48
     name: Public Domain
     url: http://creativecommons.org/licenses/publicdomain

@@ -3,7 +3,7 @@ version: 2.1
 executors:
   android:
     docker:
-      - image: cimg/android:2023.02.1
+      - image: cimg/android:2025.11.1
     working_directory: ~/top/example
     environment:
       GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.daemon=false'
@@ -41,50 +41,21 @@ commands:
             - ~/.gradle
             - .gradle
           key: gradle-<< parameters.cache_version >>-{{ checksum "~/<< parameters.cache_name >>.lock" }}
-  switch_java:
-    parameters:
-      jdk-version:
-        type: string
-    steps:
-      - run:
-          name: Check the current configurations
-          command: |
-            java -version
-            update-java-alternatives --list || true
-      - run:
-          name: Get the ditribution name to use
-          command: |
-            distribution="$(update-java-alternatives -l | grep "java-1.<< parameters.jdk-version >>" | cut -d " " -f1)" || echo "update-java-alternatives fails"
-
-            if [ -z "${distribution}" ]; then
-              echo 'jdk << parameters.jdk-version >> is not found so try to install from apt'
-              sudo apt-get update
-              sudo apt-get install -y openjdk-<< parameters.jdk-version >>-jdk
-              sudo rm -rf /var/lib/apt/lists/*
-            fi
-
-            distribution="$(update-java-alternatives -l | grep "java-1.<< parameters.jdk-version >>" | cut -d " " -f1)" || echo "update-java-alternatives fails"
-
-            if [ -z "${distribution}" ]; then
-              echo "Couldn't get the jdk distribution name. Please check if the command above works." 1>&2
-              exit 1
-            fi
-
-            echo "${distribution}"
-            echo "export JDK_DISTRIBUTION_NAME=${distribution}" >> $BASH_ENV
-      - run: sudo update-java-alternatives -s "${JDK_DISTRIBUTION_NAME}" || true
-      - run: java -version
   switch_gradle:
     parameters:
       gradle-version:
         type: string
     steps:
       - run:
-          name: Dirty hack # https://github.com/CircleCI-Public/cimg-android/blob/1b1a9bf01dd11e3fa549ad42da0f23128ccbcb8b/2021.08/Dockerfile#L25
-          command: echo "export PATH=/usr/local/gradle-${GRADLE_VERSION}/bin:$PATH" >> $BASH_ENV
-      - run:
           name: Use the specified Gradle version
-          command: gradle wrapper --gradle-version << parameters.gradle-version >> --distribution-type bin
+          command: |
+            cat\<<EOF > gradle/wrapper/gradle-wrapper.properties
+            distributionBase=GRADLE_USER_HOME
+            distributionPath=wrapper/dists
+            distributionUrl=https\://services.gradle.org/distributions/gradle-<< parameters.gradle-version >>-bin.zip
+            zipStoreBase=GRADLE_USER_HOME
+            zipStorePath=wrapper/dists
+            EOF
 
 jobs:
   install_plugin_jars:
@@ -101,24 +72,20 @@ jobs:
 
   schema_test:
     parameters: &build_env_parameters
-      jdk-version:
-        type: string
-        description: JDK version. 8 or 11
       gradle-version:
         type: string
-        description: Gradle version. e.g. 6.0.2
+        description: Gradle version2
     executor: android
     steps:
       - setup_workspace
       - attach_workspace:
           at: ~/.m2
-      - switch_java:
-          jdk-version: << parameters.jdk-version >>
       - switch_gradle:
           gradle-version: << parameters.gradle-version >>
       - restore_gradle_cache:
           cache_name: example-<< parameters.gradle-version >>
-      - run: ./gradlew assembleYellowBlueRelease --stacktrace # it's okay if succeed
+      - run: java -version
+      - run: ./gradlew assembleYellowBlueDebug --stacktrace # it's okay if succeed
 
   acceptance_test:
     parameters: *build_env_parameters
@@ -127,12 +94,11 @@ jobs:
       - setup_workspace
       - attach_workspace:
           at: ~/.m2
-      - switch_java:
-          jdk-version: << parameters.jdk-version >>
       - switch_gradle:
           gradle-version: << parameters.gradle-version >>
       - restore_gradle_cache:
           cache_name: example-<< parameters.gradle-version >>
+      - run: java -version
       - run: 
           name: Validate
           command: ~/top/.circleci/validation_test
@@ -168,12 +134,10 @@ workflows:
             - install_plugin_jars
           matrix:
             parameters:
-              jdk-version: ['8', '11'] #, '17']
-              gradle-version: ['6.7.1', '7.0.2', '7.2'] # '9.0' needs AGP upgrade
+              gradle-version: ['8.14.3'] # '9.0'
       - schema_test:
           requires:
             - install_plugin_jars
           matrix:
             parameters:
-              jdk-version: ['8', '11'] #, '17']
-              gradle-version: ['6.7.1', '7.0.2', '7.2'] # '9.0' needs AGP upgrade
+              gradle-version: ['8.14.3'] # '9.0'

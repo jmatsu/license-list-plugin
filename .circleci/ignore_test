@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+cp app/license-list/artifact-definition.yml app/license-list/artifact-definition.yml.backup
 echo > app/license-list/.artifactignore
 
 if ./gradlew validateLicenseList --rerun-tasks; then
@@ -11,9 +12,11 @@ fi
 
 ./gradlew clean initLicenseList -Poverwrite=true --rerun-tasks
 
-if diff app/license-list/artifact-definition.yml fixtures/nothing-ignored-artifact-definition.yml; then
-    echo "diff has not been generated. .customartifactignore might be wrong or artifact-definition is wrong"
+if diff app/license-list/artifact-definition.yml.backup fixtures/nothing-ignored-artifact-definition.yml; then
+    echo "diff has not been generated unexpectedly. The original artifact-definition should have been generated with at least one active ignore rule."
     exit 1
 fi
+
+echo "PASSED!"
 
 git checkout -- app

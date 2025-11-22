@@ -9,4 +9,6 @@ if ! [[ -z "$(git diff --name-only -- app)" ]]; then
     exit 1
 fi
 
+echo "PASSED!"
+
 git checkout -- app

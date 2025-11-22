@@ -22,4 +22,7 @@ run() {
 
 run "merge"
 
+
+echo "PASSED!"
+
 git checkout -- app

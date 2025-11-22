@@ -77,47 +77,74 @@ abstract class ValidateLicenseListTask
 
             val licenseKeyDiff = Diff.calculateForLicense(recordedLicenseKeys, newer = currentLicenseKeys)
 
-            logger.warn("You can remove the following artifacts and licenses.\n")
-
             if (artifactDiff.willBeRemovedKeys.isNotEmpty() || licenseKeyDiff.willBeRemovedKeys.isNotEmpty()) {
+                logger.warn("Extra Keys: You need to remove ${artifactDiff.willBeRemovedKeys.size} artifact keys / ${licenseKeyDiff.willBeRemovedKeys.size} license keys\n")
+
                 logger.warn("--- artifacts ---")
 
-                artifactDiff.willBeRemovedKeys.forEach { key ->
-                    logger.warn(key)
+                if (artifactDiff.willBeRemovedKeys.isNotEmpty()) {
+                    artifactDiff.willBeRemovedKeys.forEach { key ->
+                        logger.warn("\t$key")
+                    }
+                } else {
+                    logger.warn("\tNo Extra Key")
                 }
 
                 logger.warn("--- licenses ---")
 
-                licenseKeyDiff.willBeRemovedKeys.forEach { key ->
+                if (licenseKeyDiff.willBeRemovedKeys.isNotEmpty()) {
+                    licenseKeyDiff.willBeRemovedKeys.forEach { key ->
+                        logger.warn("\t$key")
+                    }
+                } else {
+                    logger.warn("\tNo Extra Key")
+                }
+
+                logger.warn("")
+            } else {
+                logger.warn("Extra Keys: PASSED")
+            }
+
+            if (artifactDiff.keepKeys.isNotEmpty()) {
+                logger.warn("Kept Keys: ${artifactDiff.keepKeys.size} artifacts are found.")
+                artifactDiff.keepKeys.forEach { key ->
                     logger.warn(key)
                 }
 
                 logger.warn("")
+            } else {
+                logger.warn("Kept Keys: 0 artifact is found.")
             }
-
-            logger.warn("The following artifacts will be kept.\n")
-
-            artifactDiff.keepKeys.forEach { key ->
-                logger.warn(key)
-            }
-
-            logger.warn("You need to handle the following that the current license file does not contain.\n")
 
             if (artifactDiff.missingKeys.isNotEmpty() || licenseKeyDiff.missingKeys.isNotEmpty()) {
+                logger.warn("Missing Keys: The current artifact/license files don't contain them so you need to manage or add the following artifacts to ignore.\n")
+
                 logger.warn("--- artifacts ---")
 
-                artifactDiff.missingKeys.forEach { key ->
-                    logger.warn(key)
+                if (artifactDiff.missingKeys.isNotEmpty()) {
+                    artifactDiff.missingKeys.forEach { key ->
+                        logger.warn("\t$key")
+                    }
+                } else {
+                    logger.warn("\tNo Kissing Key")
                 }
 
                 logger.warn("--- licenses ---")
 
-                licenseKeyDiff.missingKeys.forEach { key ->
-                    logger.warn(key)
+                if (licenseKeyDiff.missingKeys.isNotEmpty()) {
+                    licenseKeyDiff.missingKeys.forEach { key ->
+                        logger.warn("\t$key")
+                    }
+                } else {
+                    logger.warn("\tNo Kissing Key")
                 }
+            } else {
+                logger.warn("Missing Keys: PASSED")
             }
 
             if (artifactDiff.hasDiff() || licenseKeyDiff.hasDiff()) {
+                logger.warn("Conclusion: FAILED")
+
                 fun Diff.DiffResult.toText(label: String) = "${missingKeys.size} ${label}s are missing and ${willBeRemovedKeys.size} ${label}s can be removed."
 
                 throw InvalidLicenseException(
@@ -126,6 +153,8 @@ abstract class ValidateLicenseListTask
                         licenseKeyDiff.toText("license")
                     ).joinToString(" ")
                 )
+            } else {
+                logger.warn("Conclusion: PASSED")
             }
         }
     }
