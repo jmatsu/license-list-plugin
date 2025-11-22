@@ -6,6 +6,9 @@ import org.gradle.api.artifacts.LenientConfiguration
 import org.gradle.api.artifacts.UnknownConfigurationException
 
 fun Configuration.lenientConfiguration(): LenientConfiguration? {
+    if (!isCanBeResolved) {
+        return null
+    }
     // to avoid unexpected resolve
     return copyRecursive().run {
         // copied configuration is UNRESOLVED
