@@ -25,3 +25,6 @@
   - key: mit
     name: MIT License
     url: https://raw.githubusercontent.com/jmatsu/license-list-plugin/master/license-files/mit.txt
+  - key: new-dummy-license
+    name: Dummy License
+    url: http://example.com
