@@ -219,7 +219,7 @@ class ArtifactManagement(
         val results = mutableSetOf<Configuration>()
 
         while (targets.isNotEmpty()) {
-            val c = targets.removeFirst()
+            val c = targets.removeAt(0)
 
             if (results.add(c)) {
                 targets.addAll(c.hierarchy)
