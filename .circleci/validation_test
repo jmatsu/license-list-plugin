@@ -24,4 +24,7 @@ if ./gradlew clean validateLicenseList --rerun-tasks; then
     exit 1
 fi
 
+
+echo "PASSED!"
+
 git checkout -- app

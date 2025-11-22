@@ -56,4 +56,7 @@ if ! grep "should_change_from_undetermined" inspection.result; then
     exit 1
 fi
 
+
+echo "PASSED!"
+
 git checkout -- app

@@ -16,4 +16,6 @@ if diff app/license-list/artifact-definition.yml fixtures/nothing-ignored-artifa
     exit 1
 fi
 
+echo "PASSED!"
+
 git checkout -- app
