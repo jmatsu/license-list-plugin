@@ -84,7 +84,7 @@ abstract class ValidateLicenseListTask
 
                 if (artifactDiff.willBeRemovedKeys.isNotEmpty()) {
                     artifactDiff.willBeRemovedKeys.forEach { key ->
-                        logger.warn("\t${key}")
+                        logger.warn("\t$key")
                     }
                 } else {
                     logger.warn("\tNo Extra Key")
@@ -94,7 +94,7 @@ abstract class ValidateLicenseListTask
 
                 if (licenseKeyDiff.willBeRemovedKeys.isNotEmpty()) {
                     licenseKeyDiff.willBeRemovedKeys.forEach { key ->
-                        logger.warn("\t${key}")
+                        logger.warn("\t$key")
                     }
                 } else {
                     logger.warn("\tNo Extra Key")
@@ -122,13 +122,13 @@ abstract class ValidateLicenseListTask
                 logger.warn("--- artifacts ---")
 
                 artifactDiff.missingKeys.forEach { key ->
-                    logger.warn("\t${key}")
+                    logger.warn("\t$key")
                 }
 
                 logger.warn("--- licenses ---")
 
                 licenseKeyDiff.missingKeys.forEach { key ->
-                    logger.warn("\t${key}")
+                    logger.warn("\t$key")
                 }
             } else {
                 logger.warn("Missing Keys: PASSED")
