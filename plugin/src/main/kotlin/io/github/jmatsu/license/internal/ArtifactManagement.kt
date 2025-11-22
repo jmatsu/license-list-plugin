@@ -214,21 +214,6 @@ class ArtifactManagement(
         }
     }
 
-    private fun Configuration.getAllHierarchy(): Set<Configuration> {
-        val targets = mutableListOf(this)
-        val results = mutableSetOf<Configuration>()
-
-        while (targets.isNotEmpty()) {
-            val c = targets.removeAt(0)
-
-            if (results.add(c)) {
-                targets.addAll(c.hierarchy)
-            }
-        }
-
-        return results
-    }
-
     /**
      * A helper to do grouping, merging, and sorting resolved module ids
      *
