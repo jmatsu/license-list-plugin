@@ -9,6 +9,7 @@ fun Configuration.lenientConfiguration(): LenientConfiguration? {
     if (!isCanBeResolved) {
         return null
     }
+
     // to avoid unexpected resolve
     return copyRecursive().run {
         // copied configuration is UNRESOLVED

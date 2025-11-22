@@ -205,13 +205,27 @@ class ArtifactManagement(
             variantScope.name.decapitalize() + suffix.capitalize()
         }
 
-        return project.configurations.toSet().distinctBy { it.name }.filter { configuration ->
+        return project.configurations.flatMap { it.getAllHierarchy() }.distinctBy { it.name }.filter { configuration ->
             (configuration.name in targetConfigurationNames).also { isTarget ->
                 if (isTarget) {
                     project.logger.info("Configuration(name = ${configuration.name}) will be search")
                 }
             }
         }
+    }
+
+    private fun Configuration.getAllHierarchy(): Set<Configuration> {
+        val targets = mutableSetOf(this)
+        val results = mutableSetOf<Configuration>()
+
+        while (targets.isNotEmpty()) {
+            val c = targets.first()
+            targets.removeIf { it === c }
+            targets.addAll(c.hierarchy)
+            results.add(c)
+        }
+
+        return results
     }
 
     /**
