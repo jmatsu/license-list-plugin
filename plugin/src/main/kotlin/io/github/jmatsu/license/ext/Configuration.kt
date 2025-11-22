@@ -6,8 +6,7 @@ import org.gradle.api.artifacts.LenientConfiguration
 import org.gradle.api.artifacts.UnknownConfigurationException
 
 fun Configuration.lenientConfiguration(): LenientConfiguration? {
-    // to avoid unexpected resolve
-    return copyRecursive().run {
+    return run {
         // copied configuration is UNRESOLVED
         isCanBeResolved = true
 
@@ -15,6 +14,9 @@ fun Configuration.lenientConfiguration(): LenientConfiguration? {
             resolvedConfiguration.lenientConfiguration
         } catch (e: UnknownConfigurationException) {
             LicenseListPlugin.logger?.debug("failed to make a lenient configuration due to unknown configuration", e)
+            null
+        } catch (e: RuntimeException) {
+            LicenseListPlugin.logger?.error("failed to make a lenient configuration", e)
             null
         }
     }

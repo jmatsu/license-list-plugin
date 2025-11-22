@@ -134,10 +134,10 @@ workflows:
             - install_plugin_jars
           matrix:
             parameters:
-              gradle-version: ['8.14.3'] # '9.0'
+              gradle-version: ['8.14.3', '9.0.0']
       - schema_test:
           requires:
             - install_plugin_jars
           matrix:
             parameters:
-              gradle-version: ['8.14.3'] # '9.0'
+              gradle-version: ['8.14.3', '9.0.0']
