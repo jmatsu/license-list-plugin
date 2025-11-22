@@ -117,18 +117,26 @@ abstract class ValidateLicenseListTask
             }
 
             if (artifactDiff.missingKeys.isNotEmpty() || licenseKeyDiff.missingKeys.isNotEmpty()) {
-                logger.warn("Missing Keys: You need to manage or add the following artifacts to ignore. The current artifact/license files don't contain them.\n")
+                logger.warn("Missing Keys: The current artifact/license files don't contain them so you need to manage or add the following artifacts to ignore.\n")
 
                 logger.warn("--- artifacts ---")
 
-                artifactDiff.missingKeys.forEach { key ->
-                    logger.warn("\t$key")
+                if (artifactDiff.missingKeys.isNotEmpty()) {
+                    artifactDiff.missingKeys.forEach { key ->
+                        logger.warn("\t$key")
+                    }
+                } else {
+                    logger.warn("\tNo Kissing Key")
                 }
 
                 logger.warn("--- licenses ---")
 
-                licenseKeyDiff.missingKeys.forEach { key ->
-                    logger.warn("\t$key")
+                if (licenseKeyDiff.missingKeys.isNotEmpty()) {
+                    licenseKeyDiff.missingKeys.forEach { key ->
+                        logger.warn("\t$key")
+                    }
+                } else {
+                    logger.warn("\tNo Kissing Key")
                 }
             } else {
                 logger.warn("Missing Keys: PASSED")
