@@ -205,9 +205,7 @@ class ArtifactManagement(
             variantScope.name.decapitalize() + suffix.capitalize()
         }
 
-        return project.configurations.flatMap {
-            it.all
-        }.distinctBy { it.name }.filter { configuration ->
+        return project.configurations.toSet().distinctBy { it.name }.filter { configuration ->
             configuration.isCanBeResolved &&
             (configuration.name in targetConfigurationNames).also { isTarget ->
                 if (isTarget) {
