@@ -215,14 +215,15 @@ class ArtifactManagement(
     }
 
     private fun Configuration.getAllHierarchy(): Set<Configuration> {
-        val targets = mutableSetOf(this)
+        val targets = mutableListOf(this)
         val results = mutableSetOf<Configuration>()
 
         while (targets.isNotEmpty()) {
-            val c = targets.first()
-            targets.removeIf { it === c }
-            targets.addAll(c.hierarchy)
-            results.add(c)
+            val c = targets.removeFirst()
+
+            if (results.add(c)) {
+                targets.addAll(c.hierarchy)
+            }
         }
 
         return results
