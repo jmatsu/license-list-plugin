@@ -47,7 +47,6 @@ configurations.configureEach {
 dependencies {
     implementation(project(":license-list-schema"))
 
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Version.kotlinSerialization}")
