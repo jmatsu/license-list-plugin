@@ -1,18 +1,18 @@
 package io.github.jmatsu.license.internal
 
 import io.github.jmatsu.license.model.LicenseSeed
-import java.io.File
-import java.util.stream.Stream
-import kotlin.test.expect
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.io.File
+import java.util.stream.Stream
+import kotlin.test.expect
 
 class PomParserTest {
     companion object {
         @JvmStatic
-        fun providePomFiles(): Stream<Arguments> {
-            return Stream.of(
+        fun providePomFiles(): Stream<Arguments> =
+            Stream.of(
                 Arguments.of(
                     "pom-1.xml",
                     "Example1",
@@ -22,9 +22,9 @@ class PomParserTest {
                     listOf(
                         LicenseSeed(
                             name = "The Apache Software License, Version 2.0",
-                            url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                        )
-                    )
+                            url = "http://www.apache.org/licenses/LICENSE-2.0.txt",
+                        ),
+                    ),
                 ),
                 Arguments.of(
                     "pom-2.xml",
@@ -35,13 +35,13 @@ class PomParserTest {
                     listOf(
                         LicenseSeed(
                             name = "license1",
-                            url = "url1"
+                            url = "url1",
                         ),
                         LicenseSeed(
                             name = "license2",
-                            url = "url2"
-                        )
-                    )
+                            url = "url2",
+                        ),
+                    ),
                 ),
                 Arguments.of(
                     "pom-3.xml",
@@ -49,7 +49,7 @@ class PomParserTest {
                     listOf("example3"),
                     null,
                     emptyList<String>(),
-                    emptyList<String>()
+                    emptyList<String>(),
                 ),
                 Arguments.of(
                     "pom-4.xml",
@@ -60,12 +60,11 @@ class PomParserTest {
                     listOf(
                         LicenseSeed(
                             name = null,
-                            url = null
-                        )
-                    )
-                )
+                            url = null,
+                        ),
+                    ),
+                ),
             )
-        }
     }
 
     @ParameterizedTest
@@ -76,12 +75,17 @@ class PomParserTest {
         displayNameCandidates: List<String>,
         associatedUrl: String?,
         copyrightHolders: List<String>,
-        licenses: List<LicenseSeed>
+        licenses: List<LicenseSeed>,
     ) {
         var pomFile: File? = null
         try {
             pomFile = File.createTempFile("pom-parser-test", ".xml")
-            pomFile.writeText(javaClass.classLoader.getResourceAsStream(filepath).bufferedReader().readText())
+            pomFile.writeText(
+                javaClass.classLoader
+                    .getResourceAsStream(filepath)
+                    .bufferedReader()
+                    .readText(),
+            )
             val parseResult = PomParser(pomFile).parse()
 
             expect(displayName) {

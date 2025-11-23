@@ -15,15 +15,15 @@ import io.mockk.mockkConstructor
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
+import kotlinx.serialization.StringFormat
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.findByType
+import org.gradle.testfixtures.ProjectBuilder
 import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlinx.serialization.StringFormat
-import org.gradle.api.Project
-import org.gradle.kotlin.dsl.findByType
-import org.gradle.testfixtures.ProjectBuilder
 
 class VisualizeLicenseListTaskTest {
     lateinit var project: Project
@@ -38,14 +38,16 @@ class VisualizeLicenseListTaskTest {
         project.plugins.apply("io.github.jmatsu.license-list")
         extension = requireNotNull(project.extensions.findByType(LicenseListExtension::class))
         assetDirs = mutableListOf()
-        variant = mockk {
-            every { name } returns "featureRelease"
-            every { sourceSets } returns listOf(
-                mockk<SourceProvider> {
-                    every { assetsDirectories } returns assetDirs
-                }
-            )
-        }
+        variant =
+            mockk {
+                every { name } returns "featureRelease"
+                every { sourceSets } returns
+                    listOf(
+                        mockk<SourceProvider> {
+                            every { assetsDirectories } returns assetDirs
+                        },
+                    )
+            }
         args = VisualizeLicenseListTask.Args(project, extension, variant)
     }
 
@@ -75,9 +77,10 @@ class VisualizeLicenseListTaskTest {
 
     @Test
     fun `args should use asset dir as outputDir`() {
-        val outputDir: File = mockk(relaxed = true) {
-            every { absolutePath } returns "/path/to/featureRelease/assets"
-        }
+        val outputDir: File =
+            mockk(relaxed = true) {
+                every { absolutePath } returns "/path/to/featureRelease/assets"
+            }
 
         assetDirs.add(outputDir)
 
@@ -86,9 +89,10 @@ class VisualizeLicenseListTaskTest {
 
     @Test
     fun `args should not use asset dir as outputDir`() {
-        val outputDir: File = mockk(relaxed = true) {
-            every { absolutePath } returns "/path/to/anyother/assets"
-        }
+        val outputDir: File =
+            mockk(relaxed = true) {
+                every { absolutePath } returns "/path/to/anyother/assets"
+            }
 
         assetDirs.add(outputDir)
 
@@ -107,16 +111,18 @@ class VisualizeLicenseListTaskTest {
         val catalogText = "catalogText"
         val visualizedText = "visualizedText"
 
-        val args: VisualizeLicenseListTask.Args = mockk {
-            every { assembledArtifactsFile.exists() } returns true
-            every { assembledLicenseCatalogFile.exists() } returns true
-            every { this@mockk.assemblyFormat } returns assemblyFormat
-            every { this@mockk.assemblyStyle } returns assemblyStyle
-            every { this@mockk.visualizationFormat } returns visualizationFormat
-            every { visualizeOutputDir } returns mockk {
-                every { mkdirs() } returns true
+        val args: VisualizeLicenseListTask.Args =
+            mockk {
+                every { assembledArtifactsFile.exists() } returns true
+                every { assembledLicenseCatalogFile.exists() } returns true
+                every { this@mockk.assemblyFormat } returns assemblyFormat
+                every { this@mockk.assemblyStyle } returns assemblyStyle
+                every { this@mockk.visualizationFormat } returns visualizationFormat
+                every { visualizeOutputDir } returns
+                    mockk {
+                        every { mkdirs() } returns true
+                    }
             }
-        }
 
         every {
             anyConstructed<Disassembler>().disassembleArtifacts(any())
@@ -133,7 +139,7 @@ class VisualizeLicenseListTaskTest {
         every { args.visualizedFile.writeText(any()) } just Runs
 
         VisualizeLicenseListTask.Executor(
-            args = args
+            args = args,
         )
 
         verify {

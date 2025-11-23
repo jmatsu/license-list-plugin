@@ -32,36 +32,41 @@ class LicenseListPlugin : Plugin<Project> {
             return
         }
 
-        val assemblyOptionsContainer = project.container(AssemblyOptions::class) { name ->
-            AssemblyOptionsImpl(name)
-        }
+        val assemblyOptionsContainer =
+            project.container(AssemblyOptions::class) { name ->
+                AssemblyOptionsImpl(name)
+            }
 
-        val visualizationOptionsContainer = project.container(VisualizationOptions::class) { name ->
-            VisualizationOptionsImpl(name)
-        }
+        val visualizationOptionsContainer =
+            project.container(VisualizationOptions::class) { name ->
+                VisualizationOptionsImpl(name)
+            }
 
-        val variantAwareOptionsContainer = project.container(VariantAwareOptions::class) { name ->
-            val assemblyOptions = assemblyOptionsContainer.create(name)
-            val visualizationOptions = visualizationOptionsContainer.create(name)
+        val variantAwareOptionsContainer =
+            project.container(VariantAwareOptions::class) { name ->
+                val assemblyOptions = assemblyOptionsContainer.create(name)
+                val visualizationOptions = visualizationOptionsContainer.create(name)
 
-            VariantAwareOptionsImpl(name, assemblyOptions, visualizationOptions)
-        }
+                VariantAwareOptionsImpl(name, assemblyOptions, visualizationOptions)
+            }
 
         project.extensions.create("licenseList", LicenseListExtension::class.java, variantAwareOptionsContainer)
 
         project.plugins.withId("com.cookpad.android.licensetools") {
             val toolsExtension = requireNotNull(project.extensions.findByName("licenseTools"))
 
-            project.tasks.register(
-                "migrateLicenseToolsDefinition",
-                MigrateLicenseToolsDefinitionTask::class.java,
-                requireNotNull(project.extensions.getByType(LicenseListExtension::class)),
-                toolsExtension
-            ).configure {
-                description = """
+            project.tasks
+                .register(
+                    "migrateLicenseToolsDefinition",
+                    MigrateLicenseToolsDefinitionTask::class.java,
+                    requireNotNull(project.extensions.getByType(LicenseListExtension::class)),
+                    toolsExtension,
+                ).configure {
+                    description =
+                        """
                 |Migrate license-tools-plugin configuration to this plugin's configuration
-            """.trimMargin()
-            }
+                        """.trimMargin()
+                }
         }
 
         project.plugins.withType(AppPlugin::class.java) {
@@ -79,33 +84,38 @@ class LicenseListPlugin : Plugin<Project> {
                 }
 
                 project.registerTask<InitLicenseListTask>("init", variant = variant, extension = extension).configure {
-                    description = """
+                    description =
+                        """
                         |Initialize a license list based on the configuration for $variantName
-                    """.trimMargin()
+                        """.trimMargin()
                 }
 
                 project.registerTask<ValidateLicenseListTask>("validate", variant = variant, extension = extension).configure {
-                    description = """
+                    description =
+                        """
                         |Validate the existing license list based on the configuration for $variantName
-                    """.trimMargin()
+                        """.trimMargin()
                 }
 
                 project.registerTask<MergeLicenseListTask>("merge", variant = variant, extension = extension).configure {
-                    description = """
+                    description =
+                        """
                         |Merge the existing license list and the current license list that are retrieved from pom files based on the configuration for $variantName
-                    """.trimMargin()
+                        """.trimMargin()
                 }
 
                 project.registerTask<InspectLicenseListTask>("inspect", variant = variant, extension = extension).configure {
-                    description = """
+                    description =
+                        """
                         |Inspect the existing license list of $variantName and report missing and/or unsatisfied attributes.
-                    """.trimMargin()
+                        """.trimMargin()
                 }
 
                 project.registerTask<VisualizeLicenseListTask>("visualize", variant = variant, extension = extension).configure {
-                    description = """
+                    description =
+                        """
                         |Visualize the existing license list of $variantName as the given style
-                    """.trimMargin()
+                        """.trimMargin()
 
                     if (project.properties.getOrDefault("skipValidate", "false") != "true") {
                         dependsOn(project.tasks.findByName("validate${variant.name.capitalize()}LicenseList"))
@@ -119,7 +129,11 @@ class LicenseListPlugin : Plugin<Project> {
                 if (extension.defaultVariant == variantName) {
                     project.logger.info("$variantName has been matched to targetVariant.")
 
-                    fun alias(project: Project, action: String, variant: ApplicationVariant) {
+                    fun alias(
+                        project: Project,
+                        action: String,
+                        variant: ApplicationVariant,
+                    ) {
                         project.tasks.register("${action.decapitalize()}LicenseList") {
                             dependsOn(project.tasks.findByName("${action.decapitalize()}${variant.name.capitalize()}LicenseList"))
                         }
@@ -130,7 +144,7 @@ class LicenseListPlugin : Plugin<Project> {
                         "validate",
                         "merge",
                         "visualize",
-                        "inspect"
+                        "inspect",
                     ).forEach { action ->
                         alias(project, action, variant)
                     }
@@ -145,7 +159,9 @@ class LicenseListPlugin : Plugin<Project> {
         }
     }
 
-    private inline fun <reified T : Task> Project.registerTask(action: String, variant: ApplicationVariant, extension: LicenseListExtension): TaskProvider<T> {
-        return project.tasks.register("${action.decapitalize()}${variant.name.capitalize()}LicenseList", T::class.java, extension, variant)
-    }
+    private inline fun <reified T : Task> Project.registerTask(
+        action: String,
+        variant: ApplicationVariant,
+        extension: LicenseListExtension,
+    ): TaskProvider<T> = project.tasks.register("${action.decapitalize()}${variant.name.capitalize()}LicenseList", T::class.java, extension, variant)
 }

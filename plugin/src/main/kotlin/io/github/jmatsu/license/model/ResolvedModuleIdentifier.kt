@@ -9,12 +9,12 @@ data class ResolvedModuleIdentifier(
     /**
      * Optional. Present iff resolved artifact
      */
-    val id: ComponentArtifactIdentifier? = null
+    val id: ComponentArtifactIdentifier? = null,
 ) : Comparable<ResolvedModuleIdentifier> {
-    override fun compareTo(other: ResolvedModuleIdentifier): Int {
-        return "$group:$name".compareTo("${other.group}:${other.name}")
+    override fun compareTo(other: ResolvedModuleIdentifier): Int =
+        "$group:$name"
+            .compareTo("${other.group}:${other.name}")
             .takeIf { it != 0 } ?: version.compareTo(other.version)
-    }
 }
 
 const val localGroup = "local-file"

@@ -7,12 +7,15 @@ object Diff {
     data class DiffResult(
         val missingKeys: Set<String>,
         val keepKeys: Set<String>,
-        val willBeRemovedKeys: Set<String>
+        val willBeRemovedKeys: Set<String>,
     ) {
         fun hasDiff(): Boolean = missingKeys.isNotEmpty() || willBeRemovedKeys.isNotEmpty()
     }
 
-    fun calculateForArtifact(base: Collection<ArtifactDefinition>, newer: Collection<ArtifactDefinition>): DiffResult {
+    fun calculateForArtifact(
+        base: Collection<ArtifactDefinition>,
+        newer: Collection<ArtifactDefinition>,
+    ): DiffResult {
         val baseKeys = base.map { it.key }.toSet()
         val newerKeys = newer.map { it.key }.toSet()
 
@@ -24,11 +27,14 @@ object Diff {
         return DiffResult(
             missingKeys = added,
             keepKeys = keepKeys,
-            willBeRemovedKeys = removed
+            willBeRemovedKeys = removed,
         )
     }
 
-    fun calculateForLicense(base: Collection<LicenseKey>, newer: Collection<LicenseKey>): DiffResult {
+    fun calculateForLicense(
+        base: Collection<LicenseKey>,
+        newer: Collection<LicenseKey>,
+    ): DiffResult {
         val baseKeys = base.map { it.value }.toSet()
         val newerKeys = newer.map { it.value }.toSet()
 
@@ -38,7 +44,7 @@ object Diff {
         return DiffResult(
             missingKeys = added,
             keepKeys = emptySet(),
-            willBeRemovedKeys = removed
+            willBeRemovedKeys = removed,
         )
     }
 }

@@ -17,6 +17,6 @@ fun File.appendAndroidExtension() {
           }
         }
 
-    """.trimIndent()
+        """.trimIndent(),
     )
 }

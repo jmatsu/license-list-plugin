@@ -1,16 +1,17 @@
 package io.github.jmatsu.license.ext
 
-fun <T> Set<T>.combination(k: Int): Set<LinkedHashSet<T>> = when {
-    k > size || k < 0 -> error("k must be in (0 <= $size) but $k")
-    k == 0 -> setOf(LinkedHashSet())
-    else -> combination(k - 1)
-        .flatMap { `c_k-1` ->
-            this@combination.map { e ->
-                `c_k-1` + e
-            }
-        }
-        .toSet()
-}
+fun <T> Set<T>.combination(k: Int): Set<LinkedHashSet<T>> =
+    when {
+        k > size || k < 0 -> error("k must be in (0 <= $size) but $k")
+        k == 0 -> setOf(LinkedHashSet())
+        else ->
+            combination(k - 1)
+                .flatMap { `c_k-1` ->
+                    this@combination.map { e ->
+                        `c_k-1` + e
+                    }
+                }.toSet()
+    }
 
 /**
  * ensure the order of children carefully!

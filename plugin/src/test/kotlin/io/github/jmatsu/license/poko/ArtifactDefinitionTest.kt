@@ -1,24 +1,24 @@
 package io.github.jmatsu.license.poko
 
 import io.github.jmatsu.license.Factory.provideArtifact
-import java.util.stream.Stream
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
-import kotlin.test.expect
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
+import java.util.stream.Stream
 import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import kotlin.test.expect
 
 class ArtifactDefinitionTest {
     lateinit var json: Json
 
     @BeforeEach
     fun setup() {
-        json = Json {  }
+        json = Json { }
     }
 
     @Test
@@ -41,19 +41,21 @@ class ArtifactDefinitionTest {
 
 //    @ImplicitReflectionSerializer
     @ValueSource(
-        booleans = [true, false]
+        booleans = [true, false],
     )
     @ParameterizedTest
     fun `deserialize ArtifactDefinition`(keep: Boolean) {
-        val artifactDefinition = provideArtifact(key = "key").copy(
-            displayName = "displayName",
-            url = "url",
-            licenses = listOf(LicenseKey("license")),
-            copyrightHolders = listOf("copyrightHolder"),
-            keep = keep
-        )
+        val artifactDefinition =
+            provideArtifact(key = "key").copy(
+                displayName = "displayName",
+                url = "url",
+                licenses = listOf(LicenseKey("license")),
+                copyrightHolders = listOf("copyrightHolder"),
+                keep = keep,
+            )
 
-        val jsonString = """
+        val jsonString =
+            """
             {
                 "key": "key",
                 "displayName": "displayName",
@@ -62,7 +64,7 @@ class ArtifactDefinitionTest {
                 "copyrightHolders": ["copyrightHolder"],
                 "keep": $keep
             }
-        """.trimIndent()
+            """.trimIndent()
 
         expect(artifactDefinition) {
             json.decodeFromString(ArtifactDefinition.serializer(), jsonString)
@@ -81,7 +83,7 @@ class ArtifactDefinitionTest {
                 definition.copy(key = "c:c"),
                 definition.copy(key = "com.example0:xyz"),
                 definition.copy(key = "a:a"),
-                definition.copy(key = "com.example:xyz")
+                definition.copy(key = "com.example:xyz"),
             ).shuffled().sorted().map { it.key }
         }
     }
@@ -101,23 +103,22 @@ class ArtifactDefinitionTest {
 
     companion object {
         @JvmStatic
-        fun provideArtifactDefinitions(): Stream<ArtifactDefinition> {
-            return Stream.of(
+        fun provideArtifactDefinitions(): Stream<ArtifactDefinition> =
+            Stream.of(
                 provideArtifact(key = "key").copy(keep = true),
                 provideArtifact(key = "key").copy(
                     keep = false,
-                    displayName = "any"
+                    displayName = "any",
                 ),
                 provideArtifact(key = "key").copy(
                     keep = true,
-                    url = null
+                    url = null,
                 ),
                 provideArtifact(key = "key").copy(
                     keep = true,
                     licenses = listOf(),
-                    copyrightHolders = listOf()
-                )
+                    copyrightHolders = listOf(),
+                ),
             )
-        }
     }
 }

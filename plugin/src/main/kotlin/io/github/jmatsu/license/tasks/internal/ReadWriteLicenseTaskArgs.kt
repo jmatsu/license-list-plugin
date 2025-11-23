@@ -16,26 +16,28 @@ import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.presentation.Assembler
 import io.github.jmatsu.license.presentation.Convention
-import java.io.File
 import kotlinx.serialization.StringFormat
 import org.gradle.api.Project
+import java.io.File
 
 abstract class ReadWriteLicenseTaskArgs(
     private val project: Project,
     extension: LicenseListExtension,
-    variant: ApplicationVariant
+    variant: ApplicationVariant,
 ) {
     // only this variable should be resolved on initialization
     internal val variantAwareOptions: VariantAwareOptions =
         extension.variants.findByName(variant.name)
             ?: VariantAwareOptionsImpl(
                 name = variant.name,
-                assembly = AssemblyOptionsImpl(
-                    name = variant.name
-                ),
-                visualization = VisualizationOptionsImpl(
-                    name = variant.name
-                )
+                assembly =
+                    AssemblyOptionsImpl(
+                        name = variant.name,
+                    ),
+                visualization =
+                    VisualizationOptionsImpl(
+                        name = variant.name,
+                    ),
             )
 
     val assemblyFormat: StringFormat by lazy {
@@ -75,7 +77,9 @@ abstract class ReadWriteLicenseTaskArgs(
     val variantScope: ResolveScope.Variant = ResolveScope.Variant(variant.name)
 
     val additionalScopes: Set<ResolveScope.Addition> by lazy {
-        variantAwareOptions.assembly.additionalScopes.map { ResolveScope.Addition(it) }.toSet()
+        variantAwareOptions.assembly.additionalScopes
+            .map { ResolveScope.Addition(it) }
+            .toSet()
     }
 
     val assembleOutputDir: File

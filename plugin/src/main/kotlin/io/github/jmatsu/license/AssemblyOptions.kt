@@ -16,7 +16,6 @@ import org.gradle.api.tasks.Internal
 import org.gradle.kotlin.dsl.typeOf
 
 interface AssemblyOptions : Named {
-
     /**
      * a format of the output.
      * Must be one of `yaml` or `json`.
@@ -73,13 +72,14 @@ interface AssemblyOptions : Named {
     override fun getName(): String
 }
 
-class AssemblyOptionsImpl(private val name: String) : AssemblyOptions, HasPublicType {
+class AssemblyOptionsImpl(
+    private val name: String,
+) : AssemblyOptions,
+    HasPublicType {
     override fun getName(): String = name
 
     @Internal
-    override fun getPublicType(): TypeOf<AssemblyOptions> {
-        return typeOf()
-    }
+    override fun getPublicType(): TypeOf<AssemblyOptions> = typeOf()
 
     override var format: AssembleFormat = YamlFormat
         set(value) {
@@ -101,12 +101,13 @@ class AssemblyOptionsImpl(private val name: String) : AssemblyOptions, HasPublic
 
     override var groupByScopes: Boolean = true
 
-    override var additionalScopes: Set<String> = setOf(
-        ResolveScope.Test,
-        ResolveScope.AndroidTest
-    ).map {
-        it.name
-    }.toSet()
+    override var additionalScopes: Set<String> =
+        setOf(
+            ResolveScope.Test,
+            ResolveScope.AndroidTest,
+        ).map {
+            it.name
+        }.toSet()
 
     override var targetConfigurations: Set<String> = ArtifactManagement.CommonConfigurationNames
         set(value) {

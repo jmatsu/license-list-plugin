@@ -1,11 +1,10 @@
 package io.github.jmatsu.license.ext
 
-import kotlin.test.expect
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
+import kotlin.test.expect
 
 class SetTest {
-
     @Test
     fun `combination invalid size`() {
         val target = setOf("x")
@@ -43,16 +42,17 @@ class SetTest {
         expect(
             setOf(
                 linkedHashSetOf("free"),
-                linkedHashSetOf("fall")
-            )
+                linkedHashSetOf("fall"),
+            ),
         ) {
             target.combination(1)
         }
 
         expect(
-            target.combination(1) + setOf(
-                linkedHashSetOf("free", "fall")
-            )
+            target.combination(1) +
+                setOf(
+                    linkedHashSetOf("free", "fall"),
+                ),
         ) {
             target.combination(2)
         }
@@ -67,21 +67,22 @@ class SetTest {
                 linkedHashSetOf("free"),
                 linkedHashSetOf("fall"),
                 linkedHashSetOf("ext"),
-                linkedHashSetOf("debug")
-            )
+                linkedHashSetOf("debug"),
+            ),
         ) {
             target.combination(1)
         }
 
         expect(
-            target.combination(1) + setOf(
-                linkedHashSetOf("free", "fall"),
-                linkedHashSetOf("free", "ext"),
-                linkedHashSetOf("free", "debug"),
-                linkedHashSetOf("fall", "ext"),
-                linkedHashSetOf("fall", "debug"),
-                linkedHashSetOf("ext", "debug")
-            )
+            target.combination(1) +
+                setOf(
+                    linkedHashSetOf("free", "fall"),
+                    linkedHashSetOf("free", "ext"),
+                    linkedHashSetOf("free", "debug"),
+                    linkedHashSetOf("fall", "ext"),
+                    linkedHashSetOf("fall", "debug"),
+                    linkedHashSetOf("ext", "debug"),
+                ),
         ) {
             target.combination(2)
         }

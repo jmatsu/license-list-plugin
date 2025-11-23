@@ -11,26 +11,28 @@ import kotlinx.serialization.decodeFromString
 
 class Disassembler(
     private val style: Assembler.Style,
-    private val format: StringFormat
+    private val format: StringFormat,
 ) {
-    fun disassembleArtifacts(text: String): Map<Scope, List<ArtifactDefinition>> {
-        return when (style) {
+    fun disassembleArtifacts(text: String): Map<Scope, List<ArtifactDefinition>> =
+        when (style) {
             Assembler.Style.Flatten -> {
                 mapOf(
-                    Scope.StubScope to format.decodeFromString(ListSerializer(ArtifactDefinition.serializer()), text)
+                    Scope.StubScope to format.decodeFromString(ListSerializer(ArtifactDefinition.serializer()), text),
                 )
             }
             Assembler.Style.StructuredWithoutScope -> {
                 val serializer = MapSerializer(String.serializer(), ListSerializer(ArtifactDefinition.serializer()))
                 mapOf(
-                    Scope.StubScope to format.decodeFromString(serializer, text).flatMap { (group, artifacts) ->
-                        artifacts.map { it.copy(key = "$group:${it.key}") }
-                    }
+                    Scope.StubScope to
+                        format.decodeFromString(serializer, text).flatMap { (group, artifacts) ->
+                            artifacts.map { it.copy(key = "$group:${it.key}") }
+                        },
                 )
             }
             Assembler.Style.StructuredWithScope -> {
                 val serializer = MapSerializer(Scope.serializer(), MapSerializer(String.serializer(), ListSerializer(ArtifactDefinition.serializer())))
-                format.decodeFromString(serializer, text)
+                format
+                    .decodeFromString(serializer, text)
                     .mapValues { (_, m) ->
                         m.flatMap { (group, artifacts) ->
                             artifacts.map { it.copy(key = "$group:${it.key}") }
@@ -38,7 +40,6 @@ class Disassembler(
                     }
             }
         }
-    }
 
     fun disassemblePlainLicenses(text: String): List<PlainLicense> {
         val serializer = ListSerializer(PlainLicense.serializer())

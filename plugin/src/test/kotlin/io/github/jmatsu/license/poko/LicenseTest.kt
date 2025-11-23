@@ -1,9 +1,9 @@
 package io.github.jmatsu.license.poko
 
-import kotlin.test.expect
 import kotlinx.serialization.json.Json
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.expect
 
 class LicenseTest {
     lateinit var json: Json
@@ -15,9 +15,10 @@ class LicenseTest {
 
     @Test
     fun `serialize LicenseKey`() {
-        val license = LicenseKey(
-            value = "license"
-        )
+        val license =
+            LicenseKey(
+                value = "license",
+            )
 
         expect("\"license\"") {
             json.encodeToString(LicenseKey.serializer(), license)
@@ -26,9 +27,10 @@ class LicenseTest {
 
     @Test
     fun `deserialize LicenseKey`() {
-        val expected = LicenseKey(
-            value = "license"
-        )
+        val expected =
+            LicenseKey(
+                value = "license",
+            )
 
         expect(expected) {
             json.decodeFromString(LicenseKey.serializer(), "\"license\"")
@@ -37,11 +39,12 @@ class LicenseTest {
 
     @Test
     fun `serialize PlainLicense`() {
-        val license = PlainLicense(
-            name = "name",
-            url = "url",
-            key = LicenseKey(value = "key")
-        )
+        val license =
+            PlainLicense(
+                name = "name",
+                url = "url",
+                key = LicenseKey(value = "key"),
+            )
 
         expect("""{"key":"key","name":"name","url":"url"}""") {
             json.encodeToString(PlainLicense.serializer(), license)
@@ -50,11 +53,12 @@ class LicenseTest {
 
     @Test
     fun `deserialize PlainLicense`() {
-        val expected = PlainLicense(
-            name = "name",
-            url = "url",
-            key = LicenseKey(value = "key")
-        )
+        val expected =
+            PlainLicense(
+                name = "name",
+                url = "url",
+                key = LicenseKey(value = "key"),
+            )
 
         expect(expected) {
             json.decodeFromString(PlainLicense.serializer(), """{ "name": "name", "url": "url", "key": "key" }""")

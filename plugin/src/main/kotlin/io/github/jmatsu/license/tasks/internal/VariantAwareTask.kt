@@ -6,5 +6,5 @@ import org.gradle.api.tasks.Internal
 
 abstract class VariantAwareTask(
     extension: LicenseListExtension,
-    @get:Internal val variant: ApplicationVariant
+    @get:Internal val variant: ApplicationVariant,
 ) : BaseTask(extension)

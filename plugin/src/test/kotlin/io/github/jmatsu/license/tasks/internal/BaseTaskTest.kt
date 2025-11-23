@@ -1,13 +1,13 @@
 package io.github.jmatsu.license.tasks.internal
 
 import io.github.jmatsu.license.LicenseListExtension
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertFalse
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.testfixtures.ProjectBuilder
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertFalse
 
 class BaseTaskTest {
     lateinit var project: Project

@@ -3,7 +3,7 @@ package io.github.jmatsu.license.internal
 import java.util.Locale
 
 class LicenseClassifier(
-    val name: String?
+    val name: String?,
 ) {
     // https://choosealicense.com/
     object PredefinedKey {
@@ -177,13 +177,17 @@ class LicenseClassifier(
         data class Undetermined(
             override val key: String = PredefinedKey.UNDETERMINED,
             override val name: String,
-            override val url: String
+            override val url: String,
         ) : GuessedLicense()
     }
 
     companion object {
         val predefinedGuessedLicenses: List<GuessedLicense> by lazy {
-            GuessedLicense::class.sealedSubclasses.filter { it.isFinal }.map { it.objectInstance }.filterIsInstance(GuessedLicense::class.java)
+            GuessedLicense::class
+                .sealedSubclasses
+                .filter { it.isFinal }
+                .map { it.objectInstance }
+                .filterIsInstance(GuessedLicense::class.java)
         }
 
         val versionRegexp = Regex("(\\d\\.\\d|\\d)")
@@ -211,9 +215,7 @@ class LicenseClassifier(
         val isBCL = wordMatch("bouncy\\b.*castle")
         val isBCL_2nd = wordMatch("bcl")
 
-        private fun wordMatch(word: String): Regex {
-            return "\\b$word\\b".toRegex()
-        }
+        private fun wordMatch(word: String): Regex = "\\b$word\\b".toRegex()
     }
 
     fun guess(): GuessedLicense {
@@ -222,13 +224,21 @@ class LicenseClassifier(
         }
 
         fun String.normalize(): String = toLowerCase(Locale.US).replace("[,\"]|licen[sc]e".toRegex(), " ").trim()
+
         operator fun Regex.contains(text: String): Boolean = containsMatchIn(text)
 
-        val fallbackLicense = GuessedLicense.Undetermined(
-            name = name,
-            url = ""
-        )
-        val version = versionRegexp.find(name)?.groupValues?.drop(1)?.firstOrNull()?.takeIf { it.isNotBlank() }
+        val fallbackLicense =
+            GuessedLicense.Undetermined(
+                name = name,
+                url = "",
+            )
+        val version =
+            versionRegexp
+                .find(name)
+                ?.groupValues
+                ?.drop(1)
+                ?.firstOrNull()
+                ?.takeIf { it.isNotBlank() }
 
         return when (val text = name.normalize()) {
             in isAGPL, in isAGPL_2nd -> {

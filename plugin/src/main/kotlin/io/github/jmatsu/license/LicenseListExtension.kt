@@ -8,7 +8,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Nested
 
 open class LicenseListExtension(
-    private val variantAwareOptionsContainer: NamedDomainObjectContainer<VariantAwareOptions>
+    private val variantAwareOptionsContainer: NamedDomainObjectContainer<VariantAwareOptions>,
 ) {
     @get:Nested
     val variants: NamedDomainObjectContainer<VariantAwareOptions>

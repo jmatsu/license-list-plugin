@@ -11,15 +11,20 @@ import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 
 class Assembler(
-    private val assembleeData: AssembleeData
+    private val assembleeData: AssembleeData,
 ) : StructuringStrategy {
     sealed class Style {
         object Flatten : Style()
+
         object StructuredWithoutScope : Style()
+
         object StructuredWithScope : Style()
     }
 
-    fun assembleArtifacts(style: Style, format: StringFormat): String {
+    fun assembleArtifacts(
+        style: Style,
+        format: StringFormat,
+    ): String {
         val scopedArtifacts = assembleeData.scopedArtifacts
 
         return when (style) {
@@ -50,12 +55,11 @@ class Assembler(
 }
 
 interface StructuringStrategy {
-    fun List<ArtifactDefinition>.collectToMapByArtifactGroup(): Map<String, List<ArtifactDefinition>> {
-        return map {
+    fun List<ArtifactDefinition>.collectToMapByArtifactGroup(): Map<String, List<ArtifactDefinition>> =
+        map {
             // for safe split
             val (group, name) = "${it.key}:${it.key}".split(":")
 
             group to it.copy(key = name)
         }.sortedBy { it.second }.sortedBy { it.first }.collectToMap()
-    }
 }

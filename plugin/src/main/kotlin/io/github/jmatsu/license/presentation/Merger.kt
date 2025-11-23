@@ -10,7 +10,7 @@ import java.util.SortedMap
 class Merger(
     scopedResolvedArtifacts: SortedMap<ResolveScope, List<ResolvedArtifact>>,
     private val baseLicenses: Set<PlainLicense>,
-    private val scopedBaseArtifacts: Map<Scope, List<ArtifactDefinition>>
+    private val scopedBaseArtifacts: Map<Scope, List<ArtifactDefinition>>,
 ) : MergeStrategy {
     private val licenseCapture: MutableSet<PlainLicense> = HashSet()
     private val baseArtifacts: Set<ArtifactDefinition> by lazy {
@@ -34,38 +34,38 @@ class Merger(
         val scopeNamedArtifactKeys: Map<String, List<String>> = scopedArtifacts.mapValues { (_, artifacts) -> artifacts.map { it.key } }.mapKeys { (scope, _) -> scope.name }
         val scopeNames = (scopeNamedArtifactKeys.keys + scopedBaseArtifacts.keys.map { it.name }).distinct()
 
-        val mergedScopedArtifacts = scopeNames
-            .map { name ->
-                val newScope = Scope(name)
-                val existingKeys = scopeNamedArtifactKeys[name].orEmpty()
+        val mergedScopedArtifacts =
+            scopeNames
+                .map { name ->
+                    val newScope = Scope(name)
+                    val existingKeys = scopeNamedArtifactKeys[name].orEmpty()
 
-                newScope to willBeUsedArtifacts.filter { it.key in existingKeys } +
-                    scopedBaseArtifacts[newScope].orEmpty().filter { it.key in artifactDiff.keepKeys }
-            }.filter { (_, artifacts) ->
-                artifacts.isNotEmpty()
-            }.toMap()
+                    newScope to willBeUsedArtifacts.filter { it.key in existingKeys } +
+                        scopedBaseArtifacts[newScope].orEmpty().filter { it.key in artifactDiff.keepKeys }
+                }.filter { (_, artifacts) ->
+                    artifacts.isNotEmpty()
+                }.toMap()
 
         val licensesKeysToBeUsed = mergedScopedArtifacts.flatMap { (_, artifacts) -> artifacts.flatMap { it.licenses.map { it.value } } }
         val mergedLicenses = baseLicenses.reverseMerge(licenseCapture) { it.key }.filter { it.key.value in licensesKeysToBeUsed }.fixLicenseUrl()
 
         return AssembleeData(
             scopedArtifacts = mergedScopedArtifacts,
-            licenses = mergedLicenses
+            licenses = mergedLicenses,
         )
     }
 
     /**
      * v0.7 introduced the breaking changes on license URLs. This hack fixes it.
      */
-    private fun Iterable<PlainLicense>.fixLicenseUrl(): List<PlainLicense> {
-        return map { license ->
+    private fun Iterable<PlainLicense>.fixLicenseUrl(): List<PlainLicense> =
+        map { license ->
             if (license.url?.isFixTarget == true) {
                 license.copy(url = license.url.replace("github.com", "raw.githubusercontent.com").replace("/blob", ""))
             } else {
                 license
             }
         }
-    }
 
     private val String.isFixTarget: Boolean
         get() {
@@ -75,8 +75,10 @@ class Merger(
 }
 
 interface MergeStrategy {
-
-    fun <T, R> Collection<T>.reverseMerge(definitions: Set<T>, keyExtractor: (T) -> R): List<T> {
+    fun <T, R> Collection<T>.reverseMerge(
+        definitions: Set<T>,
+        keyExtractor: (T) -> R,
+    ): List<T> {
         val keysToPreserve = map(keyExtractor)
 
         return toList() + definitions.filterNot { keyExtractor(it) in keysToPreserve }

@@ -1,9 +1,9 @@
 package io.github.jmatsu.license.poko
 
-import kotlin.test.expect
 import kotlinx.serialization.json.Json
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.expect
 
 class ScopeTest {
     lateinit var json: Json
@@ -15,9 +15,10 @@ class ScopeTest {
 
     @Test
     fun `serialize Scope`() {
-        val scope = Scope(
-            name = "scope"
-        )
+        val scope =
+            Scope(
+                name = "scope",
+            )
 
         expect("\"scope\"") {
             json.encodeToString(Scope.serializer(), scope)
@@ -26,9 +27,10 @@ class ScopeTest {
 
     @Test
     fun `deserialize LicenseKey`() {
-        val expected = Scope(
-            name = "scope"
-        )
+        val expected =
+            Scope(
+                name = "scope",
+            )
 
         expect(expected) {
             json.decodeFromString(Scope.serializer(), "\"scope\"")

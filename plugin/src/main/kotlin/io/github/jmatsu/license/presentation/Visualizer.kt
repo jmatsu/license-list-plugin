@@ -5,9 +5,7 @@ import kotlinx.serialization.StringFormat
 import kotlinx.serialization.builtins.ListSerializer
 
 class Visualizer(
-    private val displayArtifacts: List<DisplayArtifact>
+    private val displayArtifacts: List<DisplayArtifact>,
 ) {
-    fun visualizeArtifacts(format: StringFormat): String {
-        return format.encodeToString(ListSerializer(DisplayArtifact.serializer()), displayArtifacts)
-    }
+    fun visualizeArtifacts(format: StringFormat): String = format.encodeToString(ListSerializer(DisplayArtifact.serializer()), displayArtifacts)
 }

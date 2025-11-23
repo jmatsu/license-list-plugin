@@ -33,7 +33,7 @@ fun setupProject(): MinimumProject {
                 plugins {
                   ${buildString(builder)}
                 }
-            """.trimIndent()
+                """.trimIndent(),
             )
         }
     }

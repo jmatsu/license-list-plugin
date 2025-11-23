@@ -10,76 +10,91 @@ import io.github.jmatsu.license.presentation.Convention
 import io.github.jmatsu.license.tasks.internal.ReadWriteLicenseTaskArgs
 import io.github.jmatsu.license.tasks.internal.TaskException
 import io.github.jmatsu.license.tasks.internal.VariantAwareTask
-import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
 import org.jetbrains.annotations.VisibleForTesting
+import javax.inject.Inject
 
 abstract class InitLicenseListTask
-@Inject constructor(
-    extension: LicenseListExtension,
-    variant: ApplicationVariant
-) : VariantAwareTask(extension, variant) {
-    class FileAlreadyExistException(message: String) : TaskException(message)
+    @Inject
+    constructor(
+        extension: LicenseListExtension,
+        variant: ApplicationVariant,
+    ) : VariantAwareTask(extension, variant) {
+        class FileAlreadyExistException(
+            message: String,
+        ) : TaskException(message)
 
-    @VisibleForTesting
-    internal object Executor {
-        operator fun invoke(project: Project, args: Args) {
-            if (args.assembledArtifactsFile.exists() && !args.forceOverwrite) {
-                throw FileAlreadyExistException("Overwriting ${args.assembledArtifactsFile.absolutePath} is forbidden. Provide overwrite=true when running this task to overwrite.")
+        @VisibleForTesting
+        internal object Executor {
+            operator fun invoke(
+                project: Project,
+                args: Args,
+            ) {
+                if (args.assembledArtifactsFile.exists() && !args.forceOverwrite) {
+                    throw FileAlreadyExistException(
+                        "Overwriting ${args.assembledArtifactsFile.absolutePath} is forbidden. Provide overwrite=true when running this task to overwrite.",
+                    )
+                }
+
+                if (args.assembledLicenseCatalogFile.exists() && !args.forceOverwrite) {
+                    throw FileAlreadyExistException(
+                        "Overwriting ${args.assembledArtifactsFile.absolutePath} is forbidden. Provide overwrite=true when running this task to overwrite.",
+                    )
+                }
+
+                val artifactIgnoreParser =
+                    ArtifactIgnoreParser(
+                        ignoreFile = args.ignoreFile,
+                    )
+                val artifactManagement =
+                    ArtifactManagement(
+                        project = project,
+                        configurationNames = args.configurationNames,
+                        exclusionPredicate = artifactIgnoreParser.buildPredicate(args.ignoreFormat),
+                    )
+                val scopedResolvedArtifacts =
+                    artifactManagement.analyze(
+                        variantScope = args.variantScope,
+                        additionalScopes = args.additionalScopes,
+                    )
+                val builder =
+                    Builder(
+                        resolvedArtifactMap = scopedResolvedArtifacts,
+                    )
+                val assembler =
+                    Assembler(
+                        assembleeData = builder.build(),
+                    )
+
+                val artifactsText = assembler.assembleArtifacts(args.assemblyStyle, args.assemblyFormat)
+                val licenseCatalogText = assembler.assemblePlainLicenses(Convention.Yaml.Assembly) // the format is fixed
+
+                args.assembleOutputDir.mkdirs()
+                args.assembledArtifactsFile.writeText(artifactsText)
+                args.assembledLicenseCatalogFile.writeText(licenseCatalogText)
             }
+        }
 
-            if (args.assembledLicenseCatalogFile.exists() && !args.forceOverwrite) {
-                throw FileAlreadyExistException("Overwriting ${args.assembledArtifactsFile.absolutePath} is forbidden. Provide overwrite=true when running this task to overwrite.")
-            }
+        @TaskAction
+        fun execute() {
+            val args = Args(project, extension, variant)
 
-            val artifactIgnoreParser = ArtifactIgnoreParser(
-                ignoreFile = args.ignoreFile
-            )
-            val artifactManagement = ArtifactManagement(
+            Executor(
                 project = project,
-                configurationNames = args.configurationNames,
-                exclusionPredicate = artifactIgnoreParser.buildPredicate(args.ignoreFormat)
+                args = args,
             )
-            val scopedResolvedArtifacts = artifactManagement.analyze(
-                variantScope = args.variantScope,
-                additionalScopes = args.additionalScopes
-            )
-            val builder = Builder(
-                resolvedArtifactMap = scopedResolvedArtifacts
-            )
-            val assembler = Assembler(
-                assembleeData = builder.build()
-            )
+        }
 
-            val artifactsText = assembler.assembleArtifacts(args.assemblyStyle, args.assemblyFormat)
-            val licenseCatalogText = assembler.assemblePlainLicenses(Convention.Yaml.Assembly) // the format is fixed
-
-            args.assembleOutputDir.mkdirs()
-            args.assembledArtifactsFile.writeText(artifactsText)
-            args.assembledLicenseCatalogFile.writeText(licenseCatalogText)
+        class Args(
+            project: Project,
+            extension: LicenseListExtension,
+            variant: ApplicationVariant,
+        ) : ReadWriteLicenseTaskArgs(
+                project = project,
+                extension = extension,
+                variant = variant,
+            ) {
+            val forceOverwrite: Boolean = project.properties["overwrite"]?.toString() == "true"
         }
     }
-
-    @TaskAction
-    fun execute() {
-        val args = Args(project, extension, variant)
-
-        Executor(
-            project = project,
-            args = args
-        )
-    }
-
-    class Args(
-        project: Project,
-        extension: LicenseListExtension,
-        variant: ApplicationVariant
-    ) : ReadWriteLicenseTaskArgs(
-        project = project,
-        extension = extension,
-        variant = variant
-    ) {
-        val forceOverwrite: Boolean = project.properties["overwrite"]?.toString() == "true"
-    }
-}

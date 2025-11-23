@@ -3,22 +3,22 @@ package io.github.jmatsu.license
 import io.github.jmatsu.license.dsl.StructuredStyle
 import io.github.jmatsu.license.dsl.YamlFormat
 import io.github.jmatsu.license.internal.ArtifactManagement
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class AssemblyOptionsImplTest {
-
     lateinit var options: AssemblyOptions
 
     @BeforeTest
     fun setup() {
-        options = AssemblyOptionsImpl(
-            name = "default"
-        )
+        options =
+            AssemblyOptionsImpl(
+                name = "default",
+            )
     }
 
     @Test
@@ -31,8 +31,9 @@ class AssemblyOptionsImplTest {
             assertEquals(
                 setOf(
                     "test",
-                    "androidTest"
-                ), additionalScopes
+                    "androidTest",
+                ),
+                additionalScopes,
             )
         }
     }
@@ -77,8 +78,9 @@ class AssemblyOptionsImplTest {
                     "test",
                     "androidTest",
                     "abc",
-                    "xyz"
-                ), additionalScopes
+                    "xyz",
+                ),
+                additionalScopes,
             )
         }
     }
@@ -90,8 +92,9 @@ class AssemblyOptionsImplTest {
         with(options) {
             assertEquals(
                 setOf(
-                    "androidTest"
-                ), additionalScopes
+                    "androidTest",
+                ),
+                additionalScopes,
             )
         }
     }
@@ -109,15 +112,17 @@ class AssemblyOptionsImplTest {
 
         with(options) {
             assertEquals(
-                setOf("api",
+                setOf(
+                    "api",
                     "compile",
                     "compileOnly",
                     "implementation",
                     "annotationProcessor",
                     "kapt",
                     "abc",
-                    "xyz"
-                ), targetConfigurations
+                    "xyz",
+                ),
+                targetConfigurations,
             )
         }
     }
@@ -133,8 +138,9 @@ class AssemblyOptionsImplTest {
                         "compileOnly",
                         "implementation",
                         "annotationProcessor",
-                        "kapt"
-                    ), targetConfigurations
+                        "kapt",
+                    ),
+                targetConfigurations,
             )
         }
     }

@@ -6,10 +6,11 @@ import java.nio.file.FileSystems
 typealias IgnorePredicate = (group: String, name: String) -> Boolean
 
 class ArtifactIgnoreParser(
-    private val ignoreFile: File
+    private val ignoreFile: File,
 ) {
     sealed class Format {
         object Regex : Format()
+
         object Glob : Format()
     }
 
@@ -39,9 +40,10 @@ class ArtifactIgnoreParser(
     }
 
     fun buildGlobPredicate(lines: List<String>): IgnorePredicate {
-        val matchers = lines.map { glob ->
-            FileSystems.getDefault().getPathMatcher("glob:${glob.replace(":", "/")}")
-        }
+        val matchers =
+            lines.map { glob ->
+                FileSystems.getDefault().getPathMatcher("glob:${glob.replace(":", "/")}")
+            }
 
         return { group, name ->
             val path = FileSystems.getDefault().getPath(group, name)
@@ -52,13 +54,12 @@ class ArtifactIgnoreParser(
         }
     }
 
-    private fun List<String>.rejectComments(): List<String> {
-        return mapNotNull {
+    private fun List<String>.rejectComments(): List<String> =
+        mapNotNull {
             // Whitespaces are not allowed because these values based on module groups and/or names.
             it.split(Regex("\\s")).firstOrNull()
         }.filterNot {
             // Reject comments but this should be done after trimming whitespaces to support several expected comment usecases like `abc:xyz # comments`
             "#" in it || it.isBlank()
         }
-    }
 }

@@ -5,7 +5,6 @@ import io.github.jmatsu.license.dsl.HtmlFormat
 import io.github.jmatsu.license.dsl.VisualizeFormat
 import io.github.jmatsu.license.dsl.isVisualizeFormat
 import io.github.jmatsu.license.dsl.validation.optionalDirectoryProperty
-import java.io.File
 import org.gradle.api.Named
 import org.gradle.api.reflect.HasPublicType
 import org.gradle.api.reflect.TypeOf
@@ -17,9 +16,9 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.kotlin.dsl.typeOf
+import java.io.File
 
 interface VisualizationOptions : Named {
-
     /**
      * A style for how this plugin will visualize artifacts and licenses.
      *
@@ -58,13 +57,11 @@ interface VisualizationOptions : Named {
 }
 
 class VisualizationOptionsImpl(
-    private val name: String
-) : VisualizationOptions, HasPublicType {
-
+    private val name: String,
+) : VisualizationOptions,
+    HasPublicType {
     @Internal
-    override fun getPublicType(): TypeOf<VisualizationOptions> {
-        return typeOf()
-    }
+    override fun getPublicType(): TypeOf<VisualizationOptions> = typeOf()
 
     override fun getName(): String = name
 

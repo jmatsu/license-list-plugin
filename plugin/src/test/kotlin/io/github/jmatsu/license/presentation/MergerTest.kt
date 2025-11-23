@@ -15,162 +15,185 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MergerTest : MergeStrategy {
-
     @Test
     fun `merge should take care keep attributes and user-defined licenses as well`() {
-        val scopedResolvedArtifacts = mapOf<ResolveScope, List<ResolvedArtifact>>(
-            ResolveScope.Variant("scope1") to listOf(
-                ResolvedArtifact(
-                    id = ResolvedModuleIdentifier(
-                        group = "group1",
-                        name = "name1",
-                        version = VersionString("+")
+        val scopedResolvedArtifacts =
+            mapOf<ResolveScope, List<ResolvedArtifact>>(
+                ResolveScope.Variant("scope1") to
+                    listOf(
+                        ResolvedArtifact(
+                            id =
+                                ResolvedModuleIdentifier(
+                                    group = "group1",
+                                    name = "name1",
+                                    version = VersionString("+"),
+                                ),
+                            metadata =
+                                ResolvedPomFile(
+                                    associatedUrl = "http://example.com",
+                                    displayNameCandidates = listOf("displayName1"),
+                                    licenses = listOf(LicenseSeed(name = "licenseKeyNew", url = "http://example.com/length/28")),
+                                    copyrightHolders = listOf("copyrightHolder1"),
+                                ),
+                        ),
                     ),
-                    metadata = ResolvedPomFile(
-                        associatedUrl = "http://example.com",
-                        displayNameCandidates = listOf("displayName1"),
-                        licenses = listOf(LicenseSeed(name = "licenseKeyNew", url = "http://example.com/length/28")),
-                        copyrightHolders = listOf("copyrightHolder1")
-                    )
-                )
-            ),
-            ResolveScope.Variant("scope3") to listOf(
-                ResolvedArtifact(
-                    id = ResolvedModuleIdentifier(
-                        group = "group1",
-                        name = "name4",
-                        version = VersionString("+")
+                ResolveScope.Variant("scope3") to
+                    listOf(
+                        ResolvedArtifact(
+                            id =
+                                ResolvedModuleIdentifier(
+                                    group = "group1",
+                                    name = "name4",
+                                    version = VersionString("+"),
+                                ),
+                            metadata =
+                                ResolvedPomFile(
+                                    associatedUrl = "http://example.com",
+                                    displayNameCandidates = listOf("displayName1"),
+                                    licenses = listOf(LicenseSeed(name = "Apache License 2.0", url = "http://example.com")),
+                                    copyrightHolders = listOf("copyrightHolder1"),
+                                ),
+                        ),
                     ),
-                    metadata = ResolvedPomFile(
-                        associatedUrl = "http://example.com",
-                        displayNameCandidates = listOf("displayName1"),
-                        licenses = listOf(LicenseSeed(name = "Apache License 2.0", url = "http://example.com")),
-                        copyrightHolders = listOf("copyrightHolder1")
-                    )
-                )
+            ).toSortedMap(Comparator { s, s2 -> s.name.compareTo(s2.name) })
+        val scopedBaseArtifacts =
+            mapOf(
+                Scope("scope1") to
+                    listOf(
+                        ArtifactDefinition(
+                            key = "group1:name1",
+                            url = "http://example.com",
+                            copyrightHolders = listOf(),
+                            licenses = listOf(LicenseKey("apache-2.0")),
+                            displayName = "displayName1",
+                        ),
+                    ),
+                Scope("scope2") to
+                    listOf(
+                        ArtifactDefinition(
+                            key = "group1:name2", // missing in the new artifacts
+                            url = "http://example.com",
+                            copyrightHolders = listOf(),
+                            licenses = listOf(LicenseKey("apache-2.0")),
+                            displayName = "displayName1",
+                            keep = false,
+                        ),
+                        ArtifactDefinition(
+                            key = "group1:name3", // missing in the new artifacts
+                            url = "http://example.com",
+                            copyrightHolders = listOf(),
+                            licenses = listOf(LicenseKey("apache-2.0")),
+                            displayName = "displayName1",
+                            keep = true,
+                        ),
+                    ),
+                Scope("scope3") to
+                    listOf(
+                        ArtifactDefinition(
+                            key = "group1:name4",
+                            url = "http://example.com",
+                            copyrightHolders = listOf(),
+                            licenses = listOf(LicenseKey("licenseKeyNew@28")),
+                            displayName = "displayName1",
+                        ),
+                    ),
             )
-        ).toSortedMap(Comparator { s, s2 -> s.name.compareTo(s2.name) })
-        val scopedBaseArtifacts = mapOf(
-            Scope("scope1") to listOf(
-                ArtifactDefinition(
-                    key = "group1:name1",
+        val baseLicenses =
+            setOf(
+                PlainLicense(
+                    key = LicenseKey("apache-2.0"),
                     url = "http://example.com",
-                    copyrightHolders = listOf(),
-                    licenses = listOf(LicenseKey("apache-2.0")),
-                    displayName = "displayName1"
-                )
-            ),
-            Scope("scope2") to listOf(
-                ArtifactDefinition(
-                    key = "group1:name2", // missing in the new artifacts
-                    url = "http://example.com",
-                    copyrightHolders = listOf(),
-                    licenses = listOf(LicenseKey("apache-2.0")),
-                    displayName = "displayName1",
-                    keep = false
+                    name = "license1",
                 ),
-                ArtifactDefinition(
-                    key = "group1:name3", // missing in the new artifacts
+                PlainLicense(
+                    key = LicenseKey("willDisappear"),
                     url = "http://example.com",
-                    copyrightHolders = listOf(),
-                    licenses = listOf(LicenseKey("apache-2.0")),
-                    displayName = "displayName1",
-                    keep = true
-                )
-            ),
-            Scope("scope3") to listOf(
-                ArtifactDefinition(
-                    key = "group1:name4",
+                    name = "license2",
+                ),
+                PlainLicense(
+                    key = LicenseKey("licenseKeyNew@28"),
                     url = "http://example.com",
-                    copyrightHolders = listOf(),
-                    licenses = listOf(LicenseKey("licenseKeyNew@28")),
-                    displayName = "displayName1"
-                )
+                    name = "licenseNew@28",
+                ),
             )
-        )
-        val baseLicenses = setOf(
-            PlainLicense(
-                key = LicenseKey("apache-2.0"),
-                url = "http://example.com",
-                name = "license1"
-            ),
-            PlainLicense(
-                key = LicenseKey("willDisappear"),
-                url = "http://example.com",
-                name = "license2"
-            ),
-            PlainLicense(
-                key = LicenseKey("licenseKeyNew@28"),
-                url = "http://example.com",
-                name = "licenseNew@28"
+        val merger =
+            Merger(
+                scopedResolvedArtifacts = scopedResolvedArtifacts,
+                baseLicenses = baseLicenses,
+                scopedBaseArtifacts = scopedBaseArtifacts,
             )
-        )
-        val merger = Merger(
-            scopedResolvedArtifacts = scopedResolvedArtifacts,
-            baseLicenses = baseLicenses,
-            scopedBaseArtifacts = scopedBaseArtifacts
-        )
 
         val result = merger.merge()
 
-        assertEquals(listOf(
-            PlainLicense(
-                key = LicenseKey("apache-2.0"),
-                url = "http://example.com",
-                name = "license1"
+        assertEquals(
+            listOf(
+                PlainLicense(
+                    key = LicenseKey("apache-2.0"),
+                    url = "http://example.com",
+                    name = "license1",
+                ),
+                PlainLicense(
+                    key = LicenseKey("licenseKeyNew@28"),
+                    url = "http://example.com",
+                    name = "licenseNew@28",
+                ),
             ),
-            PlainLicense(
-                key = LicenseKey("licenseKeyNew@28"),
-                url = "http://example.com",
-                name = "licenseNew@28"
-            )
-        ), result.licenses)
+            result.licenses,
+        )
 
-        assertEquals(mapOf(
-            Scope("scope1") to listOf(
-                ArtifactDefinition(
-                    key = "group1:name1",
-                    url = "http://example.com",
-                    copyrightHolders = listOf(),
-                    licenses = listOf(LicenseKey("apache-2.0")),
-                    displayName = "displayName1"
-                )
+        assertEquals(
+            mapOf(
+                Scope("scope1") to
+                    listOf(
+                        ArtifactDefinition(
+                            key = "group1:name1",
+                            url = "http://example.com",
+                            copyrightHolders = listOf(),
+                            licenses = listOf(LicenseKey("apache-2.0")),
+                            displayName = "displayName1",
+                        ),
+                    ),
+                Scope("scope2") to
+                    listOf(
+                        ArtifactDefinition(
+                            key = "group1:name3", // missing in the new artifacts
+                            url = "http://example.com",
+                            copyrightHolders = listOf(),
+                            licenses = listOf(LicenseKey("apache-2.0")),
+                            displayName = "displayName1",
+                            keep = true,
+                        ),
+                    ),
+                Scope("scope3") to
+                    listOf(
+                        ArtifactDefinition(
+                            key = "group1:name4", // missing in the new artifacts
+                            url = "http://example.com",
+                            copyrightHolders = listOf(),
+                            licenses = listOf(LicenseKey("licenseKeyNew@28")),
+                            displayName = "displayName1",
+                        ),
+                    ),
             ),
-            Scope("scope2") to listOf(
-                ArtifactDefinition(
-                    key = "group1:name3", // missing in the new artifacts
-                    url = "http://example.com",
-                    copyrightHolders = listOf(),
-                    licenses = listOf(LicenseKey("apache-2.0")),
-                    displayName = "displayName1",
-                    keep = true
-                )
-            ),
-            Scope("scope3") to listOf(
-                ArtifactDefinition(
-                    key = "group1:name4", // missing in the new artifacts
-                    url = "http://example.com",
-                    copyrightHolders = listOf(),
-                    licenses = listOf(LicenseKey("licenseKeyNew@28")),
-                    displayName = "displayName1"
-                )
-            )
-        ), result.scopedArtifacts)
+            result.scopedArtifacts,
+        )
     }
 
     @Test
     fun `reverseMerge should not update the existing values and append unless exists`() {
-        val definitions = listOf(
-            provideArtifact(key = "key1"),
-            provideArtifact(key = "key2").copy(
-                displayName = "kept"
+        val definitions =
+            listOf(
+                provideArtifact(key = "key1"),
+                provideArtifact(key = "key2").copy(
+                    displayName = "kept",
+                ),
             )
-        )
 
-        val others = setOf(
-            provideArtifact(key = "key2"),
-            provideArtifact(key = "key3")
-        )
+        val others =
+            setOf(
+                provideArtifact(key = "key2"),
+                provideArtifact(key = "key3"),
+            )
 
         val mergedResult = definitions.reverseMerge(others) { it.key }
 

@@ -1,22 +1,22 @@
 package io.github.jmatsu.license
 
 import io.github.jmatsu.license.dsl.HtmlFormat
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class VisualizationOptionsImplTest {
-
     lateinit var options: VisualizationOptions
 
     @BeforeTest
     fun setup() {
-        options = VisualizationOptionsImpl(
-            name = "default"
-        )
+        options =
+            VisualizationOptionsImpl(
+                name = "default",
+            )
     }
 
     @Test

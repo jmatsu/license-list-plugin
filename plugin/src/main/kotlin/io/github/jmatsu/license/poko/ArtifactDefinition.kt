@@ -18,9 +18,9 @@ data class ArtifactDefinition(
     override val url: String?,
     override val copyrightHolders: List<String>?,
     override val licenses: List<LicenseKey>,
-    override val keep: Boolean = false
-) : Comparable<ArtifactDefinition>, PokoArtifactDefinition {
-
+    override val keep: Boolean = false,
+) : Comparable<ArtifactDefinition>,
+    PokoArtifactDefinition {
     override fun compareTo(other: ArtifactDefinition): Int {
         // : is a separator and use secondary order
         val own = key.split(":")
@@ -60,36 +60,39 @@ data class ArtifactDefinition(
                 url = optionalKeep.url,
                 copyrightHolders = optionalKeep.copyrightHolders,
                 licenses = optionalKeep.licenses,
-                keep = optionalKeep.keep
+                keep = optionalKeep.keep,
             )
         }
 
-        override fun serialize(encoder: Encoder, value: ArtifactDefinition) {
-            return if (value.keep) {
-                Kept.serializer().serialize(
-                    encoder = encoder,
-                    value = Kept(
+        override fun serialize(
+            encoder: Encoder,
+            value: ArtifactDefinition,
+        ) = if (value.keep) {
+            Kept.serializer().serialize(
+                encoder = encoder,
+                value =
+                    Kept(
                         key = value.key,
                         displayName = value.displayName,
                         url = value.url,
                         copyrightHolders = value.copyrightHolders,
                         licenses = value.licenses,
-                        keep = true
-                    )
-                )
-            } else {
-                WithoutKeep.serializer().serialize(
-                    encoder = encoder,
-                    value = WithoutKeep(
+                        keep = true,
+                    ),
+            )
+        } else {
+            WithoutKeep.serializer().serialize(
+                encoder = encoder,
+                value =
+                    WithoutKeep(
                         key = value.key,
                         displayName = value.displayName,
                         url = value.url,
                         copyrightHolders = value.copyrightHolders,
                         licenses = value.licenses,
-                        keep = false
-                    )
-                )
-            }
+                        keep = false,
+                    ),
+            )
         }
     }
 }
@@ -102,7 +105,7 @@ private class OptionalKeep(
     override val url: String? = null,
     override val copyrightHolders: List<String>? = null,
     override val licenses: List<LicenseKey>,
-    override val keep: Boolean = false
+    override val keep: Boolean = false,
 ) : PokoArtifactDefinition
 
 @Serializable
@@ -113,9 +116,8 @@ private class WithoutKeep(
     override val url: String? = null,
     override val copyrightHolders: List<String>? = null,
     override val licenses: List<LicenseKey>,
-
     @Transient
-    override val keep: Boolean = false
+    override val keep: Boolean = false,
 ) : PokoArtifactDefinition
 
 @Serializable
@@ -126,5 +128,5 @@ private class Kept(
     override val url: String? = null,
     override val copyrightHolders: List<String>? = null,
     override val licenses: List<LicenseKey>,
-    override val keep: Boolean = false
+    override val keep: Boolean = false,
 ) : PokoArtifactDefinition
