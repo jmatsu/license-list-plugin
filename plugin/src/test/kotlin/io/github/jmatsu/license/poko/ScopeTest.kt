@@ -2,16 +2,15 @@ package io.github.jmatsu.license.poko
 
 import kotlin.test.expect
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import org.junit.Before
-import org.junit.Test
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 
 class ScopeTest {
     lateinit var json: Json
 
-    @Before
+    @BeforeTest
     fun setup() {
-        json = Json(configuration = JsonConfiguration.Stable)
+        json = Json { }
     }
 
     @Test
@@ -21,7 +20,7 @@ class ScopeTest {
         )
 
         expect("\"scope\"") {
-            json.stringify(Scope.serializer(), scope)
+            json.encodeToString(Scope.serializer(), scope)
         }
     }
 
@@ -32,7 +31,7 @@ class ScopeTest {
         )
 
         expect(expected) {
-            json.parse(Scope.serializer(), "\"scope\"")
+            json.decodeFromString(Scope.serializer(), "\"scope\"")
         }
     }
 }

@@ -1,7 +1,6 @@
 package io.github.jmatsu.license.tasks
 
 import com.android.build.gradle.api.ApplicationVariant
-import com.google.common.annotations.VisibleForTesting
 import freemarker.template.Version
 import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.dsl.HtmlFormat
@@ -18,6 +17,7 @@ import javax.inject.Inject
 import kotlinx.serialization.StringFormat
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
+import org.jetbrains.annotations.VisibleForTesting
 
 abstract class VisualizeLicenseListTask
 @Inject constructor(

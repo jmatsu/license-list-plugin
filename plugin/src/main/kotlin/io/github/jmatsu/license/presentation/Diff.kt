@@ -1,6 +1,5 @@
 package io.github.jmatsu.license.presentation
 
-import com.google.common.collect.Sets
 import io.github.jmatsu.license.poko.ArtifactDefinition
 import io.github.jmatsu.license.poko.LicenseKey
 
@@ -19,8 +18,8 @@ object Diff {
 
         val keepKeys = base.mapNotNull { a -> a.key.takeIf { a.keep } }.toSet()
 
-        val added = Sets.difference(newerKeys, baseKeys)
-        val removed = Sets.difference(baseKeys, newerKeys).filterNot { keepKeys.contains(it) }.toSet()
+        val added = newerKeys - baseKeys
+        val removed = (baseKeys - newerKeys).filterNot { keepKeys.contains(it) }.toSet()
 
         return DiffResult(
             missingKeys = added,
@@ -33,8 +32,8 @@ object Diff {
         val baseKeys = base.map { it.value }.toSet()
         val newerKeys = newer.map { it.value }.toSet()
 
-        val added = Sets.difference(newerKeys, baseKeys)
-        val removed = Sets.difference(baseKeys, newerKeys)
+        val added = newerKeys - baseKeys
+        val removed = baseKeys - newerKeys
 
         return DiffResult(
             missingKeys = added,

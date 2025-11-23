@@ -2,16 +2,15 @@ package io.github.jmatsu.license.poko
 
 import kotlin.test.expect
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import org.junit.Before
-import org.junit.Test
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 
 class LicenseTest {
     lateinit var json: Json
 
-    @Before
+    @BeforeTest
     fun setup() {
-        json = Json(configuration = JsonConfiguration.Stable)
+        json = Json { }
     }
 
     @Test
@@ -21,7 +20,7 @@ class LicenseTest {
         )
 
         expect("\"license\"") {
-            json.stringify(LicenseKey.serializer(), license)
+            json.encodeToString(LicenseKey.serializer(), license)
         }
     }
 
@@ -32,7 +31,7 @@ class LicenseTest {
         )
 
         expect(expected) {
-            json.parse(LicenseKey.serializer(), "\"license\"")
+            json.decodeFromString(LicenseKey.serializer(), "\"license\"")
         }
     }
 
@@ -45,7 +44,7 @@ class LicenseTest {
         )
 
         expect("""{"key":"key","name":"name","url":"url"}""") {
-            json.stringify(PlainLicense.serializer(), license)
+            json.encodeToString(PlainLicense.serializer(), license)
         }
     }
 
@@ -58,7 +57,7 @@ class LicenseTest {
         )
 
         expect(expected) {
-            json.parse(PlainLicense.serializer(), """{ "name": "name", "url": "url", "key": "key" }""")
+            json.decodeFromString(PlainLicense.serializer(), """{ "name": "name", "url": "url", "key": "key" }""")
         }
     }
 }
