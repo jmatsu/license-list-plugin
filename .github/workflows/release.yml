@@ -76,7 +76,7 @@ jobs:
           ref: ${{ needs.params.outputs.checkout-ref }}
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
         with:
-          java-version: '8'
+          java-version: '17'
           distribution: corretto
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
@@ -129,7 +129,7 @@ jobs:
           ref: ${{ needs.params.outputs.checkout-ref }}
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
         with:
-          java-version: '8'
+          java-version: '17'
           distribution: corretto
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
