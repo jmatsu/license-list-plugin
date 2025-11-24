@@ -3,13 +3,13 @@ package io.github.jmatsu.license.internal
 import io.github.jmatsu.license.LicenseListPlugin
 import io.github.jmatsu.license.ext.collectToMap
 import io.github.jmatsu.license.ext.lenientConfiguration
+import io.github.jmatsu.license.model.LOCAL_FILE_GROUP
 import io.github.jmatsu.license.model.LicenseSeed
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.model.ResolvedArtifact
 import io.github.jmatsu.license.model.ResolvedLocalFileMetadata
 import io.github.jmatsu.license.model.ResolvedModuleIdentifier
 import io.github.jmatsu.license.model.VersionString
-import io.github.jmatsu.license.model.localGroup
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.SelfResolvingDependency
@@ -120,7 +120,7 @@ class ArtifactManagement(
                     files.mapNotNull { file ->
                         val id =
                             ResolvedModuleIdentifier(
-                                group = localGroup,
+                                group = LOCAL_FILE_GROUP,
                                 name = file.name,
                             )
 

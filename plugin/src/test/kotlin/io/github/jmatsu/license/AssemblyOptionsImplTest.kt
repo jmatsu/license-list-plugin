@@ -1,7 +1,7 @@
 package io.github.jmatsu.license
 
-import io.github.jmatsu.license.dsl.StructuredStyle
-import io.github.jmatsu.license.dsl.YamlFormat
+import io.github.jmatsu.license.dsl.FORMAT_YAML
+import io.github.jmatsu.license.dsl.STYLE_STRUCTURED
 import io.github.jmatsu.license.internal.ArtifactManagement
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -24,8 +24,8 @@ class AssemblyOptionsImplTest {
     @Test
     fun `default options`() {
         with(options) {
-            assertEquals(StructuredStyle, style)
-            assertEquals(YamlFormat, format)
+            assertEquals(STYLE_STRUCTURED, style)
+            assertEquals(FORMAT_YAML, format)
             assertTrue(groupByScopes)
             assertEquals(ArtifactManagement.CommonConfigurationNames, targetConfigurations)
             assertEquals(

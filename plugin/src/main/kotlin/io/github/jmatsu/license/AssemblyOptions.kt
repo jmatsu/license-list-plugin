@@ -2,8 +2,8 @@ package io.github.jmatsu.license
 
 import io.github.jmatsu.license.dsl.AssembleFormat
 import io.github.jmatsu.license.dsl.AssembleStyle
-import io.github.jmatsu.license.dsl.StructuredStyle
-import io.github.jmatsu.license.dsl.YamlFormat
+import io.github.jmatsu.license.dsl.FORMAT_YAML
+import io.github.jmatsu.license.dsl.STYLE_STRUCTURED
 import io.github.jmatsu.license.dsl.isAssembleFormat
 import io.github.jmatsu.license.dsl.isAssembleStyle
 import io.github.jmatsu.license.internal.ArtifactManagement
@@ -81,7 +81,7 @@ class AssemblyOptionsImpl(
     @Internal
     override fun getPublicType(): TypeOf<AssemblyOptions> = typeOf()
 
-    override var format: AssembleFormat = YamlFormat
+    override var format: AssembleFormat = FORMAT_YAML
         set(value) {
             if (!isAssembleFormat(value)) {
                 error("$value is not one of assemble formats")
@@ -90,7 +90,7 @@ class AssemblyOptionsImpl(
             field = value
         }
 
-    override var style: AssembleStyle = StructuredStyle
+    override var style: AssembleStyle = STYLE_STRUCTURED
         set(value) {
             if (!isAssembleStyle(value)) {
                 error("$value is not one of assemble styles")

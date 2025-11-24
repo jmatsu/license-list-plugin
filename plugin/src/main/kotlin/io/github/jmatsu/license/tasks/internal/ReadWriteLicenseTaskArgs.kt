@@ -6,12 +6,12 @@ import io.github.jmatsu.license.LicenseListExtension
 import io.github.jmatsu.license.VariantAwareOptions
 import io.github.jmatsu.license.VariantAwareOptionsImpl
 import io.github.jmatsu.license.VisualizationOptionsImpl
-import io.github.jmatsu.license.dsl.FlattenStyle
-import io.github.jmatsu.license.dsl.GlobIgnore
-import io.github.jmatsu.license.dsl.JsonFormat
-import io.github.jmatsu.license.dsl.RegexIgnore
-import io.github.jmatsu.license.dsl.StructuredStyle
-import io.github.jmatsu.license.dsl.YamlFormat
+import io.github.jmatsu.license.dsl.FORMAT_JSON
+import io.github.jmatsu.license.dsl.FORMAT_YAML
+import io.github.jmatsu.license.dsl.IGNORE_FORMAT_GLOB
+import io.github.jmatsu.license.dsl.IGNORE_FORMAT_REGEX
+import io.github.jmatsu.license.dsl.STYLE_FLATTEN
+import io.github.jmatsu.license.dsl.STYLE_STRUCTURED
 import io.github.jmatsu.license.internal.ArtifactIgnoreParser
 import io.github.jmatsu.license.model.ResolveScope
 import io.github.jmatsu.license.presentation.Assembler
@@ -42,30 +42,30 @@ abstract class ReadWriteLicenseTaskArgs(
 
     val assemblyFormat: StringFormat by lazy {
         when (variantAwareOptions.assembly.format) {
-            JsonFormat -> Convention.Json.Assembly
-            YamlFormat -> Convention.Yaml.Assembly
-            else -> throw IllegalArgumentException("Only one of $FlattenStyle or $StructuredStyle are allowed.")
+            FORMAT_JSON -> Convention.Json.Assembly
+            FORMAT_YAML -> Convention.Yaml.Assembly
+            else -> throw IllegalArgumentException("Only one of $STYLE_FLATTEN or $STYLE_STRUCTURED are allowed.")
         }
     }
 
     val assemblyStyle: Assembler.Style by lazy {
         when (variantAwareOptions.assembly.style) {
-            FlattenStyle -> Assembler.Style.Flatten
-            StructuredStyle -> {
+            STYLE_FLATTEN -> Assembler.Style.Flatten
+            STYLE_STRUCTURED -> {
                 if (variantAwareOptions.assembly.groupByScopes) {
                     Assembler.Style.StructuredWithScope
                 } else {
                     Assembler.Style.StructuredWithoutScope
                 }
             }
-            else -> throw IllegalArgumentException("Only one of $FlattenStyle or $StructuredStyle are allowed.")
+            else -> throw IllegalArgumentException("Only one of $STYLE_FLATTEN or $STYLE_STRUCTURED are allowed.")
         }
     }
 
     val assembledFileExt: String by lazy {
         when (variantAwareOptions.assembly.format) {
-            JsonFormat -> "json"
-            YamlFormat -> "yml"
+            FORMAT_JSON -> "json"
+            FORMAT_YAML -> "yml"
             else -> error("nothing has come")
         }
     }
@@ -94,9 +94,9 @@ abstract class ReadWriteLicenseTaskArgs(
 
     val ignoreFormat: ArtifactIgnoreParser.Format by lazy {
         when (extension.ignoreFormat) {
-            RegexIgnore -> ArtifactIgnoreParser.Format.Regex
-            GlobIgnore -> ArtifactIgnoreParser.Format.Glob
-            else -> throw IllegalArgumentException("Only one of $RegexIgnore or $GlobIgnore are allowed.")
+            IGNORE_FORMAT_REGEX -> ArtifactIgnoreParser.Format.Regex
+            IGNORE_FORMAT_GLOB -> ArtifactIgnoreParser.Format.Glob
+            else -> throw IllegalArgumentException("Only one of $IGNORE_FORMAT_REGEX or $IGNORE_FORMAT_GLOB are allowed.")
         }
     }
 }

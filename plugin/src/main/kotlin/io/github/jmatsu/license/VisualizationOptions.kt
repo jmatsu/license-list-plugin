@@ -1,7 +1,7 @@
 package io.github.jmatsu.license
 
 import freemarker.template.Version
-import io.github.jmatsu.license.dsl.HtmlFormat
+import io.github.jmatsu.license.dsl.FORMAT_HTML
 import io.github.jmatsu.license.dsl.VisualizeFormat
 import io.github.jmatsu.license.dsl.isVisualizeFormat
 import io.github.jmatsu.license.dsl.validation.optionalDirectoryProperty
@@ -65,7 +65,7 @@ class VisualizationOptionsImpl(
 
     override fun getName(): String = name
 
-    override var format: VisualizeFormat = HtmlFormat
+    override var format: VisualizeFormat = FORMAT_HTML
         set(value) {
             if (!isVisualizeFormat(value)) {
                 error("$value is not one of visualize formats")

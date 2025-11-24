@@ -17,4 +17,4 @@ data class ResolvedModuleIdentifier(
             .takeIf { it != 0 } ?: version.compareTo(other.version)
 }
 
-const val localGroup = "local-file"
+const val LOCAL_FILE_GROUP = "local-file"

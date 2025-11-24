@@ -3,8 +3,8 @@ package io.github.jmatsu.license.tasks
 import com.android.build.gradle.api.ApplicationVariant
 import freemarker.template.Version
 import io.github.jmatsu.license.LicenseListExtension
-import io.github.jmatsu.license.dsl.HtmlFormat
-import io.github.jmatsu.license.dsl.JsonFormat
+import io.github.jmatsu.license.dsl.FORMAT_HTML
+import io.github.jmatsu.license.dsl.FORMAT_JSON
 import io.github.jmatsu.license.poko.DisplayArtifact
 import io.github.jmatsu.license.presentation.Convention
 import io.github.jmatsu.license.presentation.Disassembler
@@ -98,16 +98,16 @@ abstract class VisualizeLicenseListTask
 
             val visualizedFileExt: String by lazy {
                 when (variantAwareOptions.visualization.format) {
-                    JsonFormat -> "json"
-                    HtmlFormat -> "html"
+                    FORMAT_JSON -> "json"
+                    FORMAT_HTML -> "html"
                     else -> error("nothing has come")
                 }
             }
 
             val visualizationFormat: StringFormat by lazy {
                 when (variantAwareOptions.visualization.format) {
-                    JsonFormat -> Convention.Json.Visualization
-                    HtmlFormat ->
+                    FORMAT_JSON -> Convention.Json.Visualization
+                    FORMAT_HTML ->
                         Convention.Html.Visualization(
                             htmlConfiguration =
                                 HtmlConfiguration(
@@ -115,7 +115,7 @@ abstract class VisualizeLicenseListTask
                                     templateDir = variantAwareOptions.visualization.htmlTemplateDir,
                                 ),
                         )
-                    else -> throw IllegalArgumentException("Only one of $JsonFormat or $HtmlFormat are allowed.")
+                    else -> throw IllegalArgumentException("Only one of $FORMAT_JSON or $FORMAT_HTML are allowed.")
                 }
             }
             val visualizedFile: File

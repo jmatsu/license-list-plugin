@@ -1,6 +1,6 @@
 package io.github.jmatsu.license
 
-import io.github.jmatsu.license.dsl.HtmlFormat
+import io.github.jmatsu.license.dsl.FORMAT_HTML
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.BeforeTest
@@ -22,7 +22,7 @@ class VisualizationOptionsImplTest {
     @Test
     fun `default options`() {
         with(options) {
-            assertEquals(HtmlFormat, format)
+            assertEquals(FORMAT_HTML, format)
             assertNull(htmlTemplateDir)
             assertNull(freeMakerVersion)
             assertNull(outputDir)
