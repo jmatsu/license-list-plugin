@@ -19,14 +19,14 @@ import io.mockk.mockkConstructor
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
-import java.util.SortedMap
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertTrue
 import kotlinx.serialization.StringFormat
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.testfixtures.ProjectBuilder
+import java.util.SortedMap
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class InitLicenseListTaskTest {
     lateinit var project: Project
@@ -58,19 +58,21 @@ class InitLicenseListTaskTest {
         val assemblyFormat: StringFormat = mockk()
         val assemblyStyle: Assembler.Style = mockk()
 
-        val args: InitLicenseListTask.Args = mockk {
-            every { assembleOutputDir } returns mockk {
-                every { mkdirs() } returns true
+        val args: InitLicenseListTask.Args =
+            mockk {
+                every { assembleOutputDir } returns
+                    mockk {
+                        every { mkdirs() } returns true
+                    }
+                every { assembledArtifactsFile.exists() } returns false
+                every { assembledLicenseCatalogFile.exists() } returns false
+                every { this@mockk.additionalScopes } returns additionalScopes
+                every { this@mockk.variantScope } returns variantScope
+                every { this@mockk.assemblyFormat } returns assemblyFormat
+                every { this@mockk.assemblyStyle } returns assemblyStyle
+                every { configurationNames } returns setOf()
+                every { ignoreFile } returns mockk()
             }
-            every { assembledArtifactsFile.exists() } returns false
-            every { assembledLicenseCatalogFile.exists() } returns false
-            every { this@mockk.additionalScopes } returns additionalScopes
-            every { this@mockk.variantScope } returns variantScope
-            every { this@mockk.assemblyFormat } returns assemblyFormat
-            every { this@mockk.assemblyStyle } returns assemblyStyle
-            every { configurationNames } returns setOf()
-            every { ignoreFile } returns mockk()
-        }
 
         val ignoreFormat: ArtifactIgnoreParser.Format = ArtifactIgnoreParser.Format.Regex
         val ignorePredicate: IgnorePredicate = { _, _ -> false }
@@ -86,14 +88,14 @@ class InitLicenseListTaskTest {
         every {
             anyConstructed<ArtifactManagement>().analyze(
                 additionalScopes = any(),
-                variantScope = any()
+                variantScope = any(),
             )
         } returns analyzedResult
 
         every {
             anyConstructed<Assembler>().assembleArtifacts(
                 format = any(),
-                style = any()
+                style = any(),
             )
         } returns assembledArtifacts
 
@@ -103,7 +105,7 @@ class InitLicenseListTaskTest {
 
         every {
             anyConstructed<Assembler>().assemblePlainLicenses(
-                format = any()
+                format = any(),
             )
         } returns assembledLicenses
 
@@ -113,22 +115,22 @@ class InitLicenseListTaskTest {
 
         InitLicenseListTask.Executor(
             project = project,
-            args = args
+            args = args,
         )
 
         verify {
             anyConstructed<ArtifactIgnoreParser>().buildPredicate(ignoreFormat)
             anyConstructed<ArtifactManagement>().analyze(
                 additionalScopes = additionalScopes,
-                variantScope = variantScope
+                variantScope = variantScope,
             )
             anyConstructed<Builder>().build()
             anyConstructed<Assembler>().assembleArtifacts(
                 format = assemblyFormat,
-                style = assemblyStyle
+                style = assemblyStyle,
             )
             anyConstructed<Assembler>().assemblePlainLicenses(
-                format = Convention.Yaml.Assembly
+                format = Convention.Yaml.Assembly,
             )
 
             args.assembledArtifactsFile.writeText(assembledArtifacts)

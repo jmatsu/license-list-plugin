@@ -17,14 +17,14 @@ import io.mockk.mockkConstructor
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
-import java.util.SortedMap
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertTrue
 import kotlinx.serialization.StringFormat
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.testfixtures.ProjectBuilder
+import java.util.SortedMap
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class ValidateLicenseListTaskTest {
     lateinit var project: Project
@@ -59,16 +59,17 @@ class ValidateLicenseListTaskTest {
         val artifactsText = "artifactsText"
         val catalogText = "catalogText"
 
-        val args: ValidateLicenseListTask.Args = mockk {
-            every { assembledArtifactsFile.exists() } returns true
-            every { assembledLicenseCatalogFile.exists() } returns true
-            every { this@mockk.additionalScopes } returns additionalScopes
-            every { this@mockk.variantScope } returns variantScope
-            every { this@mockk.assemblyFormat } returns assemblyFormat
-            every { this@mockk.assemblyStyle } returns assemblyStyle
-            every { configurationNames } returns setOf()
-            every { ignoreFile } returns mockk()
-        }
+        val args: ValidateLicenseListTask.Args =
+            mockk {
+                every { assembledArtifactsFile.exists() } returns true
+                every { assembledLicenseCatalogFile.exists() } returns true
+                every { this@mockk.additionalScopes } returns additionalScopes
+                every { this@mockk.variantScope } returns variantScope
+                every { this@mockk.assemblyFormat } returns assemblyFormat
+                every { this@mockk.assemblyStyle } returns assemblyStyle
+                every { configurationNames } returns setOf()
+                every { ignoreFile } returns mockk()
+            }
 
         val ignoreFormat: ArtifactIgnoreParser.Format = ArtifactIgnoreParser.Format.Regex
         val ignorePredicate: IgnorePredicate = { _, _ -> false }
@@ -92,7 +93,7 @@ class ValidateLicenseListTaskTest {
         every {
             anyConstructed<ArtifactManagement>().analyze(
                 additionalScopes = any(),
-                variantScope = any()
+                variantScope = any(),
             )
         } returns analyzedResult
 
@@ -103,14 +104,14 @@ class ValidateLicenseListTaskTest {
         ValidateLicenseListTask.Executor(
             project = project,
             args = args,
-            logger = mockk(relaxed = true, relaxUnitFun = true)
+            logger = mockk(relaxed = true, relaxUnitFun = true),
         )
 
         verify {
             anyConstructed<ArtifactIgnoreParser>().buildPredicate(ignoreFormat)
             anyConstructed<ArtifactManagement>().analyze(
                 additionalScopes = additionalScopes,
-                variantScope = variantScope
+                variantScope = variantScope,
             )
             anyConstructed<Disassembler>().disassembleArtifacts(artifactsText)
             anyConstructed<Disassembler>().disassemblePlainLicenses(catalogText)

@@ -1,29 +1,28 @@
 package io.github.jmatsu.license.poko
 
-import kotlinx.serialization.Decoder
-import kotlinx.serialization.Encoder
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.PrimitiveKind
-import kotlinx.serialization.SerialDescriptor
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
-@Serializable
+@Serializable(Scope.Companion::class)
 data class Scope(
-    override val name: String
+    override val name: String,
 ) : io.github.jmatsu.license.schema.Scope {
-
     // TODO Make Scope inline class if Serialization supports it, then I can remove this
-    @Serializer(forClass = Scope::class)
     companion object : KSerializer<Scope> {
         override val descriptor: SerialDescriptor =
-            SerialDescriptor("Scope", PrimitiveKind.STRING)
+            PrimitiveSerialDescriptor("Scope", PrimitiveKind.STRING)
 
-        override fun deserialize(decoder: Decoder): Scope {
-            return Scope(decoder.decodeString())
-        }
+        override fun deserialize(decoder: Decoder): Scope = Scope(decoder.decodeString())
 
-        override fun serialize(encoder: Encoder, value: Scope) {
+        override fun serialize(
+            encoder: Encoder,
+            value: Scope,
+        ) {
             encoder.encodeString(value.name)
         }
 

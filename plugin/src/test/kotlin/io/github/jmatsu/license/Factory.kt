@@ -5,25 +5,27 @@ import io.github.jmatsu.license.poko.LicenseKey
 import io.github.jmatsu.license.poko.PlainLicense
 
 object Factory {
-    fun provideArtifact(key: String): ArtifactDefinition {
-        return ArtifactDefinition(
+    fun provideArtifact(key: String): ArtifactDefinition =
+        ArtifactDefinition(
             key = key,
             displayName = "displayName",
             url = "url",
-            licenses = listOf(
-                LicenseKey("license")
-            ),
-            copyrightHolders = listOf(
-                "copyrightHolder"
-            )
+            licenses =
+                listOf(
+                    LicenseKey("license"),
+                ),
+            copyrightHolders =
+                listOf(
+                    "copyrightHolder",
+                ),
         )
-    }
 
     fun provideLicenseKey(value: String): LicenseKey = LicenseKey(value)
 
-    fun providePlainLicense(key: String): PlainLicense = PlainLicense(
-        key = provideLicenseKey(key),
-        url = "http://example.com",
-        name = "name"
-    )
+    fun providePlainLicense(key: String): PlainLicense =
+        PlainLicense(
+            key = provideLicenseKey(key),
+            url = "http://example.com",
+            name = "name",
+        )
 }

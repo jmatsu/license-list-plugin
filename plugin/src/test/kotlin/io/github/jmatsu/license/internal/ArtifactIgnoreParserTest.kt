@@ -1,18 +1,17 @@
 package io.github.jmatsu.license.internal
 
-import java.io.File
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.io.File
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class ArtifactIgnoreParserTest {
-
     lateinit var parser: ArtifactIgnoreParser
 
     lateinit var ignoreFile: File
@@ -43,9 +42,11 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `ignore specific artifact`() {
-            ignoreFile.writeText("""
-            specific:artifact
-        """.trimIndent())
+            ignoreFile.writeText(
+                """
+                specific:artifact
+                """.trimIndent(),
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Regex)
 
@@ -57,9 +58,11 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `ignore group`() {
-            ignoreFile.writeText("""
-            ignore_group:.*
-        """.trimIndent())
+            ignoreFile.writeText(
+                """
+                ignore_group:.*
+                """.trimIndent(),
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Regex)
 
@@ -71,9 +74,11 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `ignore several artifacts`() {
-            ignoreFile.writeText("""
-            several:artifact-.*
-        """.trimIndent())
+            ignoreFile.writeText(
+                """
+                several:artifact-.*
+                """.trimIndent(),
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Regex)
 
@@ -86,9 +91,11 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `ignore several groups`() {
-            ignoreFile.writeText("""
-            several-group-[^:]+:.+
-        """.trimIndent())
+            ignoreFile.writeText(
+                """
+                several-group-[^:]+:.+
+                """.trimIndent(),
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Regex)
 
@@ -101,9 +108,11 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `ignore artifacts that do not have the prefix`() {
-            ignoreFile.writeText("""
-            prefix-.*
-        """.trimIndent())
+            ignoreFile.writeText(
+                """
+                prefix-.*
+                """.trimIndent(),
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Regex)
 
@@ -116,9 +125,11 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `work even if chomped file`() {
-            ignoreFile.writeText("""
-            specific:artifact
-        """.trimIndent().trimEnd { it.isWhitespace() || it == '\n' || it == '\r' })
+            ignoreFile.writeText(
+                """
+                specific:artifact
+                """.trimIndent().trimEnd { it.isWhitespace() || it == '\n' || it == '\r' },
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Regex)
 
@@ -130,13 +141,15 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `ignore all examples at once`() {
-            ignoreFile.writeText("""
-            specific:artifact
-            ignore_group:.*
-            several:artifact-.*
-            several-group-[^:]+:.+
-            prefix-.*
-        """.trimIndent())
+            ignoreFile.writeText(
+                """
+                specific:artifact
+                ignore_group:.*
+                several:artifact-.*
+                several-group-[^:]+:.+
+                prefix-.*
+                """.trimIndent(),
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Regex)
 
@@ -180,9 +193,11 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `ignore specific artifact`() {
-            ignoreFile.writeText("""
-            specific:artifact
-        """.trimIndent())
+            ignoreFile.writeText(
+                """
+                specific:artifact
+                """.trimIndent(),
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Glob)
 
@@ -194,9 +209,11 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `ignore group`() {
-            ignoreFile.writeText("""
-            ignore_group:*
-        """.trimIndent())
+            ignoreFile.writeText(
+                """
+                ignore_group:*
+                """.trimIndent(),
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Glob)
 
@@ -208,9 +225,11 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `ignore several artifacts`() {
-            ignoreFile.writeText("""
-            several:artifact-*
-        """.trimIndent())
+            ignoreFile.writeText(
+                """
+                several:artifact-*
+                """.trimIndent(),
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Glob)
 
@@ -223,9 +242,11 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `ignore several groups`() {
-            ignoreFile.writeText("""
-            several-group-*:*
-        """.trimIndent())
+            ignoreFile.writeText(
+                """
+                several-group-*:*
+                """.trimIndent(),
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Glob)
 
@@ -238,9 +259,11 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `ignore artifacts that do not have the prefix`() {
-            ignoreFile.writeText("""
-            prefix-**
-        """.trimIndent())
+            ignoreFile.writeText(
+                """
+                prefix-**
+                """.trimIndent(),
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Glob)
 
@@ -253,9 +276,11 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `work even if chomped file`() {
-            ignoreFile.writeText("""
-            specific:artifact
-        """.trimIndent().trimEnd { it.isWhitespace() || it == '\n' || it == '\r' })
+            ignoreFile.writeText(
+                """
+                specific:artifact
+                """.trimIndent().trimEnd { it.isWhitespace() || it == '\n' || it == '\r' },
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Glob)
 
@@ -267,13 +292,15 @@ class ArtifactIgnoreParserTest {
 
         @Test
         fun `ignore all examples at once`() {
-            ignoreFile.writeText("""
-            specific:artifact
-            ignore_group:*
-            several:artifact-*
-            several-group-*:*
-            prefix-**
-        """.trimIndent())
+            ignoreFile.writeText(
+                """
+                specific:artifact
+                ignore_group:*
+                several:artifact-*
+                several-group-*:*
+                prefix-**
+                """.trimIndent(),
+            )
 
             val predicate = parser.buildPredicate(ArtifactIgnoreParser.Format.Glob)
 

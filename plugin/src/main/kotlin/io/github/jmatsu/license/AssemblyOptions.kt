@@ -2,8 +2,8 @@ package io.github.jmatsu.license
 
 import io.github.jmatsu.license.dsl.AssembleFormat
 import io.github.jmatsu.license.dsl.AssembleStyle
-import io.github.jmatsu.license.dsl.StructuredStyle
-import io.github.jmatsu.license.dsl.YamlFormat
+import io.github.jmatsu.license.dsl.FORMAT_YAML
+import io.github.jmatsu.license.dsl.STYLE_STRUCTURED
 import io.github.jmatsu.license.dsl.isAssembleFormat
 import io.github.jmatsu.license.dsl.isAssembleStyle
 import io.github.jmatsu.license.internal.ArtifactManagement
@@ -16,7 +16,6 @@ import org.gradle.api.tasks.Internal
 import org.gradle.kotlin.dsl.typeOf
 
 interface AssemblyOptions : Named {
-
     /**
      * a format of the output.
      * Must be one of `yaml` or `json`.
@@ -73,15 +72,16 @@ interface AssemblyOptions : Named {
     override fun getName(): String
 }
 
-class AssemblyOptionsImpl(private val name: String) : AssemblyOptions, HasPublicType {
+class AssemblyOptionsImpl(
+    private val name: String,
+) : AssemblyOptions,
+    HasPublicType {
     override fun getName(): String = name
 
     @Internal
-    override fun getPublicType(): TypeOf<AssemblyOptions> {
-        return typeOf()
-    }
+    override fun getPublicType(): TypeOf<AssemblyOptions> = typeOf()
 
-    override var format: AssembleFormat = YamlFormat
+    override var format: AssembleFormat = FORMAT_YAML
         set(value) {
             if (!isAssembleFormat(value)) {
                 error("$value is not one of assemble formats")
@@ -90,7 +90,7 @@ class AssemblyOptionsImpl(private val name: String) : AssemblyOptions, HasPublic
             field = value
         }
 
-    override var style: AssembleStyle = StructuredStyle
+    override var style: AssembleStyle = STYLE_STRUCTURED
         set(value) {
             if (!isAssembleStyle(value)) {
                 error("$value is not one of assemble styles")
@@ -101,12 +101,13 @@ class AssemblyOptionsImpl(private val name: String) : AssemblyOptions, HasPublic
 
     override var groupByScopes: Boolean = true
 
-    override var additionalScopes: Set<String> = setOf(
-        ResolveScope.Test,
-        ResolveScope.AndroidTest
-    ).map {
-        it.name
-    }.toSet()
+    override var additionalScopes: Set<String> =
+        setOf(
+            ResolveScope.Test,
+            ResolveScope.AndroidTest,
+        ).map {
+            it.name
+        }.toSet()
 
     override var targetConfigurations: Set<String> = ArtifactManagement.CommonConfigurationNames
         set(value) {

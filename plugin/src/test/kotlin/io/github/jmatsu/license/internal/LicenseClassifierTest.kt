@@ -1,11 +1,10 @@
 package io.github.jmatsu.license.internal
 
-import kotlin.test.expect
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import kotlin.test.expect
 
 class LicenseClassifierTest {
-
     @ParameterizedTest
     @ValueSource(
         strings = [
@@ -15,8 +14,8 @@ class LicenseClassifierTest {
             "agpl 3",
             "agpl3",
             "http://example.com/agpl-3.0",
-            "http://example.com/agpl-3.0/salt"
-        ]
+            "http://example.com/agpl-3.0/salt",
+        ],
     )
     fun `agpl30`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -35,8 +34,8 @@ class LicenseClassifierTest {
             "Apache 2.0",
             "http://www.apache.org/licenses/LICENSE-2.0.txt",
             "http://example.com/Apache-2.0",
-            "http://example.com/Apache-2.0/salt"
-        ]
+            "http://example.com/Apache-2.0/salt",
+        ],
     )
     fun `apache2`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -52,8 +51,8 @@ class LicenseClassifierTest {
             "BSD 2-Clause \"Simplified\" License",
             "http://example.com/BSD-2-Clause",
             "http://example.com/BSD-2-Clause/salt",
-            "License BSD-Clause/simplified"
-        ]
+            "License BSD-Clause/simplified",
+        ],
     )
     fun `bsd2`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -70,8 +69,8 @@ class LicenseClassifierTest {
             "http://example.com/BSD-3-Clause",
             "http://example.com/BSD-3-Clause/salt",
             "License BSD-Clause/new",
-            "License BSD-Clause/revised"
-        ]
+            "License BSD-Clause/revised",
+        ],
     )
     fun `bsd3`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -88,8 +87,8 @@ class LicenseClassifierTest {
             "http://example.com/BSD-4-Clause",
             "http://example.com/BSD-4-Clause/salt",
             "License BSD-Clause/original",
-            "License BSD-Clause/old"
-        ]
+            "License BSD-Clause/old",
+        ],
     )
     fun `bsd4`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -107,8 +106,8 @@ class LicenseClassifierTest {
             "epl1.0",
             "epl 1.0",
             "epl1",
-            "epl 1"
-        ]
+            "epl 1",
+        ],
     )
     fun `epl1`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -126,8 +125,8 @@ class LicenseClassifierTest {
             "epl2.0",
             "epl 2.0",
             "epl2",
-            "epl 2"
-        ]
+            "epl 2",
+        ],
     )
     fun `epl2`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -145,8 +144,8 @@ class LicenseClassifierTest {
             "mpl2.0",
             "mpl 2.0",
             "mpl2",
-            "mpl 2"
-        ]
+            "mpl 2",
+        ],
     )
     fun `mpl2`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -162,8 +161,8 @@ class LicenseClassifierTest {
             "GNU Lesser General Public License v2.1",
             "GNU Lesser General Public License 2.1",
             "lgpl2.1",
-            "lgpl 2.1"
-        ]
+            "lgpl 2.1",
+        ],
     )
     fun `lgpl2_1`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -183,8 +182,8 @@ class LicenseClassifierTest {
             "lgpl3.0",
             "lgpl 3.0",
             "lgpl3",
-            "lgpl 3"
-        ]
+            "lgpl 3",
+        ],
     )
     fun `lgpl3`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -204,8 +203,8 @@ class LicenseClassifierTest {
             "gpl2.0",
             "gpl 2.0",
             "gpl2",
-            "gpl 2"
-        ]
+            "gpl 2",
+        ],
     )
     fun `gpl2`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -225,8 +224,8 @@ class LicenseClassifierTest {
             "gpl3.0",
             "gpl 3.0",
             "gpl3",
-            "gpl 3"
-        ]
+            "gpl 3",
+        ],
     )
     fun `gpl3`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -240,8 +239,8 @@ class LicenseClassifierTest {
     @ValueSource(
         strings = [
             "MIT License",
-            "mit"
-        ]
+            "mit",
+        ],
     )
     fun `mit`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -255,8 +254,8 @@ class LicenseClassifierTest {
     @ValueSource(
         strings = [
             "the Facebook Platform License",
-            "facebook"
-        ]
+            "facebook",
+        ],
     )
     fun `facebook`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -270,8 +269,8 @@ class LicenseClassifierTest {
     @ValueSource(
         strings = [
             "Android Software Development Kit License",
-            "android"
-        ]
+            "android",
+        ],
     )
     fun `android sdk`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -285,8 +284,8 @@ class LicenseClassifierTest {
     @ValueSource(
         strings = [
             "MoPub SDK License Agreement",
-            "mopub"
-        ]
+            "mopub",
+        ],
     )
     fun `mopub`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -303,8 +302,8 @@ class LicenseClassifierTest {
             "cc4.0",
             "cc 4.0",
             "cc 4",
-            "cc4"
-        ]
+            "cc4",
+        ],
     )
     fun `cc4`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -318,8 +317,8 @@ class LicenseClassifierTest {
     @ValueSource(
         strings = [
             "Bouncy Castle Licence",
-            "bcl"
-        ]
+            "bcl",
+        ],
     )
     fun `bcl`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -332,8 +331,8 @@ class LicenseClassifierTest {
     @ParameterizedTest
     @ValueSource(
         strings = [
-            ""
-        ]
+            "",
+        ],
     )
     fun `unlicense`(name: String) {
         val licenseClassifier = LicenseClassifier(name)
@@ -357,8 +356,8 @@ class LicenseClassifierTest {
             "BSD 7",
             "Eclipse Public License",
             "epl",
-            "epl 8"
-        ]
+            "epl 8",
+        ],
     )
     fun `undetermined`(name: String) {
         val licenseClassifier = LicenseClassifier(name)

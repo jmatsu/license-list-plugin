@@ -1,14 +1,14 @@
 package io.github.jmatsu.license
 
+import io.github.jmatsu.license.dsl.IGNORE_FORMAT_REGEX
 import io.github.jmatsu.license.dsl.IgnoreFormat
-import io.github.jmatsu.license.dsl.RegexIgnore
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Nested
 
 open class LicenseListExtension(
-    private val variantAwareOptionsContainer: NamedDomainObjectContainer<VariantAwareOptions>
+    private val variantAwareOptionsContainer: NamedDomainObjectContainer<VariantAwareOptions>,
 ) {
     @get:Nested
     val variants: NamedDomainObjectContainer<VariantAwareOptions>
@@ -38,5 +38,5 @@ open class LicenseListExtension(
      * regex (regular expression) is by default.
      */
     @get:Input
-    var ignoreFormat: IgnoreFormat = RegexIgnore
+    var ignoreFormat: IgnoreFormat = IGNORE_FORMAT_REGEX
 }

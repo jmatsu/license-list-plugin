@@ -2,7 +2,6 @@ package io.github.jmatsu.license
 
 import groovy.lang.Closure
 import io.github.jmatsu.license.dsl.validation.optionalDirectoryProperty
-import java.io.File
 import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.reflect.HasPublicType
@@ -15,6 +14,7 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.kotlin.dsl.typeOf
+import java.io.File
 
 interface VariantAwareOptions : Named {
     /**
@@ -60,15 +60,19 @@ interface VariantAwareOptions : Named {
 class VariantAwareOptionsImpl(
     private val name: String,
     override val assembly: AssemblyOptions,
-    override val visualization: VisualizationOptions
-) : VariantAwareOptions, HasPublicType {
-
+    override val visualization: VisualizationOptions,
+) : VariantAwareOptions,
+    HasPublicType {
     override var artifactDefinitionDirectory: File?
-        set(value) { baseDir = value }
+        set(value) {
+            baseDir = value
+        }
         get() = baseDir
 
     override var dataDir: File?
-        set(value) { baseDir = value }
+        set(value) {
+            baseDir = value
+        }
         get() = baseDir
 
     override var baseDir: File? by optionalDirectoryProperty()
@@ -82,9 +86,7 @@ class VariantAwareOptionsImpl(
     }
 
     @Internal
-    override fun getPublicType(): TypeOf<VariantAwareOptions> {
-        return typeOf()
-    }
+    override fun getPublicType(): TypeOf<VariantAwareOptions> = typeOf()
 
     /**
      * HACK: For Groovy

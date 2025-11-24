@@ -14,14 +14,14 @@ import io.mockk.mockkConstructor
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
-import java.io.File
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertTrue
 import kotlinx.serialization.StringFormat
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.testfixtures.ProjectBuilder
+import java.io.File
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class InspectLicenseListTaskTest {
     lateinit var project: Project
@@ -36,14 +36,16 @@ class InspectLicenseListTaskTest {
         project.plugins.apply("io.github.jmatsu.license-list")
         extension = requireNotNull(project.extensions.findByType(LicenseListExtension::class))
         assetDirs = mutableListOf()
-        variant = mockk {
-            every { name } returns "featureRelease"
-            every { sourceSets } returns listOf(
-                mockk<SourceProvider> {
-                    every { assetsDirectories } returns assetDirs
-                }
-            )
-        }
+        variant =
+            mockk {
+                every { name } returns "featureRelease"
+                every { sourceSets } returns
+                    listOf(
+                        mockk<SourceProvider> {
+                            every { assetsDirectories } returns assetDirs
+                        },
+                    )
+            }
         args = InspectLicenseListTask.Args(project, extension, variant)
     }
 
@@ -64,12 +66,13 @@ class InspectLicenseListTaskTest {
         val artifactsText = "artifactsText"
         val catalogText = "catalogText"
 
-        val args: InspectLicenseListTask.Args = mockk {
-            every { assembledArtifactsFile.exists() } returns true
-            every { assembledLicenseCatalogFile.exists() } returns true
-            every { this@mockk.assemblyFormat } returns assemblyFormat
-            every { this@mockk.assemblyStyle } returns assemblyStyle
-        }
+        val args: InspectLicenseListTask.Args =
+            mockk {
+                every { assembledArtifactsFile.exists() } returns true
+                every { assembledLicenseCatalogFile.exists() } returns true
+                every { this@mockk.assemblyFormat } returns assemblyFormat
+                every { this@mockk.assemblyStyle } returns assemblyStyle
+            }
 
         every {
             anyConstructed<Disassembler>().disassembleArtifacts(any())
@@ -92,10 +95,11 @@ class InspectLicenseListTaskTest {
 
         InspectLicenseListTask.Executor(
             args = args,
-            logger = mockk {
-                every { error(any()) } just Runs
-                every { warn(any()) } just Runs
-            }
+            logger =
+                mockk {
+                    every { error(any()) } just Runs
+                    every { warn(any()) } just Runs
+                },
         )
 
         verify {

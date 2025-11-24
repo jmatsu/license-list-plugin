@@ -2,5 +2,5 @@ package io.github.jmatsu.license.dsl
 
 typealias IgnoreFormat = String
 
-const val RegexIgnore: IgnoreFormat = "regex"
-const val GlobIgnore: IgnoreFormat = "glob"
+const val IGNORE_FORMAT_REGEX: IgnoreFormat = "regex"
+const val IGNORE_FORMAT_GLOB: IgnoreFormat = "glob"

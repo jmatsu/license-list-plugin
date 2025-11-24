@@ -9,55 +9,60 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class InspectorTest {
-
     @Test
     fun `inspect artifacts`() {
-        val inspector = Inspector(
-            artifactDefinitions = listOf(
-                provideArtifact(key = "missing_url").copy(
-                    url = ""
-                ),
-                provideArtifact(key = "missing_copyrightholder").copy(
-                    copyrightHolders = emptyList()
-                ),
-                provideArtifact(key = "missing_license").copy(
-                    licenses = emptyList()
-                ),
-                provideArtifact(key = "undetemined_license").copy(
-                    licenses = listOf(
-                        provideLicenseKey(LicenseClassifier.PredefinedKey.UNDETERMINED)
-                    )
-                ),
-                provideArtifact(key = "success"),
-                provideArtifact(key = "success2").copy(
-                    copyrightHolders = null,
-                    licenses = listOf(
-                        provideLicenseKey(LicenseClassifier.PredefinedKey.UNLICENSE)
-                    )
-                ),
-                provideArtifact(key = "success3").copy(
-                    copyrightHolders = emptyList(),
-                    licenses = listOf(
-                        provideLicenseKey(LicenseClassifier.PredefinedKey.UNLICENSE)
-                    )
-                ),
-                provideArtifact(key = "success4").copy(
-                    url = "",
-                    licenses = listOf(
-                        provideLicenseKey(LicenseClassifier.PredefinedKey.UNLICENSE)
-                    )
-                ),
-                provideArtifact(key = "success5").copy(
-                    url = null
-                ),
-                provideArtifact(key = "all_failure").copy(
-                    copyrightHolders = emptyList(),
-                    licenses = emptyList(),
-                    url = ""
-                )
-            ),
-            plainLicenses = mockk()
-        )
+        val inspector =
+            Inspector(
+                artifactDefinitions =
+                    listOf(
+                        provideArtifact(key = "missing_url").copy(
+                            url = "",
+                        ),
+                        provideArtifact(key = "missing_copyrightholder").copy(
+                            copyrightHolders = emptyList(),
+                        ),
+                        provideArtifact(key = "missing_license").copy(
+                            licenses = emptyList(),
+                        ),
+                        provideArtifact(key = "undetemined_license").copy(
+                            licenses =
+                                listOf(
+                                    provideLicenseKey(LicenseClassifier.PredefinedKey.UNDETERMINED),
+                                ),
+                        ),
+                        provideArtifact(key = "success"),
+                        provideArtifact(key = "success2").copy(
+                            copyrightHolders = null,
+                            licenses =
+                                listOf(
+                                    provideLicenseKey(LicenseClassifier.PredefinedKey.UNLICENSE),
+                                ),
+                        ),
+                        provideArtifact(key = "success3").copy(
+                            copyrightHolders = emptyList(),
+                            licenses =
+                                listOf(
+                                    provideLicenseKey(LicenseClassifier.PredefinedKey.UNLICENSE),
+                                ),
+                        ),
+                        provideArtifact(key = "success4").copy(
+                            url = "",
+                            licenses =
+                                listOf(
+                                    provideLicenseKey(LicenseClassifier.PredefinedKey.UNLICENSE),
+                                ),
+                        ),
+                        provideArtifact(key = "success5").copy(
+                            url = null,
+                        ),
+                        provideArtifact(key = "all_failure").copy(
+                            copyrightHolders = emptyList(),
+                            licenses = emptyList(),
+                            url = "",
+                        ),
+                    ),
+                plainLicenses = mockk(),
+            )
 
         val results = inspector.inspectArtifacts()
 
@@ -109,34 +114,36 @@ class InspectorTest {
                 setOf(
                     ArtifactInspector.Result.NoUrl,
                     ArtifactInspector.Result.NoCopyrightHolders,
-                    ArtifactInspector.Result.InactiveLicense
+                    ArtifactInspector.Result.InactiveLicense,
                 ),
-                toSet()
+                toSet(),
             )
         }
     }
 
     @Test
     fun `inspect licenses`() {
-        val inspector = Inspector(
-            artifactDefinitions = mockk(),
-            plainLicenses = listOf(
-                providePlainLicense("missing_url").copy(
-                    url = ""
-                ),
-                providePlainLicense("missing_name").copy(
-                    name = ""
-                ),
-                providePlainLicense("success"),
-                providePlainLicense("success2").copy(
-                    url = null
-                ),
-                providePlainLicense("all_failure").copy(
-                    url = "",
-                    name = ""
-                )
+        val inspector =
+            Inspector(
+                artifactDefinitions = mockk(),
+                plainLicenses =
+                    listOf(
+                        providePlainLicense("missing_url").copy(
+                            url = "",
+                        ),
+                        providePlainLicense("missing_name").copy(
+                            name = "",
+                        ),
+                        providePlainLicense("success"),
+                        providePlainLicense("success2").copy(
+                            url = null,
+                        ),
+                        providePlainLicense("all_failure").copy(
+                            url = "",
+                            name = "",
+                        ),
+                    ),
             )
-        )
 
         val results = inspector.inspectLicenses()
 
@@ -160,35 +167,40 @@ class InspectorTest {
             assertEquals(
                 setOf(
                     LicenseInspector.Result.NoUrl,
-                    LicenseInspector.Result.NoName
+                    LicenseInspector.Result.NoName,
                 ),
-                toSet()
+                toSet(),
             )
         }
     }
 
     @Test
     fun `inspect associations`() {
-        val inspector = Inspector(
-            artifactDefinitions = listOf(
-                provideArtifact(key = "key1").copy(
-                    licenses = listOf(
-                        provideLicenseKey("defined1")
-                    )
-                ),
-                provideArtifact(key = "undetemined_license").copy(
-                    licenses = listOf(
-                        provideLicenseKey("defined2"),
-                        provideLicenseKey("not_defined1")
-                    )
-                )
-            ),
-            plainLicenses = listOf(
-                providePlainLicense("defined1"),
-                providePlainLicense("defined2"),
-                providePlainLicense("rest1")
+        val inspector =
+            Inspector(
+                artifactDefinitions =
+                    listOf(
+                        provideArtifact(key = "key1").copy(
+                            licenses =
+                                listOf(
+                                    provideLicenseKey("defined1"),
+                                ),
+                        ),
+                        provideArtifact(key = "undetemined_license").copy(
+                            licenses =
+                                listOf(
+                                    provideLicenseKey("defined2"),
+                                    provideLicenseKey("not_defined1"),
+                                ),
+                        ),
+                    ),
+                plainLicenses =
+                    listOf(
+                        providePlainLicense("defined1"),
+                        providePlainLicense("defined2"),
+                        providePlainLicense("rest1"),
+                    ),
             )
-        )
 
         val result = inspector.inspectAssociations()
 

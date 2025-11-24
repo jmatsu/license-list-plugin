@@ -1,30 +1,30 @@
+@file:UseContextualSerialization
+
 package io.github.jmatsu.license.poko
 
-import io.github.jmatsu.license.schema.ArtifactIgnore
-import kotlinx.serialization.ContextualSerialization
-import kotlinx.serialization.Decoder
-import kotlinx.serialization.Encoder
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.PrimitiveKind
-import kotlinx.serialization.SerialDescriptor
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
+import kotlinx.serialization.UseContextualSerialization
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
-@Serializable
+@Serializable(ArtifactIgnore.Companion::class)
 data class ArtifactIgnore(
-    // To suppress a serializer not found error
-    @ContextualSerialization override val regex: Regex
-) : ArtifactIgnore {
-    @Serializer(forClass = ArtifactIgnore::class)
+    override val regex: Regex,
+) : io.github.jmatsu.license.schema.ArtifactIgnore {
     companion object : KSerializer<ArtifactIgnore> {
         override val descriptor: SerialDescriptor =
-            SerialDescriptor("ArtifactIgnore", PrimitiveKind.STRING)
+            PrimitiveSerialDescriptor("ArtifactIgnore", PrimitiveKind.STRING)
 
-        override fun deserialize(decoder: Decoder): ArtifactIgnore {
-            return ArtifactIgnore(regex = Regex(decoder.decodeString()))
-        }
+        override fun deserialize(decoder: Decoder): ArtifactIgnore = ArtifactIgnore(regex = Regex(decoder.decodeString()))
 
-        override fun serialize(encoder: Encoder, value: ArtifactIgnore) {
+        override fun serialize(
+            encoder: Encoder,
+            value: ArtifactIgnore,
+        ) {
             encoder.encodeString(value.regex.pattern)
         }
     }

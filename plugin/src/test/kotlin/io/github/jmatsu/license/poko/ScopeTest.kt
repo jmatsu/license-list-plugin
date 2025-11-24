@@ -1,38 +1,39 @@
 package io.github.jmatsu.license.poko
 
-import kotlin.test.expect
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import org.junit.Before
-import org.junit.Test
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.expect
 
 class ScopeTest {
     lateinit var json: Json
 
-    @Before
+    @BeforeTest
     fun setup() {
-        json = Json(configuration = JsonConfiguration.Stable)
+        json = Json { }
     }
 
     @Test
     fun `serialize Scope`() {
-        val scope = Scope(
-            name = "scope"
-        )
+        val scope =
+            Scope(
+                name = "scope",
+            )
 
         expect("\"scope\"") {
-            json.stringify(Scope.serializer(), scope)
+            json.encodeToString(Scope.serializer(), scope)
         }
     }
 
     @Test
     fun `deserialize LicenseKey`() {
-        val expected = Scope(
-            name = "scope"
-        )
+        val expected =
+            Scope(
+                name = "scope",
+            )
 
         expect(expected) {
-            json.parse(Scope.serializer(), "\"scope\"")
+            json.decodeFromString(Scope.serializer(), "\"scope\"")
         }
     }
 }

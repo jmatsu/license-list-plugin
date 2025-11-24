@@ -1,5 +1,5 @@
 package io.github.jmatsu.license
 
 abstract class BaseException(
-    message: String
+    message: String,
 ) : RuntimeException(message)

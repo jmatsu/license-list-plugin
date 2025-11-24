@@ -8,26 +8,26 @@ import io.github.jmatsu.license.presentation.Assembler
 import io.github.jmatsu.license.presentation.Convention
 import io.mockk.every
 import io.mockk.mockk
+import org.gradle.api.Project
+import org.gradle.api.internal.project.ProjectInternal
+import org.gradle.kotlin.dsl.findByType
+import org.gradle.testfixtures.ProjectBuilder
 import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
-import org.gradle.api.Project
-import org.gradle.api.internal.project.ProjectInternal
-import org.gradle.kotlin.dsl.findByType
-import org.gradle.testfixtures.ProjectBuilder
 
 class ReadWriteLicenseTaskArgsTest {
     class TestArgs(
         project: Project,
         extension: LicenseListExtension,
-        variant: ApplicationVariant
+        variant: ApplicationVariant,
     ) : ReadWriteLicenseTaskArgs(
-        project = project,
-        extension = extension,
-        variant = variant
-    )
+            project = project,
+            extension = extension,
+            variant = variant,
+        )
 
     lateinit var project: ProjectInternal
     lateinit var extension: LicenseListExtension
@@ -39,9 +39,10 @@ class ReadWriteLicenseTaskArgsTest {
         project = ProjectBuilder.builder().build() as ProjectInternal
         project.plugins.apply("io.github.jmatsu.license-list")
         extension = requireNotNull(project.extensions.findByType(LicenseListExtension::class))
-        variant = mockk {
-            every { name } returns "featureRelease"
-        }
+        variant =
+            mockk {
+                every { name } returns "featureRelease"
+            }
         args = TestArgs(project, extension, variant)
     }
 
@@ -56,8 +57,9 @@ class ReadWriteLicenseTaskArgsTest {
             assertEquals(
                 setOf(
                     ResolveScope.Addition("test"),
-                    ResolveScope.Addition("androidTest")
-                ), additionalScopes
+                    ResolveScope.Addition("androidTest"),
+                ),
+                additionalScopes,
             )
             assertEquals(File(project.projectDir, "artifact-definition.yml"), assembledArtifactsFile)
             assertEquals(project.projectDir, assembleOutputDir)
@@ -118,8 +120,9 @@ class ReadWriteLicenseTaskArgsTest {
             assertEquals(
                 setOf(
                     ResolveScope.Addition("test"),
-                    ResolveScope.Addition("androidTest")
-                ), additionalScopes
+                    ResolveScope.Addition("androidTest"),
+                ),
+                additionalScopes,
             )
             assertEquals(File(project.projectDir, "artifact-definition.yml"), assembledArtifactsFile)
             assertEquals(project.projectDir, assembleOutputDir)

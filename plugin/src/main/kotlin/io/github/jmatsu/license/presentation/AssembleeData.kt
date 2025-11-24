@@ -6,5 +6,5 @@ import io.github.jmatsu.license.poko.Scope
 
 data class AssembleeData(
     val scopedArtifacts: Map<Scope, List<ArtifactDefinition>>,
-    val licenses: List<PlainLicense>
+    val licenses: List<PlainLicense>,
 )

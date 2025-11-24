@@ -4,29 +4,41 @@ import java.io.File
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-fun optionalFileNameProperty(defaultValue: String? = null): ReadWriteProperty<Any, String?> {
-    return object : ReadWriteProperty<Any, String?> {
+fun optionalFileNameProperty(defaultValue: String? = null): ReadWriteProperty<Any, String?> =
+    object : ReadWriteProperty<Any, String?> {
         var value: String? = defaultValue
 
-        override fun getValue(thisRef: Any, property: KProperty<*>): String? = value
+        override fun getValue(
+            thisRef: Any,
+            property: KProperty<*>,
+        ): String? = value
 
-        override fun setValue(thisRef: Any, property: KProperty<*>, value: String?) {
+        override fun setValue(
+            thisRef: Any,
+            property: KProperty<*>,
+            value: String?,
+        ) {
             this.value = requireFileName(value)
         }
     }
-}
 
-fun fileBasenameProperty(defaultValue: String): ReadWriteProperty<Any, String> {
-    return object : ReadWriteProperty<Any, String> {
+fun fileBasenameProperty(defaultValue: String): ReadWriteProperty<Any, String> =
+    object : ReadWriteProperty<Any, String> {
         var value: String = defaultValue
 
-        override fun getValue(thisRef: Any, property: KProperty<*>): String = value
+        override fun getValue(
+            thisRef: Any,
+            property: KProperty<*>,
+        ): String = value
 
-        override fun setValue(thisRef: Any, property: KProperty<*>, value: String) {
+        override fun setValue(
+            thisRef: Any,
+            property: KProperty<*>,
+            value: String,
+        ) {
             this.value = requireFileName(value)!!
         }
     }
-}
 
 private fun requireFileName(value: String?): String? {
     if (File.pathSeparator in value ?: return null) {

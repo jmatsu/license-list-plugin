@@ -12,9 +12,8 @@ data class DisplayArtifact(
     override val copyrightHolders: List<String>?,
     override val licenses: List<PlainLicense>,
     @Transient
-    override val keep: Boolean = true
+    override val keep: Boolean = true,
 ) : io.github.jmatsu.license.schema.DisplayArtifact {
-
     @Required
     override val module: String
         get() = key

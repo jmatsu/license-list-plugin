@@ -11,7 +11,7 @@ plugins {
 
     // release stuff
     `maven-publish`
-    id("com.gradle.plugin-publish") version "0.11.0"
+    id("com.gradle.plugin-publish") version "2.0.0"
 }
 
 repositories {
@@ -47,10 +47,10 @@ configurations.configureEach {
 dependencies {
     implementation(project(":license-list-schema"))
 
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Version.kotlinSerialization}")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Version.kotlinSerialization}")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Version.kotlinSerialization}")
     implementation("com.charleskorn.kaml:kaml:${Version.kaml}")
 
     implementation("org.freemarker:freemarker:${Version.freemaker}")
@@ -60,7 +60,6 @@ dependencies {
     testImplementation("com.android.tools.build:gradle:${Version.agp}")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
     testImplementation("io.mockk:mockk:${Version.mockk}")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
@@ -74,11 +73,14 @@ dependencies {
 }
 
 gradlePlugin {
+    website = Definition.webUrl
+    vcsUrl = Definition.vcsUrl
     val `license-list-gradle` by plugins.creating {
         id = Definition.pluginId
         implementationClass = "io.github.jmatsu.license.LicenseListPlugin"
         displayName = Definition.pluginDisplayName
         description = Definition.pluginDescription
+        tags = listOf("android", "gradle")
     }
 }
 
@@ -92,26 +94,15 @@ val check by tasks.getting(Task::class) {
 }
 
 kotlinter {
-    ignoreFailures = false
+    ignoreLintFailures = false
     reporters = arrayOf("checkstyle", "html")
-    experimentalRules = false
-    fileBatchSize = 30
+//    experimentalRules = false
+//    fileBatchSize = 30
 }
 
 java {
     withJavadocJar()
     withSourcesJar()
-}
-
-pluginBundle {
-    website = Definition.webUrl
-    vcsUrl = Definition.vcsUrl
-    tags = listOf("android", "gradle")
-
-    mavenCoordinates {
-        groupId = project.group as String
-        artifactId = Definition.pluginName
-    }
 }
 
 afterEvaluate {

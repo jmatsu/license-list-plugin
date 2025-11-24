@@ -3,16 +3,15 @@
  */
 package io.github.jmatsu.license
 
+import org.gradle.api.internal.project.ProjectInternal
+import org.gradle.kotlin.dsl.findByType
+import org.gradle.testfixtures.ProjectBuilder
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import org.gradle.api.internal.project.ProjectInternal
-import org.gradle.kotlin.dsl.findByType
-import org.gradle.testfixtures.ProjectBuilder
 
 class LicenseListPluginTest {
-
     lateinit var project: ProjectInternal
 
     @BeforeTest

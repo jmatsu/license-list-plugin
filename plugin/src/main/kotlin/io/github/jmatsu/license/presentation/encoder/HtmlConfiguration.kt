@@ -5,5 +5,5 @@ import java.io.File
 
 data class HtmlConfiguration(
     val version: Version,
-    val templateDir: File? = null
+    val templateDir: File? = null,
 )

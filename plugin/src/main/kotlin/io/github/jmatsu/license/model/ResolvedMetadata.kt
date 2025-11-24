@@ -11,7 +11,7 @@ data class ResolvedPomFile(
     override val associatedUrl: String?,
     val displayNameCandidates: List<String>,
     override val licenses: List<LicenseSeed>,
-    override val copyrightHolders: List<String>
+    override val copyrightHolders: List<String>,
 ) : ResolvedMetadata() {
     override val displayName: String
         get() = displayNameCandidates.first { it.isNotBlank() }
@@ -19,7 +19,7 @@ data class ResolvedPomFile(
 
 data class ResolvedLocalFileMetadata(
     override val displayName: String,
-    override val licenses: List<LicenseSeed>
+    override val licenses: List<LicenseSeed>,
 ) : ResolvedMetadata() {
     override val associatedUrl: String? = null
     override val copyrightHolders: List<String> = emptyList()
