@@ -2,7 +2,6 @@ package io.github.jmatsu.license.internal
 
 import io.github.jmatsu.license.LicenseListPlugin
 import io.github.jmatsu.license.ext.collectToMap
-import io.github.jmatsu.license.ext.lenientConfiguration
 import io.github.jmatsu.license.model.LOCAL_FILE_GROUP
 import io.github.jmatsu.license.model.LicenseSeed
 import io.github.jmatsu.license.model.ResolveScope
@@ -282,38 +281,63 @@ class ArtifactManagement(
      * Transform artifacts that the given Gradle's dependency configuration provides to the Model class of this plugin
      */
     internal fun Configuration.toResolvedModuleIdentifiers(): List<ResolvedModuleIdentifier> {
-        val lenient = lenientConfiguration() ?: return emptyList()
+        if (!isCanBeResolved) {
+            LicenseListPlugin.logger?.debug("Skipping non-resolvable configuration: $name")
+            return emptyList()
+        }
 
-        // In Gradle 9, lenientConfiguration.artifacts can throw AmbiguousArtifactsFailure
-        // when multiple variants exist (e.g., supported-locale-list). We catch this and
-        // fall back to an empty list for that configuration.
-        val resolvedArtifacts =
-            try {
-                lenient.artifacts
-            } catch (e: Exception) {
-                LicenseListPlugin.logger?.debug(
-                    "Skipping configuration $name due to artifact resolution error: ${e.message}",
-                )
-                return emptyList()
-            }
+        // Use incoming.artifacts with artifactType filter to avoid AmbiguousArtifactsFailure in Gradle 9.
+        // When multiple variants exist (e.g., supported-locale-list), we need to explicitly request
+        // specific artifact types (jar/aar) to disambiguate the selection.
+        val artifactResults = mutableListOf<ResolvedArtifactResult>()
 
-        return resolvedArtifacts
-            .filter { it.type == "aar" || it.type == "jar" }
-            .let {
-                if (exclusionPredicate != null) {
-                    it.filterNot { artifact ->
-                        exclusionPredicate.invoke(artifact.moduleVersion.id.group, artifact.moduleVersion.id.name)
+        val artifactTypeAttr =
+            org.gradle.api.attributes.Attribute
+                .of("artifactType", String::class.java)
+
+        // Try to get JAR artifacts
+        try {
+            val jarView =
+                incoming.artifactView {
+                    attributes { attribute(artifactTypeAttr, "jar") }
+                    lenient(true)
+                }
+            jarView.artifacts.forEach { artifactResults.add(it) }
+        } catch (e: Exception) {
+            LicenseListPlugin.logger?.debug("Failed to resolve jar artifacts for $name: ${e.message}")
+        }
+
+        // Try to get AAR artifacts
+        try {
+            val aarView =
+                incoming.artifactView {
+                    attributes { attribute(artifactTypeAttr, "aar") }
+                    lenient(true)
+                }
+            aarView.artifacts.forEach { artifactResults.add(it) }
+        } catch (e: Exception) {
+            LicenseListPlugin.logger?.debug("Failed to resolve aar artifacts for $name: ${e.message}")
+        }
+
+        return artifactResults
+            .mapNotNull { result ->
+                val componentId = result.id.componentIdentifier
+                if (componentId is org.gradle.api.artifacts.component.ModuleComponentIdentifier) {
+                    if (exclusionPredicate != null &&
+                        exclusionPredicate.invoke(componentId.group, componentId.module)
+                    ) {
+                        null
+                    } else {
+                        ResolvedModuleIdentifier(
+                            name = componentId.module,
+                            group = componentId.group,
+                            version = VersionString(componentId.version),
+                            id = result.id,
+                        )
                     }
                 } else {
-                    it
+                    null
                 }
-            }.map { artifact ->
-                ResolvedModuleIdentifier(
-                    name = artifact.moduleVersion.id.name,
-                    group = artifact.moduleVersion.id.group,
-                    version = VersionString(artifact.moduleVersion.id.version),
-                    id = artifact.id,
-                )
-            }
+            }.distinctBy { "${it.group}:${it.name}" }
     }
 }
