@@ -118,11 +118,11 @@ class LicenseListPlugin : Plugin<Project> {
                         """.trimMargin()
 
                     if (project.properties.getOrDefault("skipValidate", "false") != "true") {
-                        dependsOn(project.tasks.findByName("validate${variant.name.capitalize()}LicenseList"))
+                        project.tasks.findByName("validate${variant.name.capitalize()}LicenseList")?.let { dependsOn(it) }
                     }
 
                     if (project.properties.getOrDefault("skipInspect", "false") != "true") {
-                        dependsOn(project.tasks.findByName("inspect${variant.name.capitalize()}LicenseList"))
+                        project.tasks.findByName("inspect${variant.name.capitalize()}LicenseList")?.let { dependsOn(it) }
                     }
                 }
 
@@ -135,7 +135,7 @@ class LicenseListPlugin : Plugin<Project> {
                         variant: ApplicationVariant,
                     ) {
                         project.tasks.register("${action.decapitalize()}LicenseList") {
-                            dependsOn(project.tasks.findByName("${action.decapitalize()}${variant.name.capitalize()}LicenseList"))
+                            project.tasks.findByName("${action.decapitalize()}${variant.name.capitalize()}LicenseList")?.let { dependsOn(it) }
                         }
                     }
 
