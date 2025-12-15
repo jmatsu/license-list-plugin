@@ -6,16 +6,16 @@ import org.gradle.api.artifacts.LenientConfiguration
 import org.gradle.api.artifacts.UnknownConfigurationException
 
 fun Configuration.lenientConfiguration(): LenientConfiguration? {
-    // to avoid unexpected resolve
-    return copyRecursive().run {
-        // copied configuration is UNRESOLVED
-        isCanBeResolved = true
+    // Skip non-resolvable configurations (e.g., annotationProcessor, kapt which are declarable-only in Gradle 9+)
+    if (!isCanBeResolved) {
+        LicenseListPlugin.logger?.debug("Skipping non-resolvable configuration: $name")
+        return null
+    }
 
-        try {
-            resolvedConfiguration.lenientConfiguration
-        } catch (e: UnknownConfigurationException) {
-            LicenseListPlugin.logger?.debug("failed to make a lenient configuration due to unknown configuration", e)
-            null
-        }
+    return try {
+        resolvedConfiguration.lenientConfiguration
+    } catch (e: UnknownConfigurationException) {
+        LicenseListPlugin.logger?.debug("failed to make a lenient configuration due to unknown configuration", e)
+        null
     }
 }
