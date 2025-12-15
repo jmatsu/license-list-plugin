@@ -32,17 +32,14 @@ class ArtifactManagement(
 ) {
     companion object {
         /**
-         * Common configurations that will be used basically
+         * Common configurations that will be used basically.
+         * In Gradle 9+, we use RuntimeClasspath which is resolvable.
+         * Legacy configurations (implementation, api, etc.) are no longer resolvable in Gradle 9+.
+         * Note: CompileClasspath is excluded due to artifact resolution ambiguity issues with test configurations.
          */
         val CommonConfigurationNames: Set<String> =
             setOf(
-                // runtimeOnly
-                "compileOnly",
-                "implementation",
-                "api",
-                "compile",
-                "annotationProcessor",
-                "kapt",
+                "RuntimeClasspath",
             )
     }
 
@@ -221,26 +218,34 @@ class ArtifactManagement(
         variantScope: ResolveScope.Variant,
         additionalScope: ResolveScope? = null,
     ): List<Configuration> {
-        val suffixes =
-            if (additionalScope != null) {
-                configurationNames.map { name ->
-                    additionalScope.name.decapitalize() + name.capitalize()
-                }
-            } else {
-                configurationNames
-            }
+        // Map scope names to Android configuration naming convention
+        // "test" -> "UnitTest", "androidTest" -> "AndroidTest"
+        val scopeSuffix = when (additionalScope?.name) {
+            ResolveScope.Test.name -> "UnitTest"
+            ResolveScope.AndroidTest.name -> "AndroidTest"
+            null -> null
+            else -> additionalScope.name.replaceFirstChar { it.uppercase() }
+        }
 
-        val targetConfigurationNames =
-            suffixes +
-                suffixes.map { suffix ->
-                    variantScope.name.decapitalize() + suffix.capitalize()
-                }
+        val targetConfigurationNames = if (scopeSuffix != null) {
+            // For test scopes: <variantName><TestScope><ConfigurationName>
+            // e.g., yellowBlueReleaseUnitTestRuntimeClasspath, yellowBlueDebugAndroidTestRuntimeClasspath
+            configurationNames.map { name ->
+                variantScope.name.replaceFirstChar { it.lowercase() } + scopeSuffix + name
+            }
+        } else {
+            // For main scope: <variantName><ConfigurationName>
+            // e.g., yellowBlueReleaseRuntimeClasspath
+            configurationNames.map { name ->
+                variantScope.name.replaceFirstChar { it.lowercase() } + name
+            }
+        }
 
         return project.configurations
             .filter { configuration ->
                 (configuration.name in targetConfigurationNames).also { isTarget ->
                     if (isTarget) {
-                        project.logger.info("Configuration(name = ${configuration.name}) will be search")
+                        project.logger.info("Configuration(name = ${configuration.name}) will be searched")
                     }
                 }
             }
