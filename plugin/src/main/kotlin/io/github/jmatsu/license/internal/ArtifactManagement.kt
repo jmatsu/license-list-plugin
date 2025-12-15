@@ -220,26 +220,28 @@ class ArtifactManagement(
     ): List<Configuration> {
         // Map scope names to Android configuration naming convention
         // "test" -> "UnitTest", "androidTest" -> "AndroidTest"
-        val scopeSuffix = when (additionalScope?.name) {
-            ResolveScope.Test.name -> "UnitTest"
-            ResolveScope.AndroidTest.name -> "AndroidTest"
-            null -> null
-            else -> additionalScope.name.replaceFirstChar { it.uppercase() }
-        }
+        val scopeSuffix =
+            when (additionalScope?.name) {
+                ResolveScope.Test.name -> "UnitTest"
+                ResolveScope.AndroidTest.name -> "AndroidTest"
+                null -> null
+                else -> additionalScope.name.replaceFirstChar { it.uppercase() }
+            }
 
-        val targetConfigurationNames = if (scopeSuffix != null) {
-            // For test scopes: <variantName><TestScope><ConfigurationName>
-            // e.g., yellowBlueReleaseUnitTestRuntimeClasspath, yellowBlueDebugAndroidTestRuntimeClasspath
-            configurationNames.map { name ->
-                variantScope.name.replaceFirstChar { it.lowercase() } + scopeSuffix + name
+        val targetConfigurationNames =
+            if (scopeSuffix != null) {
+                // For test scopes: <variantName><TestScope><ConfigurationName>
+                // e.g., yellowBlueReleaseUnitTestRuntimeClasspath, yellowBlueDebugAndroidTestRuntimeClasspath
+                configurationNames.map { name ->
+                    variantScope.name.replaceFirstChar { it.lowercase() } + scopeSuffix + name
+                }
+            } else {
+                // For main scope: <variantName><ConfigurationName>
+                // e.g., yellowBlueReleaseRuntimeClasspath
+                configurationNames.map { name ->
+                    variantScope.name.replaceFirstChar { it.lowercase() } + name
+                }
             }
-        } else {
-            // For main scope: <variantName><ConfigurationName>
-            // e.g., yellowBlueReleaseRuntimeClasspath
-            configurationNames.map { name ->
-                variantScope.name.replaceFirstChar { it.lowercase() } + name
-            }
-        }
 
         return project.configurations
             .filter { configuration ->
@@ -279,26 +281,39 @@ class ArtifactManagement(
     /**
      * Transform artifacts that the given Gradle's dependency configuration provides to the Model class of this plugin
      */
-    internal fun Configuration.toResolvedModuleIdentifiers(): List<ResolvedModuleIdentifier> =
-        lenientConfiguration()
-            ?.run {
-                artifacts
-                    .filter { it.type == "aar" || it.type == "jar" }
-                    .let {
-                        if (exclusionPredicate != null) {
-                            it.filterNot { artifact ->
-                                exclusionPredicate.invoke(artifact.moduleVersion.id.group, artifact.moduleVersion.id.name)
-                            }
-                        } else {
-                            it
-                        }
-                    }.map { artifact ->
-                        ResolvedModuleIdentifier(
-                            name = artifact.moduleVersion.id.name,
-                            group = artifact.moduleVersion.id.group,
-                            version = VersionString(artifact.moduleVersion.id.version),
-                            id = artifact.id,
-                        )
+    internal fun Configuration.toResolvedModuleIdentifiers(): List<ResolvedModuleIdentifier> {
+        val lenient = lenientConfiguration() ?: return emptyList()
+
+        // In Gradle 9, lenientConfiguration.artifacts can throw AmbiguousArtifactsFailure
+        // when multiple variants exist (e.g., supported-locale-list). We catch this and
+        // fall back to an empty list for that configuration.
+        val resolvedArtifacts =
+            try {
+                lenient.artifacts
+            } catch (e: Exception) {
+                LicenseListPlugin.logger?.debug(
+                    "Skipping configuration $name due to artifact resolution error: ${e.message}",
+                )
+                return emptyList()
+            }
+
+        return resolvedArtifacts
+            .filter { it.type == "aar" || it.type == "jar" }
+            .let {
+                if (exclusionPredicate != null) {
+                    it.filterNot { artifact ->
+                        exclusionPredicate.invoke(artifact.moduleVersion.id.group, artifact.moduleVersion.id.name)
                     }
-            }.orEmpty()
+                } else {
+                    it
+                }
+            }.map { artifact ->
+                ResolvedModuleIdentifier(
+                    name = artifact.moduleVersion.id.name,
+                    group = artifact.moduleVersion.id.group,
+                    version = VersionString(artifact.moduleVersion.id.version),
+                    id = artifact.id,
+                )
+            }
+    }
 }
