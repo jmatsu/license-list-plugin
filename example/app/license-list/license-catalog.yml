@@ -1,6 +1,3 @@
-  - key: BSD style@73
-    name: BSD style
-    url: http://kxml.cvs.sourceforge.net/viewvc/kxml/kxml2/license.txt?view=markup
   - key: COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0@33
     name: COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
     url: http://www.sun.com/cddl/cddl.html
@@ -13,9 +10,6 @@
   - key: GNU General Public Library@35
     name: GNU General Public Library
     url: http://www.gnu.org/licenses/gpl.txt
-  - key: Public Domain@48
-    name: Public Domain
-    url: http://creativecommons.org/licenses/publicdomain
   - key: apache-2.0
     name: Apache License 2.0
     url: https://raw.githubusercontent.com/jmatsu/license-list-plugin/master/license-files/apache-2.0.txt

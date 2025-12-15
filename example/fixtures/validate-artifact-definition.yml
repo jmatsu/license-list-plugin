@@ -169,7 +169,7 @@ yellowBlueRelease:
         licenses:
           - apache-2.0
     androidx.graphics:
-      - key: graphics-shapes-desktop
+      - key: graphics-shapes-android
         displayName: Graphics Shapes
         url: https://developer.android.com/jetpack/androidx/releases/graphics#1.0.1
         copyrightHolders:
@@ -488,79 +488,6 @@ test:
     org.hamcrest:
       - key: hamcrest-core
         displayName: Hamcrest Core
-        url: null
-        copyrightHolders: []
-        licenses: []
-androidTest:
-    com.android.support:
-      - key: support-annotations
-        displayName: Android Support Library Annotations
-        url: http://developer.android.com/tools/extras/support-library.html
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
-    com.android.support.test:
-      - key: monitor
-        displayName: Android Testing Support Library
-        url: https://developer.android.com/testing
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
-    com.android.support.test.espresso:
-      - key: espresso-core
-        displayName: Android Testing Support Library
-        url: https://developer.android.com/testing
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
-      - key: espresso-idling-resource
-        displayName: Android Testing Support Library
-        url: https://developer.android.com/testing
-        copyrightHolders:
-          - The Android Open Source Project
-        licenses:
-          - apache-2.0
-    com.google.code.findbugs:
-      - key: jsr305
-        displayName: FindBugs-jsr305
-        url: http://findbugs.sourceforge.net/
-        copyrightHolders: []
-        licenses:
-          - apache-2.0
-    com.squareup:
-      - key: javawriter
-        displayName: JavaWriter
-        url: http://github.com/square/javawriter/
-        copyrightHolders: []
-        licenses:
-          - apache-2.0
-    javax.inject:
-      - key: javax.inject
-        displayName: javax.inject
-        url: http://code.google.com/p/atinject/
-        copyrightHolders: []
-        licenses:
-          - apache-2.0
-    net.sf.kxml:
-      - key: kxml2
-        displayName: kXML 2 is a small XML pull parser based on the common XML pull
-            API
-        url: http://kxml.sourceforge.net/
-        copyrightHolders: []
-        licenses:
-          - BSD style@73
-          - Public Domain@48
-    org.hamcrest:
-      - key: hamcrest-integration
-        displayName: Hamcrest Integration
-        url: null
-        copyrightHolders: []
-        licenses: []
-      - key: hamcrest-library
-        displayName: Hamcrest library
         url: null
         copyrightHolders: []
         licenses: []
