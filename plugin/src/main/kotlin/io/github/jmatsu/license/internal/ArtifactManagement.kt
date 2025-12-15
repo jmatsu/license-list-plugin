@@ -12,7 +12,7 @@ import io.github.jmatsu.license.model.ResolvedModuleIdentifier
 import io.github.jmatsu.license.model.VersionString
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.SelfResolvingDependency
+import org.gradle.api.artifacts.FileCollectionDependency
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.kotlin.dsl.withArtifacts
@@ -79,9 +79,9 @@ class ArtifactManagement(
                             localFileMap.putIfAbsent(scope, emptyList())
                             localFileMap[scope] = localFileMap.getValue(scope) +
                                 configuration.allDependencies
-                                    .filterIsInstance<SelfResolvingDependency>()
+                                    .filterIsInstance<FileCollectionDependency>()
                                     .flatMap {
-                                        it.resolve()
+                                        it.files.files
                                     }.filter { it.name.endsWith(".jar") || it.name.endsWith(".aar") }
                         }.onFailure {
                             LicenseListPlugin.logger?.error("could not resolve local files in ${scope.name}", it)
@@ -237,9 +237,6 @@ class ArtifactManagement(
                 }
 
         return project.configurations
-            .flatMap {
-                it.all
-            }.distinctBy { it.name }
             .filter { configuration ->
                 (configuration.name in targetConfigurationNames).also { isTarget ->
                     if (isTarget) {
