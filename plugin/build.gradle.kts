@@ -21,7 +21,7 @@ repositories {
 
 // Add a source set for the functional test suite
 val functionalTestSourceSet = sourceSets.create("functionalTest") {
-    resources.srcDirs(File(project.buildDir, "functionalTest"))
+    resources.srcDirs(project.layout.buildDirectory.dir("functionalTest"))
 }
 
 gradlePlugin.testSourceSets(functionalTestSourceSet)
@@ -84,7 +84,7 @@ gradlePlugin {
     }
 }
 
-val functionalTest by tasks.creating(Test::class) {
+val functionalTest by tasks.registering(Test::class) {
     testClassesDirs = functionalTestSourceSet.output.classesDirs
     classpath = sourceSets.main.get().runtimeClasspath + functionalTestSourceSet.runtimeClasspath
 }
