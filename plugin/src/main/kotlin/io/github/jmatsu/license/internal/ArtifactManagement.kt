@@ -2,7 +2,6 @@ package io.github.jmatsu.license.internal
 
 import io.github.jmatsu.license.LicenseListPlugin
 import io.github.jmatsu.license.ext.collectToMap
-import io.github.jmatsu.license.ext.lenientConfiguration
 import io.github.jmatsu.license.model.LOCAL_FILE_GROUP
 import io.github.jmatsu.license.model.LicenseSeed
 import io.github.jmatsu.license.model.ResolveScope
@@ -12,9 +11,11 @@ import io.github.jmatsu.license.model.ResolvedModuleIdentifier
 import io.github.jmatsu.license.model.VersionString
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.SelfResolvingDependency
+import org.gradle.api.artifacts.FileCollectionDependency
 import org.gradle.api.artifacts.component.ComponentIdentifier
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
+import org.gradle.api.attributes.Attribute
 import org.gradle.kotlin.dsl.withArtifacts
 import org.gradle.maven.MavenModule
 import org.gradle.maven.MavenPomArtifact
@@ -33,17 +34,49 @@ class ArtifactManagement(
     companion object {
         /**
          * Common configurations that will be used basically
+         * Gradle 9: Use RuntimeClasspath as the resolvable configuration
          */
         val CommonConfigurationNames: Set<String> =
             setOf(
-                // runtimeOnly
-                "compileOnly",
-                "implementation",
-                "api",
-                "compile",
-                "annotationProcessor",
-                "kapt",
+                "RuntimeClasspath",
             )
+
+        /**
+         * Common KMP variant suffixes
+         */
+        private val KMP_VARIANT_SUFFIXES =
+            listOf(
+                "-android",
+                "-jvm",
+                "-desktop",
+                "-native",
+                "-js",
+                "-iosarm64",
+                "-iosx64",
+                "-jvmstubs",
+                "-linuxx64",
+                "-macosx64",
+                "-mingwx64",
+            )
+
+        /**
+         * Normalize artifact name by removing KMP variant suffix
+         */
+        internal fun normalizeArtifactName(name: String): String {
+            var normalized = name
+            for (suffix in KMP_VARIANT_SUFFIXES) {
+                if (normalized.endsWith(suffix)) {
+                    normalized = normalized.removeSuffix(suffix)
+                    break
+                }
+            }
+            return normalized
+        }
+
+        /**
+         * Check if artifact name has a KMP variant suffix
+         */
+        internal fun hasKmpVariantSuffix(name: String): Boolean = name != normalizeArtifactName(name)
     }
 
     /**
@@ -79,18 +112,20 @@ class ArtifactManagement(
                             localFileMap.putIfAbsent(scope, emptyList())
                             localFileMap[scope] = localFileMap.getValue(scope) +
                                 configuration.allDependencies
-                                    .filterIsInstance<SelfResolvingDependency>()
+                                    .filterIsInstance<FileCollectionDependency>()
                                     .flatMap {
-                                        it.resolve()
+                                        it.files.files
                                     }.filter { it.name.endsWith(".jar") || it.name.endsWith(".aar") }
                         }.onFailure {
                             LicenseListPlugin.logger?.error("could not resolve local files in ${scope.name}", it)
                         }
 
                         val newResolvedIdentifiers =
-                            configuration.toResolvedModuleIdentifiers().filterNot { id ->
-                                id.id?.componentIdentifier in components
-                            }
+                            configuration
+                                .toResolvedModuleIdentifiers()
+                                .filterNot { id ->
+                                    id.id?.componentIdentifier in components
+                                }
 
                         components += newResolvedIdentifiers.mapNotNull { it.id?.componentIdentifier }.toSet()
 
@@ -221,25 +256,40 @@ class ArtifactManagement(
         variantScope: ResolveScope.Variant,
         additionalScope: ResolveScope? = null,
     ): List<Configuration> {
-        val suffixes =
-            if (additionalScope != null) {
-                configurationNames.map { name ->
-                    additionalScope.name.decapitalize() + name.capitalize()
-                }
+        // Gradle 9: Configuration naming convention changed
+        // - test scope -> UnitTest suffix (e.g., yellowBlueReleaseUnitTestRuntimeClasspath)
+        // - androidTest scope -> AndroidTest suffix (e.g., yellowBlueDebugAndroidTestRuntimeClasspath)
+        //   Note: androidTest only exists for debug builds, so we need to replace Release with Debug
+        val scopeSuffix =
+            when (additionalScope?.name?.lowercase()) {
+                "test" -> "UnitTest"
+                "androidtest" -> "AndroidTest"
+                else -> additionalScope?.name ?: ""
+            }
+
+        // For androidTest, we need to use Debug build type instead of Release
+        // because androidTest configurations only exist for debug variants
+        val variantPrefix =
+            if (additionalScope?.name?.lowercase() == "androidtest") {
+                variantScope.name
+                    .replace("Release", "Debug", ignoreCase = true)
+                    .replaceFirstChar { it.lowercaseChar() }
             } else {
-                configurationNames
+                variantScope.name.replaceFirstChar { it.lowercaseChar() }
             }
 
         val targetConfigurationNames =
-            suffixes +
-                suffixes.map { suffix ->
-                    variantScope.name.decapitalize() + suffix.capitalize()
+            if (scopeSuffix.isNotEmpty()) {
+                configurationNames.map { name ->
+                    variantPrefix + scopeSuffix + name
                 }
+            } else {
+                configurationNames.map { name ->
+                    variantPrefix + name
+                } + configurationNames
+            }
 
         return project.configurations
-            .flatMap {
-                it.all
-            }.distinctBy { it.name }
             .filter { configuration ->
                 (configuration.name in targetConfigurationNames).also { isTarget ->
                     if (isTarget) {
@@ -276,27 +326,216 @@ class ArtifactManagement(
 
     /**
      * Transform artifacts that the given Gradle's dependency configuration provides to the Model class of this plugin
+     *
+     * Uses capabilitiesResolution to prefer JVM variants for KMP libraries, which provides
+     * compatibility with Gradle 8.x behavior.
      */
-    internal fun Configuration.toResolvedModuleIdentifiers(): List<ResolvedModuleIdentifier> =
-        lenientConfiguration()
-            ?.run {
-                artifacts
-                    .filter { it.type == "aar" || it.type == "jar" }
-                    .let {
-                        if (exclusionPredicate != null) {
-                            it.filterNot { artifact ->
-                                exclusionPredicate.invoke(artifact.moduleVersion.id.group, artifact.moduleVersion.id.name)
+    internal fun Configuration.toResolvedModuleIdentifiers(): List<ResolvedModuleIdentifier> {
+        if (!isCanBeResolved) {
+            LicenseListPlugin.logger?.debug("Configuration $name is not resolvable, skipping")
+            return emptyList()
+        }
+
+        LicenseListPlugin.logger?.info("Resolving configuration: $name with capabilities resolution")
+
+        val artifactTypeAttr = Attribute.of("artifactType", String::class.java)
+
+        // Create a unique configuration name to avoid conflicts
+        val configName = "licenseListResolve_${name}_${System.currentTimeMillis()}"
+
+        val resolveConfig: Configuration
+        try {
+            resolveConfig =
+                project.configurations.create(configName) {
+                    // Extend from the original RuntimeClasspath to inherit all dependencies
+                    extendsFrom(this@toResolvedModuleIdentifiers)
+
+                    // This configuration is only for resolution, not consumption
+                    isCanBeResolved = true
+                    isCanBeConsumed = false
+
+                    // Configure capabilities resolution to prefer non-Android variants
+                    resolutionStrategy {
+                        capabilitiesResolution.all {
+                            val candidates = candidates
+                            if (candidates.size > 1) {
+                                // Find a non-Android candidate if available
+                                val nonAndroidCandidate =
+                                    candidates.firstOrNull { candidate ->
+                                        val id = candidate.id.toString()
+                                        !id.contains("-android") &&
+                                            (id.contains("-jvm") || id.contains("-desktop") || !KMP_VARIANT_SUFFIXES.any { suffix -> id.contains(suffix) })
+                                    }
+
+                                if (nonAndroidCandidate != null) {
+                                    LicenseListPlugin.logger?.info("Selecting ${nonAndroidCandidate.id} over Android variant")
+                                    select(nonAndroidCandidate)
+                                } else {
+                                    // Fall back to selecting the first candidate
+                                    select(candidates.first())
+                                }
                             }
-                        } else {
-                            it
                         }
-                    }.map { artifact ->
-                        ResolvedModuleIdentifier(
-                            name = artifact.moduleVersion.id.name,
-                            group = artifact.moduleVersion.id.group,
-                            version = VersionString(artifact.moduleVersion.id.version),
-                            id = artifact.id,
-                        )
                     }
-            }.orEmpty()
+                }
+        } catch (e: Exception) {
+            LicenseListPlugin.logger?.warn("Failed to create configuration: ${e.message}")
+            return toResolvedModuleIdentifiersFallback()
+        }
+
+        val results = mutableListOf<ResolvedModuleIdentifier>()
+        val seenComponents = mutableSetOf<String>()
+
+        try {
+            // Resolve JAR artifacts
+            resolveConfig.incoming
+                .artifactView {
+                    attributes {
+                        attribute(artifactTypeAttr, "jar")
+                    }
+                    lenient(true)
+                }.artifacts
+                .forEach { artifact ->
+                    val componentId = artifact.id.componentIdentifier
+                    if (componentId is ModuleComponentIdentifier) {
+                        val key = "${componentId.group}:${componentId.module}:${componentId.version}"
+                        if (key !in seenComponents) {
+                            seenComponents.add(key)
+                            if (exclusionPredicate?.invoke(componentId.group, componentId.module) != true) {
+                                results.add(
+                                    ResolvedModuleIdentifier(
+                                        name = componentId.module,
+                                        group = componentId.group,
+                                        version = VersionString(componentId.version),
+                                        id = artifact.id,
+                                    ),
+                                )
+                            }
+                        }
+                    }
+                }
+
+            // Resolve AAR artifacts
+            resolveConfig.incoming
+                .artifactView {
+                    attributes {
+                        attribute(artifactTypeAttr, "aar")
+                    }
+                    lenient(true)
+                }.artifacts
+                .forEach { artifact ->
+                    val componentId = artifact.id.componentIdentifier
+                    if (componentId is ModuleComponentIdentifier) {
+                        val key = "${componentId.group}:${componentId.module}:${componentId.version}"
+                        if (key !in seenComponents) {
+                            seenComponents.add(key)
+                            if (exclusionPredicate?.invoke(componentId.group, componentId.module) != true) {
+                                results.add(
+                                    ResolvedModuleIdentifier(
+                                        name = componentId.module,
+                                        group = componentId.group,
+                                        version = VersionString(componentId.version),
+                                        id = artifact.id,
+                                    ),
+                                )
+                            }
+                        }
+                    }
+                }
+        } catch (e: Exception) {
+            LicenseListPlugin.logger?.warn("Failed to resolve: ${e.message}")
+            // Clean up and fall back
+            try {
+                project.configurations.remove(resolveConfig)
+            } catch (_: Exception) {
+            }
+            return toResolvedModuleIdentifiersFallback()
+        }
+
+        // Clean up the temporary configuration
+        try {
+            project.configurations.remove(resolveConfig)
+        } catch (e: Exception) {
+            LicenseListPlugin.logger?.debug("Failed to remove temporary configuration: ${e.message}")
+        }
+
+        LicenseListPlugin.logger?.info("Resolved ${results.size} modules")
+
+        return results
+    }
+
+    /**
+     * Fallback resolution path when capabilities resolution fails
+     */
+    private fun Configuration.toResolvedModuleIdentifiersFallback(): List<ResolvedModuleIdentifier> {
+        val artifactTypeAttr = Attribute.of("artifactType", String::class.java)
+        val results = mutableListOf<ResolvedModuleIdentifier>()
+        val seenComponents = mutableSetOf<String>()
+
+        // Resolve jar artifacts
+        try {
+            val jarView =
+                incoming.artifactView {
+                    attributes {
+                        attribute(artifactTypeAttr, "jar")
+                    }
+                    lenient(true)
+                }
+            jarView.artifacts.forEach { artifact ->
+                val componentId = artifact.id.componentIdentifier
+                if (componentId is ModuleComponentIdentifier) {
+                    val key = "${componentId.group}:${componentId.module}:${componentId.version}"
+                    if (key !in seenComponents) {
+                        seenComponents.add(key)
+                        if (exclusionPredicate?.invoke(componentId.group, componentId.module) != true) {
+                            results.add(
+                                ResolvedModuleIdentifier(
+                                    name = componentId.module,
+                                    group = componentId.group,
+                                    version = VersionString(componentId.version),
+                                    id = artifact.id,
+                                ),
+                            )
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            LicenseListPlugin.logger?.debug("Failed to resolve jar artifacts for $name", e)
+        }
+
+        // Resolve aar artifacts
+        try {
+            val aarView =
+                incoming.artifactView {
+                    attributes {
+                        attribute(artifactTypeAttr, "aar")
+                    }
+                    lenient(true)
+                }
+            aarView.artifacts.forEach { artifact ->
+                val componentId = artifact.id.componentIdentifier
+                if (componentId is ModuleComponentIdentifier) {
+                    val key = "${componentId.group}:${componentId.module}:${componentId.version}"
+                    if (key !in seenComponents) {
+                        seenComponents.add(key)
+                        if (exclusionPredicate?.invoke(componentId.group, componentId.module) != true) {
+                            results.add(
+                                ResolvedModuleIdentifier(
+                                    name = componentId.module,
+                                    group = componentId.group,
+                                    version = VersionString(componentId.version),
+                                    id = artifact.id,
+                                ),
+                            )
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            LicenseListPlugin.logger?.debug("Failed to resolve aar artifacts for $name", e)
+        }
+
+        return results
+    }
 }
