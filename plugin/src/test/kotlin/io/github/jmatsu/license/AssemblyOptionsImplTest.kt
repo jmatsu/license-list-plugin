@@ -113,12 +113,7 @@ class AssemblyOptionsImplTest {
         with(options) {
             assertEquals(
                 setOf(
-                    "api",
-                    "compile",
-                    "compileOnly",
-                    "implementation",
-                    "annotationProcessor",
-                    "kapt",
+                    "RuntimeClasspath",
                     "abc",
                     "xyz",
                 ),
@@ -129,17 +124,15 @@ class AssemblyOptionsImplTest {
 
     @Test
     fun `targetConfigurations is removable`() {
-        options.targetConfigurations += setOf("api", "compile")
+        options.targetConfigurations += setOf("implementation", "api")
+        options.targetConfigurations -= setOf("implementation")
 
         with(options) {
             assertEquals(
-                ArtifactManagement.CommonConfigurationNames +
-                    setOf(
-                        "compileOnly",
-                        "implementation",
-                        "annotationProcessor",
-                        "kapt",
-                    ),
+                setOf(
+                    "RuntimeClasspath",
+                    "api",
+                ),
                 targetConfigurations,
             )
         }
