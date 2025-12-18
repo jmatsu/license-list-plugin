@@ -223,7 +223,7 @@ class LicenseClassifier(
             return GuessedLicense.Unlicense
         }
 
-        fun String.normalize(): String = toLowerCase(Locale.US).replace("[,\"]|licen[sc]e".toRegex(), " ").trim()
+        fun String.normalize(): String = lowercase(Locale.US).replace("[,\"]|licen[sc]e".toRegex(), " ").trim()
 
         operator fun Regex.contains(text: String): Boolean = containsMatchIn(text)
 

@@ -1,7 +1,7 @@
 package io.github.jmatsu.license.internal
 
-import groovy.util.XmlSlurper
-import groovy.util.slurpersupport.GPathResult
+import groovy.xml.XmlSlurper
+import groovy.xml.slurpersupport.GPathResult
 import io.github.jmatsu.license.model.LicenseSeed
 import io.github.jmatsu.license.model.ResolvedPomFile
 import java.io.File
