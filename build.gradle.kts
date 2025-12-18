@@ -24,5 +24,5 @@ subprojects {
 }
 
 rootProject.tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir, rootProject.file("buildSrc/build"))
+    delete(rootProject.layout.buildDirectory, rootProject.file("buildSrc/build"))
 }
