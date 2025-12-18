@@ -37,4 +37,14 @@ sealed class ResolveScope {
     object Unknown : ResolveScope() {
         override val name: String = "unknown"
     }
+
+    companion object {
+        fun fromName(name: String): ResolveScope =
+            when (name.lowercase()) {
+                "test" -> Test
+                "androidtest" -> AndroidTest
+                "unknown" -> Unknown
+                else -> Variant(name)
+            }
+    }
 }
